@@ -25,7 +25,7 @@ public class JottTokenizer {
      */
     public static ArrayList<Token> tokenize(String filename){
 
-		ArrayList<Token> finalTokenList = null;
+		ArrayList<Token> finalTokenList = new ArrayList<>();
 
 		try {
 			Scanner file = new Scanner(new File(filename));
@@ -37,25 +37,41 @@ public class JottTokenizer {
 				for (char c : line.toCharArray()) {
 					tokenList.add(c);
 				}
-				// keep newlines too
-				tokenList.add('\n');
 			}
 			file.close();
 
 			// Process tokenList
 			while (!tokenList.isEmpty()) {
 				//more stuff to do here....
-        switch(tokenList.get(0)){
-			case ';':
-				Token semicolon = new Token("semicolon", filename, 0, TokenType.SEMICOLON);
-				finalTokenList.add(semicolon);
-				break;
-			case '!':
-				break;
-		}
-
+				switch (tokenList.get(0)) {
+					case '\n':
+						tokenList.remove(0);
+						break;
+					case '\t':
+						tokenList.remove(0);
+						break;
+					case ' ':
+						tokenList.remove(0);
+						break;
+					case '#':
+						tokenList.remove(0);
+						while(!tokenList.isEmpty()) {
+							if(tokenList.get(0) != '\n') {
+								tokenList.remove(0);
+							}
+							else{
+								break;
+							}
+						}
+					case ';':
+						Token semicolon = new Token("semicolon", filename, 0, TokenType.SEMICOLON);
+						finalTokenList.add(semicolon);
+						tokenList.remove(0);
+						break;
+					case '!':
+						break;
+				}
 			}
-
 
 		} catch (IOException e) {
 			e.printStackTrace();
