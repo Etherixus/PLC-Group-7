@@ -35,15 +35,18 @@ public class JottTokenizer {
 				for (char c : line.toCharArray()) {
 					tokenList.add(c);
 				}
+				// keep newlines too
+				tokenList.add('\n');
 			}
 			file.close();
 
 			// Process tokenList
 			while (!tokenList.isEmpty()) {
-				switch(tokenList.get(0)){
-					case '\n':
-						break;
-				}
+				//more stuff to do here....
+        switch(tokenList.get(0)){
+          case "\n":
+            break; 
+        } 
 
 			}
 
