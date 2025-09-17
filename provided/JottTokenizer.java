@@ -25,6 +25,8 @@ public class JottTokenizer {
      */
     public static ArrayList<Token> tokenize(String filename){
 
+		ArrayList<Token> finalTokenList;
+
 		try {
 			Scanner file = new Scanner(new File(filename));
 
@@ -44,9 +46,13 @@ public class JottTokenizer {
 			while (!tokenList.isEmpty()) {
 				//more stuff to do here....
         switch(tokenList.get(0)){
-          case "\n":
-            break; 
-        } 
+			case ';':
+				Token semicolon = new Token("semicolon", filename, 0, TokenType.SEMICOLON);
+
+				break;
+			case '!':
+				break;
+		}
 
 			}
 
