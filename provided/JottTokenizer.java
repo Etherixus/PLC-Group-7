@@ -70,20 +70,13 @@ public class JottTokenizer {
 						finalTokenList.add(semicolon);
 						tokenList.remove(0);
 						break;
-					case '!':
+
+					case '!', '+', '-', '*', '/':
+						Token mathOp = new Token("mathOp", filename, 0, TokenType.MATH_OP);
+						finalTokenList.add(mathOp);
+						tokenList.remove(0);
 						break;
 				}
-        switch(tokenList.get(0)){
-			case ';':
-				Token semicolon = new Token("semicolon", filename, 0, TokenType.SEMICOLON);
-				finalTokenList.add(semicolon);
-				break;
-			case '!', '+', '-', '*', '/':
-				Token mathOp = new Token("mathOp", filename, 0, TokenType.MATH_OP);
-				finalTokenList.add(mathOp);
-				break;
-        }
-
 			}
 
 
