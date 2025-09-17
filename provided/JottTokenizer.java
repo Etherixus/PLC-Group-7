@@ -44,8 +44,23 @@ public class JottTokenizer {
 			while (!tokenList.isEmpty()) {
 				//more stuff to do here....
         switch(tokenList.get(0)){
-          case "\n":
+          case '\n':
             break; 
+          case ',': //comma
+            break;
+          case '[': //lbracket
+            break;
+          case ']': //rbracket
+            break;
+          case '{': //lbrace
+            break;
+          case '}': //rbrace
+            break;     
+          case '=': //equals(assignment)   
+            break;
+          case '>': //gthan
+            break;
+          case '<': //lthan
         } 
 
 			}
