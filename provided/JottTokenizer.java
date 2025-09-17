@@ -6,12 +6,14 @@ package provided;
  * @author 
  **/
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Scanner;
 
 public class JottTokenizer {
 
@@ -23,17 +25,33 @@ public class JottTokenizer {
      */
     public static ArrayList<Token> tokenize(String filename){
 
-		ArrayList<Token> tokens = new ArrayList<>();
-		String content = "";
-
 		try {
-			content = Files.readString(Paths.get(filename));
+			Scanner file = new Scanner(new File(filename));
+
+			// Read file into a list of characters (tokenList)
+			ArrayList<Character> tokenList = new ArrayList<>();
+			while (file.hasNextLine()) {
+				String line = file.nextLine();
+				for (char c : line.toCharArray()) {
+					tokenList.add(c);
+				}
+				// keep newlines too
+				tokenList.add('\n');
+			}
+			file.close();
+
+			// Process tokenList
+			while (!tokenList.isEmpty()) {
+				//more stuff to do here....
+
+			}
+
+
 		} catch (IOException e) {
 			e.printStackTrace();
-			return tokens;
+			return null;
 		}
 
-		// TODO: turn content into tokens
-		return tokens;
+		return null;
 	}
 }
