@@ -43,6 +43,10 @@ public class JottTokenizer {
 			// Process tokenList
 			while (!tokenList.isEmpty()) {
 				//more stuff to do here....
+        switch(tokenList.get(0)){
+          case "\n":
+            break; 
+        } 
 
 			}
 
