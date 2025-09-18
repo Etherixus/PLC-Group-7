@@ -45,15 +45,37 @@ public class JottTokenizer {
 			// Process tokenList
 			while (!tokenList.isEmpty()) {
 				//more stuff to do here....
-        switch(tokenList.get(0)){
-			case ';':
-				Token semicolon = new Token("semicolon", filename, 0, TokenType.SEMICOLON);
-				finalTokenList.add(semicolon);
-				break;
-			case '!':
-				break;
-          case '\n':
-            break; 
+				switch (tokenList.get(0)) {
+					case '\n':
+						tokenList.remove(0);
+						break;
+					case '\t':
+						tokenList.remove(0);
+						break;
+					case ' ':
+						tokenList.remove(0);
+						break;
+					case '#':
+						tokenList.remove(0);
+						while(!tokenList.isEmpty()) {
+							if(tokenList.get(0) != '\n') {
+								tokenList.remove(0);
+							}
+							else{
+								break;
+							}
+						}
+					case ';':
+						Token semicolon = new Token("semicolon", filename, 0, TokenType.SEMICOLON);
+						finalTokenList.add(semicolon);
+						tokenList.remove(0);
+						break;
+
+					case '!', '+', '-', '*', '/':
+						Token mathOp = new Token("mathOp", filename, 0, TokenType.MATH_OP);
+						finalTokenList.add(mathOp);
+						tokenList.remove(0);
+						break;
           case ',': //comma
             Token comma = new Token("comma", filename, 0, TokenType.COMMA);
             finalTokenList.add(comma);
@@ -82,7 +104,6 @@ public class JottTokenizer {
             break;
           case '<': //lthan
         } 
-
 			}
 
 
