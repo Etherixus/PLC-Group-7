@@ -115,7 +115,7 @@ public class JottTokenizer {
             }
             break;
           case '>': //gthan
-            if(token(1) == '='){
+            if(tokenList.get(1) == '='){
               Token gthanEq = new Token("gthanEq", filename, 0, TokenType.REL_OP);
               finalTokenList.add(gthanEq);
               tokenList.remove(1);
@@ -128,7 +128,7 @@ public class JottTokenizer {
             }
             break;
           case '<': //lthan
-            Tif(token(1) == '='){
+            Tif(tokenList.get(1) == '='){
               Token lthanEq = new Token("lthanEq", filename, 0, TokenType.REL_OP);
               finalTokenList.add(lthanEq);
               tokenList.remove(1);
