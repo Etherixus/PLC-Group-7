@@ -87,6 +87,7 @@ public class JottTokenizer {
                         }
                     }
                     finalTokenList.add(new Token(currKeyword, filename, curLineNumber, TokenType.ID_KEYWORD));
+                    continue;
                 }
                 //more stuff to do here....
                 switch (tokenList.get(0)) {
@@ -114,10 +115,24 @@ public class JottTokenizer {
                         finalTokenList.add(semicolon);
                         tokenList.remove(0);
                         break;
-
-                    case '+', '-', '*', '/':
-                        Token mathOp = new Token(tokenList.get(0).toString(), filename, curLineNumber, TokenType.MATH_OP);
-                        finalTokenList.add(mathOp);
+                    case '+':
+                        Token addOp = new Token("+", filename, curLineNumber, TokenType.MATH_OP);
+                        finalTokenList.add(addOp);
+                        tokenList.remove(0);
+                        break;
+                    case '-':
+                        Token subOp = new Token("-", filename, curLineNumber, TokenType.MATH_OP);
+                        finalTokenList.add(subOp);
+                        tokenList.remove(0);
+                        break;
+                    case '*':
+                        Token multOp = new Token("*", filename, curLineNumber, TokenType.MATH_OP);
+                        finalTokenList.add(multOp);
+                        tokenList.remove(0);
+                        break;
+                    case '/':
+                        Token divOp = new Token("/", filename, curLineNumber, TokenType.MATH_OP);
+                        finalTokenList.add(divOp);
                         tokenList.remove(0);
                         break;
                     case ',': //comma
@@ -131,7 +146,7 @@ public class JottTokenizer {
                         tokenList.remove(0);
                         break;
                     case ']': //rbracket
-                        Token rbracket = new Token("comma", filename, curLineNumber, TokenType.R_BRACKET);
+                        Token rbracket = new Token("rbracket", filename, curLineNumber, TokenType.R_BRACKET);
                         finalTokenList.add(rbracket);
                         tokenList.remove(0);
                         break;
@@ -191,7 +206,51 @@ public class JottTokenizer {
                         else{
                             throw new TokenizerSyntaxError(
                                     TokenizerSyntaxError.createTokenizerSyntaxErrorMessage(
-                                            "! expects following =", "!"+tokenList.get(1), filename, curLineNumber));
+                                            "\"!\" expects following \"=\"", "!"+tokenList.get(1), filename, curLineNumber));
+                        }
+                        break;
+                    case ':':
+                        if (tokenList.get(1) == ':') {
+                            Token fcHeader = new Token("fcHeader", filename, curLineNumber, TokenType.FC_HEADER);
+                            finalTokenList.add(fcHeader);
+                            tokenList.remove(1);
+                            tokenList.remove(0);
+                        }
+                        else{
+                            Token colon = new Token("colon", filename, curLineNumber, TokenType.COLON);
+                            finalTokenList.add(colon);
+                            tokenList.remove(0);
+                        }
+                        break;
+                    case'"':
+                        boolean isOpen = true;
+                        String currString = "";
+                        tokenList.remove(0);
+                        while (isOpen && (!tokenList.isEmpty())) {
+                            if (tokenList.get(0) != '"') {
+                                if(Character.isDigit(tokenList.get(0)) || Character.isLetter(tokenList.get(0)) || tokenList.get(0) == ' ') {
+                                    currString += tokenList.get(0);
+                                    tokenList.remove(0);
+                                }
+                                else{
+                                    throw new TokenizerSyntaxError(
+                                            TokenizerSyntaxError.createTokenizerSyntaxErrorMessage(
+                                                    "\" expects following letter, digit, or space", "\""+tokenList.get(1), filename, curLineNumber));
+                                }
+                            }
+                            else{
+                                isOpen = false;
+                                tokenList.remove(0);
+                            }
+                        }
+                        if(isOpen){
+                            throw new TokenizerSyntaxError(
+                                    TokenizerSyntaxError.createTokenizerSyntaxErrorMessage(
+                                            "\" expects following \"", "\"", filename, curLineNumber));
+                        }
+                        else{
+                            Token string = new Token(currString, filename, curLineNumber, TokenType.STRING);
+                            finalTokenList.add(string);
                         }
                         break;
                 }
@@ -211,7 +270,7 @@ public class JottTokenizer {
     public static void main(String[] args) {
         ArrayList<Token> tokens = tokenize("provided/test.jott");
         if (tokens != null) {for (Token token : tokens) {
-            System.out.println(token.getToken());
+            System.out.println(token.getToken() + token.getTokenType());
         }}
 
     }

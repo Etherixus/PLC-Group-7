@@ -1,2 +1,6 @@
-[  8 *
-.4
+#this is an example
+Def main[]:Void{
+    ::print[5];
+    #this is a comment
+    ::print[ "foo bar" ];
+}
