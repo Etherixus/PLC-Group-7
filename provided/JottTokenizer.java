@@ -41,7 +41,7 @@ public class JottTokenizer {
             int curLineNumber = 1;
 			// Process tokenList
 			while (!tokenList.isEmpty()) {
-
+                //handle digits
 				if(Character.isDigit(tokenList.get(0)) || tokenList.get(0) == '.') {
 					String currNumber = "";
                     boolean hasSeenDecimal = false;
@@ -72,6 +72,7 @@ public class JottTokenizer {
                     finalTokenList.add(new Token(currNumber, filename, curLineNumber, TokenType.NUMBER));
                     continue;
 				}
+                //handle strings
                 else if (Character.isLetter(tokenList.get(0))) {
                     String currKeyword = "";
                     currKeyword += tokenList.get(0);
@@ -89,19 +90,19 @@ public class JottTokenizer {
                     finalTokenList.add(new Token(currKeyword, filename, curLineNumber, TokenType.ID_KEYWORD));
                     continue;
                 }
-                //more stuff to do here....
+                //begin all other cases
                 switch (tokenList.get(0)) {
-                    case '\n':
+                    case '\n'://handle new lines and increase current line
                         curLineNumber++;
                         tokenList.remove(0);
                         break;
-                    case '\t':
+                    case '\t'://handle tabs
                         tokenList.remove(0);
                         break;
-                    case ' ':
+                    case ' '://handle spaces
                         tokenList.remove(0);
                         break;
-                    case '#':
+                    case '#'://handle comments
                         tokenList.remove(0);
                         while (!tokenList.isEmpty()) {
                             if (tokenList.get(0) != '\n') {
@@ -112,27 +113,27 @@ public class JottTokenizer {
                             }
                         }
                         break;
-                    case ';':
+                    case ';'://semicolon
                         Token semicolon = new Token(";", filename, curLineNumber, TokenType.SEMICOLON);
                         finalTokenList.add(semicolon);
                         tokenList.remove(0);
                         break;
-                    case '+':
+                    case '+'://add
                         Token addOp = new Token("+", filename, curLineNumber, TokenType.MATH_OP);
                         finalTokenList.add(addOp);
                         tokenList.remove(0);
                         break;
-                    case '-':
+                    case '-'://subtract
                         Token subOp = new Token("-", filename, curLineNumber, TokenType.MATH_OP);
                         finalTokenList.add(subOp);
                         tokenList.remove(0);
                         break;
-                    case '*':
+                    case '*'://multiply
                         Token multOp = new Token("*", filename, curLineNumber, TokenType.MATH_OP);
                         finalTokenList.add(multOp);
                         tokenList.remove(0);
                         break;
-                    case '/':
+                    case '/'://divide
                         Token divOp = new Token("/", filename, curLineNumber, TokenType.MATH_OP);
                         finalTokenList.add(divOp);
                         tokenList.remove(0);
@@ -162,13 +163,13 @@ public class JottTokenizer {
                         finalTokenList.add(rbrace);
                         tokenList.remove(0);
                         break;
-                    case '=': //equals
-                        if (tokenList.get(1) == '=') {
+                    case '=': //equals or relation opp
+                        if (tokenList.get(1) == '=') {//is a rel op
                             Token doubleEq = new Token("==", filename, curLineNumber, TokenType.REL_OP);
                             finalTokenList.add(doubleEq);
                             tokenList.remove(1);
                             tokenList.remove(0);
-                        } else {
+                        } else {//is an equals
                             Token assign = new Token("=", filename, curLineNumber, TokenType.ASSIGN);
                             finalTokenList.add(assign);
                             tokenList.remove(0);
@@ -180,7 +181,7 @@ public class JottTokenizer {
                             finalTokenList.add(gthanEq);
                             tokenList.remove(1);
                             tokenList.remove(0);
-                        } else {
+                        } else {//greater than
                             Token gthan = new Token(">", filename, curLineNumber, TokenType.REL_OP);
                             finalTokenList.add(gthan);
                             tokenList.remove(0);
@@ -192,13 +193,13 @@ public class JottTokenizer {
                             finalTokenList.add(lthanEq);
                             tokenList.remove(1);
                             tokenList.remove(0);
-                        } else {
+                        } else {//less than
                             Token lthan = new Token("<", filename, curLineNumber, TokenType.REL_OP);
                             finalTokenList.add(lthan);
                             tokenList.remove(0);
                         }
                         break;
-                    case '!':
+                    case '!'://handle does not equal
                         if (tokenList.get(1) == '=') {
                             Token notEqual = new Token("!=", filename, curLineNumber, TokenType.REL_OP);
                             finalTokenList.add(notEqual);
@@ -211,20 +212,20 @@ public class JottTokenizer {
                                             "\"!\" expects following \"=\"", "!"+tokenList.get(1), filename, curLineNumber));
                         }
                         break;
-                    case ':':
-                        if (tokenList.get(1) == ':') {
+                    case ':'://colon or header
+                        if (tokenList.get(1) == ':') {//is a header
                             Token fcHeader = new Token("::", filename, curLineNumber, TokenType.FC_HEADER);
                             finalTokenList.add(fcHeader);
                             tokenList.remove(1);
                             tokenList.remove(0);
                         }
-                        else{
+                        else{//is a colon
                             Token colon = new Token(":", filename, curLineNumber, TokenType.COLON);
                             finalTokenList.add(colon);
                             tokenList.remove(0);
                         }
                         break;
-                    case'"':
+                    case'"'://handle strings
                         boolean isOpen = true;
                         String currString = "";
                         currString += tokenList.get(0);
@@ -271,11 +272,5 @@ public class JottTokenizer {
 	}
 
     //todo remove before turning in
-    public static void main(String[] args) {
-        ArrayList<Token> tokens = tokenize("provided/test.jott");
-        if (tokens != null) {for (Token token : tokens) {
-            System.out.println(token.getToken() + token.getTokenType());
-        }}
 
     }
-}
