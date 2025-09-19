@@ -113,7 +113,7 @@ public class JottTokenizer {
                         }
                         break;
                     case ';':
-                        Token semicolon = new Token("semicolon", filename, curLineNumber, TokenType.SEMICOLON);
+                        Token semicolon = new Token(";", filename, curLineNumber, TokenType.SEMICOLON);
                         finalTokenList.add(semicolon);
                         tokenList.remove(0);
                         break;
@@ -138,69 +138,69 @@ public class JottTokenizer {
                         tokenList.remove(0);
                         break;
                     case ',': //comma
-                        Token comma = new Token("comma", filename, curLineNumber, TokenType.COMMA);
+                        Token comma = new Token(",", filename, curLineNumber, TokenType.COMMA);
                         finalTokenList.add(comma);
                         tokenList.remove(0);
                         break;
                     case '[': //lbracket
-                        Token lbracket = new Token("lbracket", filename, curLineNumber, TokenType.L_BRACKET);
+                        Token lbracket = new Token("[", filename, curLineNumber, TokenType.L_BRACKET);
                         finalTokenList.add(lbracket);
                         tokenList.remove(0);
                         break;
                     case ']': //rbracket
-                        Token rbracket = new Token("rbracket", filename, curLineNumber, TokenType.R_BRACKET);
+                        Token rbracket = new Token("]", filename, curLineNumber, TokenType.R_BRACKET);
                         finalTokenList.add(rbracket);
                         tokenList.remove(0);
                         break;
                     case '{': //lbrace
-                        Token lbrace = new Token("lbrace", filename, curLineNumber, TokenType.L_BRACE);
+                        Token lbrace = new Token("{", filename, curLineNumber, TokenType.L_BRACE);
                         finalTokenList.add(lbrace);
                         tokenList.remove(0);
                         break;
                     case '}': //rbrace
-                        Token rbrace = new Token("rbrace", filename, curLineNumber, TokenType.R_BRACE);
+                        Token rbrace = new Token("}", filename, curLineNumber, TokenType.R_BRACE);
                         finalTokenList.add(rbrace);
                         tokenList.remove(0);
                         break;
                     case '=': //equals
                         if (tokenList.get(1) == '=') {
-                            Token doubleEq = new Token("doubleEq", filename, curLineNumber, TokenType.REL_OP);
+                            Token doubleEq = new Token("==", filename, curLineNumber, TokenType.REL_OP);
                             finalTokenList.add(doubleEq);
                             tokenList.remove(1);
                             tokenList.remove(0);
                         } else {
-                            Token assign = new Token("assign", filename, curLineNumber, TokenType.ASSIGN);
+                            Token assign = new Token("=", filename, curLineNumber, TokenType.ASSIGN);
                             finalTokenList.add(assign);
                             tokenList.remove(0);
                         }
                         break;
                     case '>': //gthan
                         if (tokenList.get(1) == '=') {
-                            Token gthanEq = new Token("gthanEq", filename, curLineNumber, TokenType.REL_OP);
+                            Token gthanEq = new Token(">=", filename, curLineNumber, TokenType.REL_OP);
                             finalTokenList.add(gthanEq);
                             tokenList.remove(1);
                             tokenList.remove(0);
                         } else {
-                            Token gthan = new Token("gthan", filename, curLineNumber, TokenType.REL_OP);
+                            Token gthan = new Token(">", filename, curLineNumber, TokenType.REL_OP);
                             finalTokenList.add(gthan);
                             tokenList.remove(0);
                         }
                         break;
                     case '<': //lthan
                         if (tokenList.get(1) == '=') {
-                            Token lthanEq = new Token("lthanEq", filename, curLineNumber, TokenType.REL_OP);
+                            Token lthanEq = new Token("<=", filename, curLineNumber, TokenType.REL_OP);
                             finalTokenList.add(lthanEq);
                             tokenList.remove(1);
                             tokenList.remove(0);
                         } else {
-                            Token lthan = new Token("lthan", filename, curLineNumber, TokenType.REL_OP);
+                            Token lthan = new Token("<", filename, curLineNumber, TokenType.REL_OP);
                             finalTokenList.add(lthan);
                             tokenList.remove(0);
                         }
                         break;
                     case '!':
                         if (tokenList.get(1) == '=') {
-                            Token notEqual = new Token("notEqual", filename, curLineNumber, TokenType.REL_OP);
+                            Token notEqual = new Token("!=", filename, curLineNumber, TokenType.REL_OP);
                             finalTokenList.add(notEqual);
                             tokenList.remove(1);
                             tokenList.remove(0);
@@ -213,13 +213,13 @@ public class JottTokenizer {
                         break;
                     case ':':
                         if (tokenList.get(1) == ':') {
-                            Token fcHeader = new Token("fcHeader", filename, curLineNumber, TokenType.FC_HEADER);
+                            Token fcHeader = new Token("::", filename, curLineNumber, TokenType.FC_HEADER);
                             finalTokenList.add(fcHeader);
                             tokenList.remove(1);
                             tokenList.remove(0);
                         }
                         else{
-                            Token colon = new Token("colon", filename, curLineNumber, TokenType.COLON);
+                            Token colon = new Token(":", filename, curLineNumber, TokenType.COLON);
                             finalTokenList.add(colon);
                             tokenList.remove(0);
                         }
@@ -227,6 +227,7 @@ public class JottTokenizer {
                     case'"':
                         boolean isOpen = true;
                         String currString = "";
+                        currString += tokenList.get(0);
                         tokenList.remove(0);
                         while (isOpen && (!tokenList.isEmpty())) {
                             if (tokenList.get(0) != '"') {
@@ -242,6 +243,7 @@ public class JottTokenizer {
                             }
                             else{
                                 isOpen = false;
+                                currString += tokenList.get(0);
                                 tokenList.remove(0);
                             }
                         }
