@@ -46,30 +46,30 @@ public class JottTokenizer {
 					String currNumber = "";
                     boolean hasSeenDecimal = false;
 					do{
-						if(tokenList.get(0) == '.'){
-							if(!hasSeenDecimal && Character.isDigit(tokenList.get(1))){
+                        if (tokenList.get(0) == '.') {
+                            if (!hasSeenDecimal) {
                                 hasSeenDecimal = true;
-								currNumber = currNumber + tokenList.get(0) + tokenList.get(1);
-								tokenList.remove(0);
-								tokenList.remove(0);
-							} else{
-                                if(hasSeenDecimal){
-                                    throw new TokenizerSyntaxError(
-                                            TokenizerSyntaxError.createTokenizerSyntaxErrorMessage(
-                                                    "Number can only have one decimal", currNumber+tokenList.get(0), filename, curLineNumber));
-                                } else {
-                                    throw new TokenizerSyntaxError(
-                                            TokenizerSyntaxError.createTokenizerSyntaxErrorMessage(
-                                                    "\".\" expects following digit", "."+tokenList.get(1), filename, curLineNumber));
-                                }
+                                currNumber += tokenList.get(0);
+                                tokenList.remove(0);
+                            } else {
+                                throw new TokenizerSyntaxError(
+                                        TokenizerSyntaxError.createTokenizerSyntaxErrorMessage(
+                                                "Number can only have one decimal", currNumber + ".", filename, curLineNumber));
+                            }
+                        } else {
+                            currNumber += tokenList.get(0).toString();
+                            tokenList.remove(0);
+                        }
+                    } while (!tokenList.isEmpty() && (Character.isDigit(tokenList.get(0)) || tokenList.get(0) == '.'));
 
-							}
-						} else {
-							currNumber = currNumber + tokenList.get(0).toString();
-							tokenList.remove(0);
-						}
-					} while(Character.isDigit(tokenList.get(0)) || tokenList.get(0) == '.');
-					finalTokenList.add(new Token(currNumber, filename, curLineNumber, TokenType.NUMBER));
+                    // reject standalone '.'
+                    if (currNumber.equals(".")) {
+                        throw new TokenizerSyntaxError(
+                                TokenizerSyntaxError.createTokenizerSyntaxErrorMessage(
+                                        "Standalone '.' is not a valid number", currNumber, filename, curLineNumber));
+                    }
+
+                    finalTokenList.add(new Token(currNumber, filename, curLineNumber, TokenType.NUMBER));
                     continue;
 				}
                 else if (Character.isLetter(tokenList.get(0))) {
