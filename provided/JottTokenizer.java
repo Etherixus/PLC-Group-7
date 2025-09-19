@@ -38,7 +38,7 @@ public class JottTokenizer {
 			}
 			file.close();
 
-            int curLineNumber = 0;
+            int curLineNumber = 1;
 			// Process tokenList
 			while (!tokenList.isEmpty()) {
 
@@ -106,10 +106,12 @@ public class JottTokenizer {
                         while (!tokenList.isEmpty()) {
                             if (tokenList.get(0) != '\n') {
                                 tokenList.remove(0);
-                            } else {
+                            }
+                            else{
                                 break;
                             }
                         }
+                        break;
                     case ';':
                         Token semicolon = new Token("semicolon", filename, curLineNumber, TokenType.SEMICOLON);
                         finalTokenList.add(semicolon);
