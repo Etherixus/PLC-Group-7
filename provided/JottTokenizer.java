@@ -42,7 +42,6 @@ public class JottTokenizer {
 			// Process tokenList
 			while (!tokenList.isEmpty()) {
 
-
 				if(Character.isDigit(tokenList.get(0)) || tokenList.get(0) == '.') {
 					String currNumber = "";
                     boolean hasSeenDecimal = false;
@@ -73,7 +72,22 @@ public class JottTokenizer {
 					finalTokenList.add(new Token(currNumber, filename, curLineNumber, TokenType.NUMBER));
                     continue;
 				}
-
+                else if (Character.isLetter(tokenList.get(0))) {
+                    String currKeyword = "";
+                    currKeyword += tokenList.get(0);
+                    tokenList.remove(0);
+                    boolean seenDigitorLetter = true;
+                    while(seenDigitorLetter) {
+                        if (Character.isDigit(tokenList.get(0)) || Character.isLetter(tokenList.get(0))) {
+                            currKeyword += tokenList.get(0);
+                            tokenList.remove(0);
+                        }
+                        else{
+                            seenDigitorLetter = false;
+                        }
+                    }
+                    finalTokenList.add(new Token(currKeyword, filename, curLineNumber, TokenType.ID_KEYWORD));
+                }
                 //more stuff to do here....
                 switch (tokenList.get(0)) {
                     case '\n':
@@ -101,7 +115,7 @@ public class JottTokenizer {
                         tokenList.remove(0);
                         break;
 
-                    case '!', '+', '-', '*', '/':
+                    case '+', '-', '*', '/':
                         Token mathOp = new Token(tokenList.get(0).toString(), filename, curLineNumber, TokenType.MATH_OP);
                         finalTokenList.add(mathOp);
                         tokenList.remove(0);
@@ -166,6 +180,20 @@ public class JottTokenizer {
                             finalTokenList.add(lthan);
                             tokenList.remove(0);
                         }
+                        break;
+                    case '!':
+                        if (tokenList.get(1) == '=') {
+                            Token notEqual = new Token("notEqual", filename, curLineNumber, TokenType.REL_OP);
+                            finalTokenList.add(notEqual);
+                            tokenList.remove(1);
+                            tokenList.remove(0);
+                        }
+                        else{
+                            throw new TokenizerSyntaxError(
+                                    TokenizerSyntaxError.createTokenizerSyntaxErrorMessage(
+                                            "! expects following =", "!"+tokenList.get(1), filename, curLineNumber));
+                        }
+                        break;
                 }
 			}
             return finalTokenList;
