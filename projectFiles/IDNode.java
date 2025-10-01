@@ -13,7 +13,7 @@ public class IDNode implements OperandNode {
         this.keyword = keyword;
     }
 
-    public static IDNode parseIDNode(ArrayList<Token> tokenList) {
+    public static IDNode parseIDNode(ArrayList<Token> tokenList) throws ParserSyntaxError {
         if (tokenList == null || tokenList.isEmpty()) {
             return null; // nothing to parse
         }
