@@ -15,11 +15,11 @@ public interface OperandNode extends JottTree {
         }
 
         if(tokens.get(0).getTokenType() == TokenType.ID_KEYWORD) {
-            return parseIDNode(tokens);
+            return IDNode.parseIDNode(tokens);
         } else if(tokens.get(0).getTokenType() == TokenType.NUMBER) {
-            return parseNumberNode(tokens);
+            return NumberNode.parseNumberNode(tokens);
         } else if(tokens.get(0).getTokenType() == TokenType.FC_HEADER) {
-            return parseFunctionCallNode(tokens);
+            return FunctionCallNode.parseFunctionCallNode(tokens);
         } else {
             return null;
         }
