@@ -90,7 +90,7 @@ public class JottTokenizer {
                             seenDigitorLetter = false;
                         }
                     }
-                    finalTokenList.add(new Token(currKeyword, filename, curLineNumber, TokenType.   _KEYWORD));
+                    finalTokenList.add(new Token(currKeyword, filename, curLineNumber, TokenType.ID_KEYWORD));
                     continue;
                 }
                 //more stuff to do here....
