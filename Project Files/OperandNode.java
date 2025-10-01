@@ -9,6 +9,11 @@ public interface OperandNode extends JottTree {
     public OperandNode parseOperand();
 
     public static OperandNode parseOperand(ArrayList<Token> tokens) {
+
+        if(tokens.isEmpty()) {
+            return null;
+        }
+
         if(tokens.get(0).getTokenType() == TokenType.ID_KEYWORD) {
             return parseIDNode(tokens);
         } else if(tokens.get(0).getTokenType() == TokenType.NUMBER) {
