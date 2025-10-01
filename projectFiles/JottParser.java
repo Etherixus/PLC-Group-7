@@ -1,4 +1,4 @@
-package provided;
+package projectFiles;
 
 /**
  * This class is responsible for paring Jott Tokens
@@ -6,6 +6,9 @@ package provided;
  *
  * @author
  */
+
+import provided.JottTree;
+import provided.Token;
 
 import java.util.ArrayList;
 

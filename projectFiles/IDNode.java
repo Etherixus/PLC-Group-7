@@ -1,3 +1,5 @@
+package projectFiles;
+
 public class IDNode implements JottTree {
     private String keyword;
 
