@@ -1,10 +1,14 @@
-package provided;
+package projectFiles;
 
 /**
  * This class is responsible for tokenizing Jott code.
  * 
  * @author 
  **/
+
+import provided.Token;
+import provided.TokenType;
+import provided.TokenizerSyntaxError;
 
 import java.io.File;
 import java.util.ArrayList;

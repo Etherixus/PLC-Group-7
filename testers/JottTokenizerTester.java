@@ -11,7 +11,7 @@ package testers;
  * @author Scott C Johnson (scj@cs.rit.edu)
  */
 
-import provided.JottTokenizer;
+import projectFiles.JottTokenizer;
 import provided.Token;
 import provided.TokenType;
 

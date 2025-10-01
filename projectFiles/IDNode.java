@@ -1,7 +1,4 @@
-import provided.Token;
-import provided.TokenType;
-
-import java.util.ArrayList;
+package projectFiles;
 
 public class IDNode implements JottTree {
     private String keyword;
@@ -17,7 +14,7 @@ public class IDNode implements JottTree {
 
         Token token = tokenList.get(0);
 
-        if (token.getTokenType() == TokenType.ID_KEYWORD) {
+        if (token.getTokenType() == TokenType.ID_KEYWORD) { 
             return new IDNode(token.getToken());
         }
 

@@ -1,3 +1,5 @@
+package projectFiles;
+
 public class ParserSyntaxError extends Exception {
     public ParserSyntaxError(String message) {
         super(message);

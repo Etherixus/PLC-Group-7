@@ -7,8 +7,8 @@ package testers;
   This tester assumes a working and valid tokenizer.
  */
 
-import provided.JottParser;
-import provided.JottTokenizer;
+import projectFiles.JottParser;
+import projectFiles.JottTokenizer;
 import provided.JottTree;
 import provided.Token;
 
