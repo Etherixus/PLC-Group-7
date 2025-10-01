@@ -13,7 +13,7 @@ public class IDNode implements JottTree {
         Token token = tokenList.get(0);
 
         if (token.getTokenType() == TokenType.ID_KEYWORD) { 
-            return new IDNode(token.getToken()); // or token.getLexeme() depending on your Token class
+            return new IDNode(token.getToken());
         }
 
         return null; // not an ID_KEYWORD token
