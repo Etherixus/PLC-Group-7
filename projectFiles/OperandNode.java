@@ -11,7 +11,7 @@ public interface OperandNode extends JottTree {
 
     public OperandNode parseOperand();
 
-    public static OperandNode parseOperand(ArrayList<Token> tokens) {
+    public static OperandNode parseOperand(ArrayList<Token> tokens) throws ParserSyntaxError {
 
         if(tokens.isEmpty()) {
             return null;

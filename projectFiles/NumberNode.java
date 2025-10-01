@@ -6,7 +6,7 @@ import provided.TokenType;
 
 import java.util.ArrayList;
 
-public class NumberNode implements JottTree {
+public class NumberNode implements OperandNode {
     Token number;
 
     public NumberNode(Token number) {
@@ -51,5 +51,10 @@ public class NumberNode implements JottTree {
 
     public boolean isNegative(){
         return number.getToken().toCharArray()[0] == '-';
+    }
+
+    @Override
+    public OperandNode parseOperand() {
+        return null;
     }
 }
