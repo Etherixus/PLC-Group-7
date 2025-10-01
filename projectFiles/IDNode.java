@@ -1,6 +1,12 @@
 package projectFiles;
 
-public class IDNode implements JottTree {
+
+import provided.Token;
+import provided.TokenType;
+import java.util.ArrayList;
+
+
+public class IDNode implements OperandNode {
     private String keyword;
 
     public IDNode(String keyword) {
@@ -14,7 +20,7 @@ public class IDNode implements JottTree {
 
         Token token = tokenList.get(0);
 
-        if (token.getTokenType() == TokenType.ID_KEYWORD) { 
+        if (token.getTokenType() == TokenType.ID_KEYWORD) {
             return new IDNode(token.getToken());
         }
 
@@ -24,5 +30,35 @@ public class IDNode implements JottTree {
     @Override
     public String toString() {
         return keyword;
+    }
+
+    @Override
+    public OperandNode parseOperand() {
+        return null;
+    }
+
+    @Override
+    public String convertToJott() {
+        return "";
+    }
+
+    @Override
+    public String convertToJava(String className) {
+        return "";
+    }
+
+    @Override
+    public String convertToC() {
+        return "";
+    }
+
+    @Override
+    public String convertToPython() {
+        return "";
+    }
+
+    @Override
+    public boolean validateTree() {
+        return false;
     }
 }
