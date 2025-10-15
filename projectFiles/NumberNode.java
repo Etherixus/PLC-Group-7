@@ -1,6 +1,5 @@
 package projectFiles;
 
-import provided.JottTree;
 import provided.Token;
 import provided.TokenType;
 

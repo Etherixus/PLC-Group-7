@@ -4,13 +4,14 @@ import provided.JottTree;
 import provided.Token;
 import provided.TokenType;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 
 public interface OperandNode extends JottTree {
 
     public OperandNode parseOperand();
 
-    public static OperandNode parseOperand(ArrayList<Token> tokens) throws ParserSyntaxError {
+    public static OperandNode parseOperand(ArrayList<Token> tokens) throws ParserSyntaxError, ParseException {
 
         if(tokens.isEmpty()) {
             return null;
