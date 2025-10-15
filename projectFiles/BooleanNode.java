@@ -13,7 +13,7 @@ public class BooleanNode implements JottTree {
         Token token = tokenList.get(0);
 
         // Expecting a BOOLEAN token type
-        if (token.getTokenType() == TokenType.BOOLEAN) {
+        if (token.getTokenType() == TokenType.ID_KEYWORD && (token == "true") || (token == "false")){
             boolean val = Boolean.parseBoolean(token.getToken());
             tokenList.remove(0); // consume token
             return new BooleanNode(val);
