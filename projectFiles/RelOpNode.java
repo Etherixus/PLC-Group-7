@@ -8,7 +8,8 @@ import java.text.ParseException;
 
 public class RelOpNode implements JottTree {
 
-    Token REL_OP;
+    Token relOp;
+
 
     public RelOpNode(){
 

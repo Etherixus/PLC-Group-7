@@ -1,3 +1,5 @@
+package projectFiles;
+
 import provided.JottTree;
 import provided.Token;
 import provided.TokenType;
@@ -20,7 +22,7 @@ public class BooleanNode implements JottTree {
         Token token = tokenList.get(0);
 
         // Expecting a BOOLEAN token type
-        if (token.getTokenType() == TokenType.ID_KEYWORD && (token == "true") || (token == "false")){
+        if (token.getTokenType() == TokenType.ID_KEYWORD && (token.getToken().equals("true") || token.getToken().equals("false"))){
             boolean val = Boolean.parseBoolean(token.getToken());
             tokenList.remove(0); // consume token
             return new BooleanNode(val);
@@ -41,6 +43,21 @@ public class BooleanNode implements JottTree {
     @Override
     public String convertToJott() {
         return toString();
+    }
+
+    @Override
+    public String convertToJava(String className) {
+        return "";
+    }
+
+    @Override
+    public String convertToC() {
+        return "";
+    }
+
+    @Override
+    public String convertToPython() {
+        return "";
     }
 
     @Override
