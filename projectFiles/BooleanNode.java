@@ -1,3 +1,10 @@
+import provided.JottTree;
+import provided.Token;
+import provided.TokenType;
+
+import java.text.ParseException;
+import java.util.ArrayList;
+
 public class BooleanNode implements JottTree {
     private boolean value;
 
@@ -7,7 +14,7 @@ public class BooleanNode implements JottTree {
 
     public static BooleanNode parseBooleanNode(ArrayList<Token> tokenList) throws ParseException {
         if (tokenList == null || tokenList.isEmpty()) {
-            throw new ParseException("Unexpected end of input: expected boolean value.");
+            throw new ParseException("Unexpected end of input: expected boolean value.", -1);
         }
 
         Token token = tokenList.get(0);
@@ -22,7 +29,7 @@ public class BooleanNode implements JottTree {
         // If it’s not a boolean token, throw an error
         throw new ParseException(
             "Invalid token '" + token.getToken() + "' at line " + token.getLineNum()
-            + ": expected 'true' or 'false'."
+            + ": expected 'true' or 'false'.", -1
         );
     }
 
