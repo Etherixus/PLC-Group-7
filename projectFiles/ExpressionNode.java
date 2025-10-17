@@ -13,14 +13,14 @@ public class ExpressionNode implements JottTree {
     // < operand > | < operand > < relop > < operand > |
     //< operand > < mathop > < operand > | < string_literal > |
     //< bool >
-    private ArrayList<Token> sequence = new ArrayList<Token>();
+    private ArrayList<Object> sequence;
 
-    public ExpressionNode(ArrayList<Token> sequence){
+    public ExpressionNode(ArrayList<Object> sequence){
         this.sequence = sequence;
     }
 
     public static ExpressionNode parseExpressionNode(ArrayList<Token> tokens) throws ParserSyntaxError, ParseException {
-        ArrayList<Token> parseSequence = new ArrayList<Token>();
+        ArrayList<Object> parseSequence = new ArrayList<>();
 
         if (tokens == null || tokens.isEmpty()) {
             throw new ParserSyntaxError("Unexpected end of input: expected boolean value.");
@@ -28,30 +28,32 @@ public class ExpressionNode implements JottTree {
         Token first = tokens.get(0);
 
         // CASE 1: <bool> → True | False
-        if (first.getTokenType() == TokenType.ID_KEYWORD &&
-                (first.getToken().equals("True") || first.getToken().equals("False"))) {
+        if (first.getTokenType() == TokenType.ID_KEYWORD) {
 
             BooleanNode boolNode = BooleanNode.parseBooleanNode(tokens);
-            parseSequence.add(first);
+            parseSequence.add(boolNode);
             return new ExpressionNode(parseSequence);
         }
 
         // CASE 2: <string_literal>
         if (first.getTokenType() == TokenType.STRING) {
+            StringNode stringNode = StringNode.parseStringNode(tokens);
             parseSequence.add(tokens.remove(0));
             return new ExpressionNode(parseSequence);
         }
 
         // CASE 3: <operand>
         // deal with the Operand
-        OperandNode operandResult = OperandNode.parseOperand(tokens);
-        // if its null then throw error
-        if (operandResult == null) {
-            throw new ParserSyntaxError("Invalid start of <expr> at line " + first.getLineNum());
-        }
-        else{
-            parseSequence.add(first);
-            return new ExpressionNode(parseSequence);
+        if( tokens.size() == 1){
+            OperandNode operandResult = OperandNode.parseOperand(tokens);
+            // if its null then throw error
+            if (operandResult == null) {
+                throw new ParserSyntaxError("Invalid start of <expr> at line " + first.getLineNum());
+            }
+            else{
+                parseSequence.add(operandResult);
+                return new ExpressionNode(parseSequence);
+            }
         }
 
         // CASE 4: <operand> [ <relop> <operand> | <mathop> <operand> ]
@@ -62,28 +64,24 @@ public class ExpressionNode implements JottTree {
             throw new ParserSyntaxError("Invalid start of <expr> at line " + first.getLineNum());
         }
         // otherwise add it to the sequence
-        parseSequence.add(first);
+        parseSequence.add(leftOperand);
 
-        // If no more tokens or next token isn’t an operator, it’s just <operand>
-        if (tokens.isEmpty()) {
-            return new ExpressionNode(parseSequence);
-        }
+        // Check for the middle operand to see if it's a <relop> or <mathop>
+        Token middleOperand = tokens.get(1);
 
-        Token second = tokens.get(1);
-        Token third = tokens.get(2);
+        if (middleOperand.getTokenType() == TokenType.REL_OP || middleOperand.getTokenType() == TokenType.MATH_OP) {
+            parseSequence.add(middleOperand); // consume operator
 
-        // Check for <relop> or <mathop>
-        if (second.getTokenType() == TokenType.REL_OP || second.getTokenType() == TokenType.MATH_OP) {
-            parseSequence.add(second); // consume operator
-
+            // Solve for Right Operand after parsing the middle
             OperandNode rightOperand = OperandNode.parseOperand(tokens);
-            parseSequence.addAll(rightOperand.getSequence());
+            parseSequence.add(rightOperand);
 
             return new ExpressionNode(parseSequence);
         }
+        else{
+            throw new ParserSyntaxError("Unexpected end of input: expected rel or math op.");
+        }
 
-        // Otherwise, simple <operand>
-        return new ExpressionNode(parseSequence);
     }
 
 
@@ -112,11 +110,11 @@ public class ExpressionNode implements JottTree {
         return false;
     }
 
-    public ArrayList<Token> getSequence() {
+    public ArrayList<Object> getSequence() {
         return sequence;
     }
 
-    public void setSequence(ArrayList<Token> sequence) {
+    public void setSequence(ArrayList<Object> sequence) {
         this.sequence = sequence;
     }
 }

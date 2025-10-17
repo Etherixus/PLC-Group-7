@@ -14,7 +14,7 @@ public class AsmtNode implements BodyNode {
         this.expressionNode = expressionNode;
     }
 
-    public static AsmtNode parseAsmtNode(ArrayList<Token> tokens) throws ParseException {
+    public static AsmtNode parseAsmtNode(ArrayList<Token> tokens) throws ParserSyntaxError, ParseException {
         IDNode idNode = IDNode.parseIDNode(tokens);
         ExpressionNode expressionNode = ExpressionNode.parseExpressionNode(tokens);
         return new AsmtNode(idNode, expressionNode);
