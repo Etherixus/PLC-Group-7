@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 import static provided.JottTokenizer.tokenize;
 
-public class FunctionCallNode implements OperandNode {
+public class FunctionCallNode implements OperandNode, BodyNode {
     private String name;
     private ArrayList<Token> args = new ArrayList<Token>();
 

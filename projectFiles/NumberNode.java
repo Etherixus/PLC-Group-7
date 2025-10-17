@@ -14,7 +14,8 @@ public class NumberNode implements OperandNode {
 
     public static NumberNode parseNumberNode(ArrayList<Token> tokens) throws ParserSyntaxError{
         if(tokens.get(0).getTokenType() == TokenType.NUMBER) {
-            return new NumberNode(tokens.get(0));
+            Token number = tokens.remove(0);
+            return new NumberNode(number);
         } else {
             Token token = tokens.get(0);
             throw new ParserSyntaxError(
@@ -25,7 +26,7 @@ public class NumberNode implements OperandNode {
 
     @Override
     public String convertToJott() {
-        return "";
+        return number.toString();
     }
 
     @Override
