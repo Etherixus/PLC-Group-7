@@ -79,7 +79,7 @@ public class FunctionCallNode implements OperandNode, BodyNode {
 
     @Override
     public String convertToJott() {
-        return "";
+        return id.convertToJott() + "[" + params.convertToJott() + "];";
     }
 
     @Override

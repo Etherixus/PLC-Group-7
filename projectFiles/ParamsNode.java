@@ -38,7 +38,14 @@ public class ParamsNode implements JottTree{
 
     @Override
     public String convertToJott() {
-        return "";
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < expressions.size(); i++) {
+            sb.append(expressions.get(i).convertToJott());
+            if (i < expressions.size() - 1) {
+                sb.append(",");
+            }
+        }
+        return sb.toString();
     }
 
     @Override
