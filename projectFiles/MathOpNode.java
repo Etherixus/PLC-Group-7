@@ -26,7 +26,7 @@ public class MathOpNode implements JottTree {
 
     @Override
     public String convertToJott() {
-        return "";
+        return operation.getToken();
     }
 
     @Override

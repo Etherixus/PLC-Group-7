@@ -39,7 +39,7 @@ public class RelOpNode implements JottTree {
 
     @Override
     public String convertToJott() {
-        return "";
+        return relOp;
     }
 
     @Override

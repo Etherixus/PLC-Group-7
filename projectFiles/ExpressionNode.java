@@ -87,7 +87,24 @@ public class ExpressionNode implements JottTree {
 
     @Override
     public String convertToJott() {
-        return "";
+        StringBuilder sb = new StringBuilder();
+
+        for (Object obj : sequence) {
+            if (obj instanceof OperandNode) {
+                sb.append(((OperandNode) obj).convertToJott());
+            } else if (obj instanceof RelOpNode) {
+                sb.append(((RelOpNode) obj).convertToJott());
+            } else if (obj instanceof BooleanNode) {
+                sb.append(((BooleanNode) obj).convertToJott());
+            } else if (obj instanceof StringNode) {
+                sb.append(((StringNode) obj).convertToJott());
+            } else if (obj instanceof Token) {
+                // For math operators stored as Token
+                sb.append(((Token) obj).getToken());
+            }
+        }
+
+        return sb.toString();
     }
 
     @Override
