@@ -1,9 +1,13 @@
 package projectFiles;
 
+import provided.Token;
+import provided.JottTree;
+import provided.TokenType;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 
-public class StringNode implements JottTree{
+public class StringNode implements JottTree {
     private String string;
     
     
@@ -21,7 +25,7 @@ public class StringNode implements JottTree{
         if (token.getTokenType() == TokenType.STRING) {
             String string = token.getToken();
             tokenList.remove(0);
-            return new IDNode(string);
+            return new StringNode(string);
         }
 
         // If the token isn't a String
@@ -40,5 +44,17 @@ public class StringNode implements JottTree{
     public String convertToJott() {
         return string;
     }
+
+    @Override
+    public String convertToJava(String className) {return "";}
+
+    @Override
+    public String convertToC() {return "";}
+
+    @Override
+    public String convertToPython() {return "";}
+
+    @Override
+    public boolean validateTree() {return false;}
 }
 
