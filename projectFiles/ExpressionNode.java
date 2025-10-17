@@ -8,7 +8,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class ExpressionNode implements JottTree {
+public class ExpressionNode implements JottTree, BodyStmtNode {
     //The Expression Node stores the production body of
     // < operand > | < operand > < relop > < operand > |
     //< operand > < mathop > < operand > | < string_literal > |

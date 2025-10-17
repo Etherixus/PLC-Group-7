@@ -5,7 +5,7 @@ import provided.Token;
 import java.text.ParseException;
 import java.util.ArrayList;
 
-public class AsmtNode implements BodyNode {
+public class AsmtNode implements BodyStmtNode {
     IDNode idNode;
     ExpressionNode expressionNode;
 
