@@ -3,16 +3,17 @@ package projectFiles;
 import provided.Token;
 import provided.TokenType;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 
 import static provided.JottTokenizer.tokenize;
 
 public class FunctionCallNode implements OperandNode, BodyNode {
-    private String name;
+    private IDNode id;
     private ArrayList<Token> args = new ArrayList<Token>();
 
-    public FunctionCallNode(String name, ArrayList<Token> args){
-        this.name = name;
+    public FunctionCallNode(IDNode id, ArrayList<Token> args){
+        this.id = id;
         this.args = args;
     }
 
@@ -22,7 +23,7 @@ public class FunctionCallNode implements OperandNode, BodyNode {
     }
 
     //Example given the tokens from the code of ::add[5, 2, 6];
-    public static FunctionCallNode parseFunctionCallNode(ArrayList<Token> tokens) throws ParserSyntaxError{
+    public static FunctionCallNode parseFunctionCallNode(ArrayList<Token> tokens) throws ParserSyntaxError, ParseException {
         //check for function header (::)
         if(tokens.get(0).getTokenType() == TokenType.FC_HEADER) {
             //check for function name (add)
@@ -64,8 +65,10 @@ public class FunctionCallNode implements OperandNode, BodyNode {
                     if (tokens.get(index + 1).getTokenType() == TokenType.R_BRACKET) {
                         //check for r bracket (;)
                         if (tokens.get(index + 2).getTokenType() == TokenType.SEMICOLON) {
+                            ArrayList<Token> tempTokenList = new ArrayList<>();
+                            tempTokenList.add(tokens.remove(0));
                             //if we get a valid node then we return it and store the name and the parameters
-                            return new FunctionCallNode(tokens.get(1).getToken(), params);
+                            return new FunctionCallNode(IDNode.parseIDNode(tempTokenList), params);
                         }
                     }
                 }
