@@ -58,6 +58,7 @@ public class IfStmtNode implements BodyStmtNode{
             ));
         }
         BodyNode body = BodyNode.parseBodyNode(tokens);
+        boolean ifStmtBodyContainsReturnStmt = body.hasReturnStmt();
         //Logic for ElseIf and Else
         if(tokens.get(0).getTokenType() == TokenType.ID_KEYWORD){
             if(tokens.get(0).getToken().equals("Elseif")){
@@ -76,8 +77,17 @@ public class IfStmtNode implements BodyStmtNode{
                     return new IfStmtNode(expressionNode, body, elseIfNodes);
                 }
             } else if(tokens.get(0).getToken().equals("Else")){
-                tokens.remove(0);
+                Token token = tokens.remove(0);
                 ElseNode elseNode = ElseNode.parseElseNode(tokens);
+                if(elseNode.body.hasReturnStmt() || ifStmtBodyContainsReturnStmt){
+                    if(!(elseNode.body.hasReturnStmt() && body.hasReturnStmt())){
+                        throw new ParserSyntaxError(ParserSyntaxError.createParserSyntaxError(
+                                "if one branch of an if statement contains a return statement then " +
+                                        "all other branches of the if statement must contain a return statement as well",
+                                token.getFilename(),
+                                token.getLineNum()));
+                    }
+                }
                 return new IfStmtNode(expressionNode, body, elseNode);
             } else {
                 return new IfStmtNode(expressionNode, body);
@@ -87,6 +97,15 @@ public class IfStmtNode implements BodyStmtNode{
             return new IfStmtNode(expressionNode, body);
         }
 
+    }
+
+    public static boolean ElseIfListContainsAReturn(ArrayList<ElseIfNode> elseIfNodes){
+        for(ElseIfNode elseIfNode : elseIfNodes){
+            if(elseIfNode.body.hasReturnStmt()){
+                return true;
+            }
+        }
+        return false;
     }
 
     public String convertToJott() {

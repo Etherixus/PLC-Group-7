@@ -14,7 +14,7 @@ public class ReturnStmtNode {
         this.expr = expr;
     }
 
-    public static ReturnStmtNode parseReturnStmtNode(ArrayList<Token> tokens) throws ParseException {
+    public static ReturnStmtNode parseReturnStmtNode(ArrayList<Token> tokens) throws ParseException, ParserSyntaxError {
         ExpressionNode expr = ExpressionNode.parseExpressionNode(tokens);
         return new ReturnStmtNode(expr);
     }
