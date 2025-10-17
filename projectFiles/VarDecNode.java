@@ -36,7 +36,7 @@ public class VarDecNode implements JottTree {
 
     @Override
     public String convertToJott() {
-        return "";
+        return(varName + " " + varType) ;
     }
 
     @Override
