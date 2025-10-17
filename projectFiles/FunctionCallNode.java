@@ -10,11 +10,11 @@ import static provided.JottTokenizer.tokenize;
 
 public class FunctionCallNode implements OperandNode, BodyNode {
     private IDNode id;
-    private ArrayList<Token> args = new ArrayList<Token>();
+    private ParamsNode params;
 
-    public FunctionCallNode(IDNode id, ArrayList<Token> args){
+    public FunctionCallNode(IDNode id, ParamsNode params){
         this.id = id;
-        this.args = args;
+        this.params = params;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class FunctionCallNode implements OperandNode, BodyNode {
                 if (tokens.get(2).getTokenType() == TokenType.L_BRACKET) {
                     //check for parameters
                     int index = 3;
-                    ArrayList<Token> params = new ArrayList<>();
+                    ArrayList<Token> listOfParams = new ArrayList<>();
                     //until we reach a right bracket first we check if the current index is a number or an id (the bottom if statement),
                     //next interation will check if there is a comma, if there is a comma then we check ahead to see if there is a number or id
                     //if not then we throw and error
@@ -51,7 +51,7 @@ public class FunctionCallNode implements OperandNode, BodyNode {
                         }
 
                         if (tokens.get(index).getTokenType() == TokenType.NUMBER || tokens.get(index).getTokenType() == TokenType.ID_KEYWORD){
-                            params.add(tokens.get(index));
+                            listOfParams.add(tokens.get(index));
                             index += 1;
                         }
                         else {
@@ -68,7 +68,7 @@ public class FunctionCallNode implements OperandNode, BodyNode {
                             ArrayList<Token> tempTokenList = new ArrayList<>();
                             tempTokenList.add(tokens.remove(0));
                             //if we get a valid node then we return it and store the name and the parameters
-                            return new FunctionCallNode(IDNode.parseIDNode(tempTokenList), params);
+                            return new FunctionCallNode(IDNode.parseIDNode(tempTokenList), ParamsNode.parseParamsNode(listOfParams));
                         }
                     }
                 }
@@ -102,10 +102,4 @@ public class FunctionCallNode implements OperandNode, BodyNode {
         return false;
     }
 
-    //todo remove before turning in
-    public static void main(String[] args) throws ParserSyntaxError {
-        System.out.println("hello");
-        FunctionCallNode tokens = parseFunctionCallNode(tokenize("/Users/andrew/IdeaProjects/PLC-Group-7/tokenizerTestCases/functionCallNodeTest.jott"));
-
-    }
 }
