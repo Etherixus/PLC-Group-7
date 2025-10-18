@@ -1,12 +1,13 @@
 package projectFiles;
 
+import org.w3c.dom.Node;
 import provided.Token;
 import provided.TokenType;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 
-public class BodyNode {
+public class BodyNode implements FBodyNode {
     ArrayList<BodyStmtNode> bodyStmtNodes;
     ReturnStmtNode returnStmtNode;
     private final boolean hasReturnStmt;
@@ -82,6 +83,7 @@ public class BodyNode {
         return hasReturnStmt;
     }
 
+    @Override
     public String convertToJott(){
         StringBuilder jott = new StringBuilder("{\n");
         if(bodyStmtNodes != null && !bodyStmtNodes.isEmpty()) {
@@ -94,5 +96,25 @@ public class BodyNode {
         }
         jott.append("}");
         return jott.toString();
+    }
+
+    @Override
+    public String convertToJava(String className) {
+        return "";
+    }
+
+    @Override
+    public String convertToC() {
+        return "";
+    }
+
+    @Override
+    public String convertToPython() {
+        return "";
+    }
+
+    @Override
+    public boolean validateTree() {
+        return false;
     }
 }

@@ -7,7 +7,7 @@ import provided.TokenType;
 import java.text.ParseException;
 import java.util.ArrayList;
 
-public class VarDecNode implements JottTree {
+public class VarDecNode implements JottTree, FBodyNode {
     private String varType;
     private String varName;
 
