@@ -8,7 +8,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 
 
-public class FunctionParamsNode implements JottTree{
+public class FunctionParamsNode implements JottTree, FunctionDefNode{
     private String paramID;
     private String paramType;
     private static ArrayList<FunctionParamsNode> params;
@@ -25,9 +25,11 @@ public class FunctionParamsNode implements JottTree{
     }
 
     public static ArrayList<FunctionParamsNode> parseFunctionParams(ArrayList<Token> tokens) throws ParseException {
-        if(tokens.get(0).getTokenType() == TokenType.R_BRACE)
+        if(tokens.get(0).getTokenType() == TokenType.R_BRACKET) {
+            tokens.remove(0);
             return params;
-        if(tokens.isEmpty() || tokens.get(0).getTokenType() != TokenType.ID_KEYWORD){
+        }
+        else if (tokens.isEmpty() || tokens.get(0).getTokenType() != TokenType.ID_KEYWORD){
             throw new ParseException("Invalid function parameters", -1);
         }
         else{

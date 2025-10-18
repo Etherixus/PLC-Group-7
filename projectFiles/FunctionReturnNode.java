@@ -7,7 +7,7 @@ import provided.TokenType;
 import java.text.ParseException;
 import java.util.ArrayList;
 
-public class FunctionReturnNode implements JottTree {
+public class FunctionReturnNode implements JottTree, FunctionDefNode {
     private String functionReturn;
     public FunctionReturnNode(String functionReturn) {
         this.functionReturn = functionReturn;
