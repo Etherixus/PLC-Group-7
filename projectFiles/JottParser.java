@@ -13,6 +13,8 @@ import provided.Token;
 import java.text.ParseException;
 import java.util.ArrayList;
 
+import static projectFiles.JottTokenizer.tokenize;
+
 public class JottParser {
 
     /**
@@ -38,5 +40,11 @@ public class JottParser {
             }
         }
         return nodes.get(0);
+    }
+    //TODO delete before turning in
+    //expect result Def:ID_KEYWORD main:ID_KEYWORD [:L_BRACKET ]:R_BRACKET colon:COLON Void:ID_KEYWORD {:L_BRACE fcHeader:FC_HEADER print:ID_KEYWORD [:L_BRACKET 5:NUMBER ]:R_BRACKET ;:SEMICOLON fcHeader:FC_HEADER print:ID_KEYWORD [:L_BRACKET foo bar:STRING ]:R_BRACKET ;:SEMICOLON }:R_BRACE
+    public static void main(String[] args) throws ParserSyntaxError, ParseException {
+        ArrayList<Token> tokens = tokenize("provided/test.jott");
+        JottTree tree = parse(tokens);
     }
 }

@@ -14,7 +14,7 @@ public interface FunctionDefNode extends JottTree{
             throw new ParseException("No tokens given", -1);
         }
         else {
-            if (tokens.get(0).getToken() != "Def") {
+            if (tokens.get(0).getToken().equals("Def")) {
                 throw new ParseException("Function definition expected", -1);
             }
             else {
