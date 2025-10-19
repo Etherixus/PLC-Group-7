@@ -36,11 +36,14 @@ public class FunctionDefNode implements JottTree{
                 else {
                     IDNode id = IDNode.parseIDNode(tokens);
                     if(tokens.isEmpty() || tokens.get(0).getTokenType() != TokenType.L_BRACKET) {
-                        throw new ParseException("Function Def must be followed by LBRACE", -1);
+                        throw new ParseException("Function Def must be followed by LBracket", -1);
                     }
                     else{
                         tokens.remove(0);
                         ArrayList<FunctionParamsNode> fparams = FunctionParamsNode.parseFunctionParams(tokens);
+                        if(tokens.isEmpty() || tokens.get(0).getTokenType() != TokenType.R_BRACKET) {
+                            throw new ParseException("Function Params must be followed by R_BRACKET", -1);
+                        }
                         if(tokens.isEmpty() || tokens.get(0).getTokenType() != TokenType.COLON) {
                             throw new ParseException("Function Params must be followed by COLON", -1);
                         }
@@ -70,7 +73,28 @@ public class FunctionDefNode implements JottTree{
 
     @Override
     public String convertToJott() {
-        return "";
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Def ");
+        sb.append(id.convertToJott());
+        sb.append("[");
+
+        if (params != null && !params.isEmpty()) {
+            for (int i = 0; i < params.size(); i++) {
+                sb.append(params.get(i).convertToJott());
+                if (i < params.size() - 1) {
+                    sb.append(",");
+                }
+            }
+        }
+
+        sb.append("]:");
+        sb.append(returnType.convertToJott());
+        sb.append("{");
+        sb.append(body.convertToJott());
+        sb.append("}");
+
+        return sb.toString();
     }
 
     @Override
