@@ -1,6 +1,12 @@
-#this is an example
+#this will pass phase 2 but fail phase 3 for foo param type not matching
+
+Def foo[y:Double]:Integer{
+    ::print[y];
+	Return 3;
+}
+
 Def main[]:Void{
-    ::print[5];
-    #this is a comment
-    ::print[ "foo bar"];
+    Integer x;
+    x = ::foo[5];
+	::print[x];
 }

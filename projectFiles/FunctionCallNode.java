@@ -75,6 +75,9 @@ public class FunctionCallNode implements OperandNode, BodyStmtNode {
                             //if we get a valid node then we return it and store the name and the parameters
                             return new FunctionCallNode(IDNode.parseIDNode(tempTokens), ParamsNode.parseParamsNode(listOfParams));
                         }
+                        else{
+                            throw new ParseException("Expected a Semicolon but got " + tokens.get(0).getToken(), -1);
+                        }
                     }
                 }
             }

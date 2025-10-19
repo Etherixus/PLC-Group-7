@@ -15,6 +15,7 @@ public class FunctionParamsNode implements JottTree {
     public FunctionParamsNode(String paramID, String paramType){
         this.paramID = paramID;
         this.paramType = paramType;
+        this.params = new ArrayList<FunctionParamsNode>();
     }
 
     public String getParamID() {
@@ -51,6 +52,13 @@ public class FunctionParamsNode implements JottTree {
                     if (tokens.get(0).getTokenType() == TokenType.COMMA){
                         tokens.remove(0);
                         parseFunctionParams(tokens);
+                    }
+                    else if (tokens.get(0).getTokenType() == TokenType.R_BRACKET){
+                        tokens.remove(0);
+                        return params;
+                    }
+                    else {
+                        throw new ParseException("Expected ] but got" + tokens.get(0).getToken(), -1);
                     }
                 }
             }

@@ -28,7 +28,7 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
         Token first = tokens.get(0);
 
         // CASE 1: <bool> → True | False
-        if (first.getTokenType() == TokenType.ID_KEYWORD) {
+        if (first.getToken().equals("Boolean")) {
 
             BooleanNode boolNode = BooleanNode.parseBooleanNode(tokens);
             parseSequence.add(boolNode);
@@ -36,7 +36,7 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
         }
 
         // CASE 2: <string_literal>
-        if (first.getTokenType() == TokenType.STRING) {
+        else if (first.getTokenType() == TokenType.STRING) {
             StringNode stringNode = StringNode.parseStringNode(tokens);
             parseSequence.add(stringNode);
             return new ExpressionNode(parseSequence);
@@ -44,7 +44,7 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
 
         // CASE 3: <operand>
         // deal with the Operand
-        if( tokens.size() == 1){
+        else if (tokens.get(0).getTokenType() != TokenType.REL_OP || tokens.get(0).getTokenType() != TokenType.MATH_OP) {
             OperandNode operandResult = OperandNode.parseOperand(tokens);
             // if its null then throw error
             if (operandResult == null) {
