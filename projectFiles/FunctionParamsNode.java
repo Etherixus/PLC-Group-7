@@ -8,7 +8,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 
 
-public class FunctionParamsNode implements JottTree, FunctionDefNode{
+public class FunctionParamsNode implements JottTree {
     private String paramID;
     private String paramType;
     private static ArrayList<FunctionParamsNode> params;

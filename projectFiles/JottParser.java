@@ -45,6 +45,11 @@ public class JottParser {
     //expect result Def:ID_KEYWORD main:ID_KEYWORD [:L_BRACKET ]:R_BRACKET colon:COLON Void:ID_KEYWORD {:L_BRACE fcHeader:FC_HEADER print:ID_KEYWORD [:L_BRACKET 5:NUMBER ]:R_BRACKET ;:SEMICOLON fcHeader:FC_HEADER print:ID_KEYWORD [:L_BRACKET foo bar:STRING ]:R_BRACKET ;:SEMICOLON }:R_BRACE
     public static void main(String[] args) throws ParserSyntaxError, ParseException {
         ArrayList<Token> tokens = tokenize("provided/test.jott");
+        /**for(Token token : tokens) {
+            System.out.print(token.getToken());
+            System.out.print(token.getTokenType());
+       }*/
         JottTree tree = parse(tokens);
+        System.out.println(tree);
     }
 }

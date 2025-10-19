@@ -38,7 +38,7 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
         // CASE 2: <string_literal>
         if (first.getTokenType() == TokenType.STRING) {
             StringNode stringNode = StringNode.parseStringNode(tokens);
-            parseSequence.add(tokens.remove(0));
+            parseSequence.add(stringNode);
             return new ExpressionNode(parseSequence);
         }
 

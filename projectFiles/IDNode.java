@@ -5,7 +5,7 @@ import provided.TokenType;
 import java.text.ParseException;
 import java.util.ArrayList;
 
-public class IDNode implements OperandNode, FunctionDefNode {
+public class IDNode implements OperandNode{
     private String keyword;
 
     public IDNode(String keyword) {
