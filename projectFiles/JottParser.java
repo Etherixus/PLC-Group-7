@@ -24,22 +24,20 @@ public class JottParser {
      *         or null upon an error in parsing.
      */
     public static JottTree parse(ArrayList<Token> tokens) throws ParserSyntaxError, ParseException {
-        ArrayList<JottTree> nodes = new ArrayList<>();
-		if(tokens.isEmpty()) {
+        JottTree tree = null;
+        if (tokens.isEmpty()) {
             return null;
         }
-        else{
-            while(!tokens.isEmpty()){
-                JottTree function = FunctionDefNode.parseFunctionDef(tokens);
-                if(function == null) {
+        else {
+            while (!tokens.isEmpty()) {
+                tree = (FunctionDefNode.parseFunctionDef(tokens));
+                if (tree == null) {
                     return null;
                 }
-                else{
-                    nodes.add(function);
-                }
             }
+        System.out.println(tree.convertToJott());
         }
-        return nodes.get(0);
+        return tree;
     }
     //TODO delete before turning in
     //expect result Def:ID_KEYWORD main:ID_KEYWORD [:L_BRACKET ]:R_BRACKET colon:COLON Void:ID_KEYWORD {:L_BRACE fcHeader:FC_HEADER print:ID_KEYWORD [:L_BRACKET 5:NUMBER ]:R_BRACKET ;:SEMICOLON fcHeader:FC_HEADER print:ID_KEYWORD [:L_BRACKET foo bar:STRING ]:R_BRACKET ;:SEMICOLON }:R_BRACE
@@ -50,6 +48,5 @@ public class JottParser {
             System.out.print(token.getTokenType());
        }*/
         JottTree tree = parse(tokens);
-        System.out.println(tree);
     }
 }

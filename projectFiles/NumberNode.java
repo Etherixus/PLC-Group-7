@@ -26,7 +26,7 @@ public class NumberNode implements OperandNode {
 
     @Override
     public String convertToJott() {
-        return number.toString();
+        return number.getToken();
     }
 
     @Override

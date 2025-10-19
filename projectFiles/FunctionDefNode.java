@@ -41,9 +41,9 @@ public class FunctionDefNode implements JottTree{
                     else{
                         tokens.remove(0);
                         ArrayList<FunctionParamsNode> fparams = FunctionParamsNode.parseFunctionParams(tokens);
-                        if(tokens.isEmpty() || tokens.get(0).getTokenType() != TokenType.R_BRACKET) {
-                            throw new ParseException("Function Params must be followed by R_BRACKET", -1);
-                        }
+                        //if(tokens.isEmpty() || tokens.get(0).getTokenType() != TokenType.R_BRACKET) {
+                            //throw new ParseException("Function Params must be followed by R_BRACKET", -1);
+                        //}
                         if(tokens.isEmpty() || tokens.get(0).getTokenType() != TokenType.COLON) {
                             throw new ParseException("Function Params must be followed by COLON", -1);
                         }
@@ -90,9 +90,9 @@ public class FunctionDefNode implements JottTree{
 
         sb.append("]:");
         sb.append(returnType.convertToJott());
-        sb.append("{");
+        //sb.append("{");
         sb.append(body.convertToJott());
-        sb.append("}");
+        //sb.append("}");
 
         return sb.toString();
     }
