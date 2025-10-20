@@ -8,7 +8,6 @@ package projectFiles;
 
 import provided.Token;
 import provided.TokenType;
-import provided.TokenizerSyntaxError;
 
 import java.io.File;
 import java.util.ArrayList;
