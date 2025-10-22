@@ -9,34 +9,31 @@ import java.util.ArrayList;
 
 public class VarDecNode implements JottTree, FBodyNode {
     private String varType;
-    private String varName;
+    private IDNode varName;
 
-    public VarDecNode(String varType, String varName) {
+    public VarDecNode(String varType, IDNode varName) {
         this.varName = varName;
         this.varType = varType;
     }
-    public static VarDecNode parseVarDecNode(ArrayList<Token> tokens) throws ParserSyntaxError, ParseException {
-        if(tokens.get(0).getTokenType() != TokenType.ID_KEYWORD || tokens.isEmpty()){
-            throw new ParseException("Unexpected end of input: Expected ID/Keyword",-1);
+    public static VarDecNode parseVarDecNode(ArrayList<Token> tokens) throws ParserSyntaxError {
+        if(tokens.get(0).getTokenType() != TokenType.ID_KEYWORD){
+            throw new ParserSyntaxError("Expected Id or keyword",tokens.get(0));
         }
-        else{
+        else {
             String type = tokens.get(0).getToken();
             tokens.remove(0);
-            if(tokens.isEmpty() || tokens.get(0).getTokenType() != TokenType.ID_KEYWORD){
-                throw new ParseException("Unexpected end of input: expected following ID/Keyword.",-1);
+            IDNode name = IDNode.parseIDNode(tokens);
+            if(tokens.get(0).getTokenType() != TokenType.SEMICOLON){
+                throw new ParserSyntaxError("Expected Semicolon",tokens.get(0));
             }
-            else{
-                String varName = tokens.get(0).getToken();
-                tokens.remove(0);
-                VarDecNode varDecNode = new VarDecNode(type, varName);
-                return varDecNode;
-            }
+            tokens.remove(0);
+            return new VarDecNode(type, name);
         }
     }
 
     @Override
     public String convertToJott() {
-        return(varName + " " + varType) ;
+        return this.varType + " " + this.varName.convertToJott();
     }
 
     @Override
