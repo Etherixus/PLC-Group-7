@@ -24,18 +24,12 @@ public class JottParser {
      *         or null upon an error in parsing.
      */
     public static JottTree parse(ArrayList<Token> tokens) throws ParserSyntaxError, ParseException {
-        JottTree tree = null;
-        if (tokens.isEmpty()) {
-            return null;
+        JottTree tree;
+        try{
+            tree = ProgramNode.parseProgram(tokens);
         }
-        else {
-            while (!tokens.isEmpty()) {
-                tree = (FunctionDefNode.parseFunctionDef(tokens));
-                if (tree == null) {
-                    return null;
-                }
-            }
-        System.out.println(tree.convertToJott());
+        catch (ParseException e){
+            return null;
         }
         return tree;
     }
