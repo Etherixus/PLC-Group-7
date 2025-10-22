@@ -13,7 +13,7 @@ public class ProgramNode implements JottTree {
         this.functionsDefs = functionsDefs;
     }
 
-    public static ProgramNode parseProgram(ArrayList<Token> tokens) throws ParseException {
+    public static ProgramNode parseProgram(ArrayList<Token> tokens) throws ParseException, ParserSyntaxError {
         ArrayList<FunctionDefNode> functionsDefs = new ArrayList<>();
         while (!tokens.isEmpty()) {
             functionsDefs.add(FunctionDefNode.parseFunctionDef(tokens));
