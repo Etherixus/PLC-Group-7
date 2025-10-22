@@ -5,7 +5,6 @@ import provided.Token;
 public class ParserSyntaxError extends Exception {
     public ParserSyntaxError() {}
 
-    // Constructor that accepts a message
     public ParserSyntaxError(String message)
     {
         super("Syntax Error:\n" + message);
