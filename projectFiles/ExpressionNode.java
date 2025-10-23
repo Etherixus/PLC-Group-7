@@ -4,6 +4,7 @@ import provided.JottTree;
 import provided.Token;
 import provided.TokenType;
 
+import java.beans.Expression;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,98 +14,76 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
     // < operand > | < operand > < relop > < operand > |
     //< operand > < mathop > < operand > | < string_literal > |
     //< bool >
-    private ArrayList<Object> sequence;
+    private ExpressionNode Left;
+    private ExpressionNode Middle;
+    private ExpressionNode Right;
 
-    public ExpressionNode(ArrayList<Object> sequence){
-        this.sequence = sequence;
+    public ExpressionNode(){
+
     }
 
-    public static ExpressionNode parseExpressionNode(ArrayList<Token> tokens) throws ParserSyntaxError, ParseException {
-        ArrayList<Object> parseSequence = new ArrayList<>();
+    public ExpressionNode(ExpressionNode Left, ExpressionNode Middle, ExpressionNode Right) {
+        this.Left = Left;
+        this.Middle = Middle;
+        this.Right = Right;
+    }
 
-        if (tokens == null || tokens.isEmpty()) {
-            throw new ParserSyntaxError("Unexpected end of input: expected boolean value.");
-        }
-        Token first = tokens.get(0);
+    public static ExpressionNode parseExpressionNode(ArrayList<Token> tokens) throws ParserSyntaxError {
+        ExpressionNode left = null;
+        ExpressionNode middle = null;
+        ExpressionNode right = null;
 
-        // CASE 1: <bool> → True | False
-        if (first.getToken().equals("Boolean")) {
-
-            BooleanNode boolNode = BooleanNode.parseBooleanNode(tokens);
-            parseSequence.add(boolNode);
-            return new ExpressionNode(parseSequence);
-        }
-
-        // CASE 2: <string_literal>
-        else if (first.getTokenType() == TokenType.STRING) {
-            StringNode stringNode = StringNode.parseStringNode(tokens);
-            parseSequence.add(stringNode);
-            return new ExpressionNode(parseSequence);
+        if((tokens.get(0).getToken().equals("True") || tokens.get(0).getToken().equals("False")) && left == null){
+            BooleanNode boo = BooleanNode.parseBooleanNode(tokens);
+            left = boo;
         }
 
-        // CASE 3: <operand>
-        // deal with the Operand
-        else if (tokens.get(0).getTokenType() != TokenType.REL_OP || tokens.get(0).getTokenType() != TokenType.MATH_OP) {
-            OperandNode operandResult = OperandNode.parseOperand(tokens);
-            // if its null then throw error
-            if (operandResult == null) {
-                throw new ParserSyntaxError("Invalid start of <expr> at line " + first.getLineNum());
+        if(tokens.get(0).getTokenType() == TokenType.ID_KEYWORD){
+            IDNode id = IDNode.parseIDNode(tokens);
+            left = id;
+        }
+        if(tokens.get(0).getTokenType() == TokenType.NUMBER && left == null){
+            NumberNode number = NumberNode.parseNumberNode(tokens);
+            left = number;
+        }
+        if(tokens.get(0).getTokenType() == TokenType.FC_HEADER && left == null){
+            FunctionCallNode func = FunctionCallNode.parseFunctionCallNode(tokens);
+            left = func;
+        }
+        if(tokens.get(0).getTokenType() == TokenType.STRING && left == null){
+            StringNode str = StringNode.parseStringNode(tokens);
+            left = str;
+        }
+
+        if(left == null){
+            throw new ParserSyntaxError("Expected Expression but got: " + tokens.get(0).getTokenType(), tokens.get(0));
+        }
+
+        if(tokens.get(0).getTokenType() == TokenType.REL_OP || tokens.get(0).getTokenType() == TokenType.MATH_OP){
+            if(tokens.get(0).getTokenType() == TokenType.REL_OP){
+                middle = RelOpNode.parseRelOpNode(tokens);
             }
             else{
-                parseSequence.add(operandResult);
-                return new ExpressionNode(parseSequence);
+                middle = MathOpNode.parseMathOpNode(tokens);
             }
         }
 
-        // CASE 4: <operand> [ <relop> <operand> | <mathop> <operand> ]
-        // deal with the leftOperand
-        OperandNode leftOperand = OperandNode.parseOperand(tokens);
-        // if its null then throw error
-        if (leftOperand == null) {
-            throw new ParserSyntaxError("Invalid start of <expr> at line " + first.getLineNum());
-        }
-        // otherwise add it to the sequence
-        parseSequence.add(leftOperand);
-
-        // Check for the middle operand to see if it's a <relop> or <mathop>
-        Token middleOperand = tokens.get(1);
-
-        if (middleOperand.getTokenType() == TokenType.REL_OP || middleOperand.getTokenType() == TokenType.MATH_OP) {
-            parseSequence.add(middleOperand); // consume operator
-
-            // Solve for Right Operand after parsing the middle
-            OperandNode rightOperand = OperandNode.parseOperand(tokens);
-            parseSequence.add(rightOperand);
-
-            return new ExpressionNode(parseSequence);
-        }
-        else{
-            throw new ParserSyntaxError("Unexpected end of input: expected rel or math op.");
+        if(middle != null){
+            right = ExpressionNode.parseExpressionNode(tokens);
         }
 
+        return new ExpressionNode(left, middle, right);
     }
 
 
     @Override
     public String convertToJott() {
-        StringBuilder sb = new StringBuilder();
-
-        for (Object obj : sequence) {
-            if (obj instanceof OperandNode) {
-                sb.append(((OperandNode) obj).convertToJott());
-            } else if (obj instanceof RelOpNode) {
-                sb.append(((RelOpNode) obj).convertToJott());
-            } else if (obj instanceof BooleanNode) {
-                sb.append(((BooleanNode) obj).convertToJott());
-            } else if (obj instanceof StringNode) {
-                sb.append(((StringNode) obj).convertToJott());
-            } else if (obj instanceof Token) {
-                // For math operators stored as Token
-                sb.append(((Token) obj).getToken());
-            }
+        if(Middle == null){
+            return Left.convertToJott();
         }
-
-        return sb.toString();
+        else{
+            return Left.convertToJott() + Middle.convertToJott() + Right.convertToJott();
+        }
     }
 
     @Override
@@ -125,14 +104,6 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
     @Override
     public boolean validateTree() {
         return false;
-    }
-
-    public ArrayList<Object> getSequence() {
-        return sequence;
-    }
-
-    public void setSequence(ArrayList<Object> sequence) {
-        this.sequence = sequence;
     }
 }
 

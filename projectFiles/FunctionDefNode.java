@@ -1,6 +1,7 @@
 package projectFiles;
 
 
+
 import provided.JottTree;
 import provided.Token;
 import provided.TokenType;
@@ -12,13 +13,13 @@ public class FunctionDefNode implements JottTree{
     private final IDNode id;
     private final FunctionParamsNode params;
     private final FunctionReturnNode returnType;
-    private final FBodyNode body;
+    private final BodyNode body;
 
-    public FunctionDefNode(IDNode id, FunctionParamsNode params, FunctionReturnNode returnType, FBodyNode body) {
+    public FunctionDefNode(IDNode id, FunctionParamsNode params, FunctionReturnNode returnType, BodyNode Fbody) {
         this.id = id;
         this.params = params;
         this.returnType = returnType;
-        this.body = body;
+        this.body = Fbody;
     }
 
     public static FunctionDefNode parseFunctionDef(ArrayList<Token> tokens) throws ParseException, ParserSyntaxError {

@@ -7,7 +7,7 @@ import provided.TokenType;
 import java.text.ParseException;
 import java.util.ArrayList;
 
-public class RelOpNode implements JottTree {
+public class RelOpNode extends ExpressionNode implements JottTree {
 
     String relOp;
 
@@ -15,26 +15,13 @@ public class RelOpNode implements JottTree {
         this.relOp = relOp;
     }
 
-    public static RelOpNode parseRelOpNode(ArrayList<Token> tokenList) throws ParseException {
-        if (tokenList == null || tokenList.isEmpty()) {
-            throw new ParseException("Unexpected end of input: expected an identifier.", -1);
+    public static RelOpNode parseRelOpNode(ArrayList<Token> tokenList) throws ParserSyntaxError {
+        if(tokenList.get(0).getTokenType() != TokenType.REL_OP){
+            throw new ParserSyntaxError("Expected <=, >=, >, <, ==, !=, but got: ", tokenList.get(0));
         }
-
-        Token token = tokenList.get(0);
-
-        // Expecting an Relation Operator token
-        if (token.getTokenType() == TokenType.REL_OP) {
-            String keyword = token.getToken();
-            tokenList.remove(0);
-            return new RelOpNode(keyword);
+        else{
+            return new RelOpNode(tokenList.remove(0).getToken());
         }
-
-        // If the token isn't a Relation Operator
-        throw new ParseException(
-                "Invalid token '" + token.getToken() + "' at line " + token.getLineNum()
-                        + ": expected an identifier (variable name).",
-                token.getLineNum()
-        );
     }
 
     @Override

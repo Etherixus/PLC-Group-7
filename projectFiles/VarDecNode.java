@@ -4,10 +4,9 @@ import provided.JottTree;
 import provided.Token;
 import provided.TokenType;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 
-public class VarDecNode implements JottTree, FBodyNode {
+public class VarDecNode implements JottTree, BodyStmtNode {
     private String varType;
     private IDNode varName;
 

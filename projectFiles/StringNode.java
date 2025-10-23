@@ -4,10 +4,10 @@ import provided.Token;
 import provided.JottTree;
 import provided.TokenType;
 
-import java.text.ParseException;
+
 import java.util.ArrayList;
 
-public class StringNode implements JottTree {
+public class StringNode extends ExpressionNode implements JottTree {
     private String string;
     
     
@@ -15,25 +15,13 @@ public class StringNode implements JottTree {
         this.string = string;
     }
 
-    public static StringNode parseStringNode(ArrayList<Token>tokenList) throws ParseException{
-        if (tokenList == null || tokenList.isEmpty()) {
-            throw new ParseException("Unexpected end of input: expected a String.", -1);
-        }
-         Token token = tokenList.get(0);
-
-        // Expecting an identifier token
-        if (token.getTokenType() == TokenType.STRING) {
-            String string = token.getToken();
-            tokenList.remove(0);
-            return new StringNode(string);
-        }
-
-        // If the token isn't a String
-        throw new ParseException(
-            "Invalid token '" + token.getToken() + "' at line " + token.getLineNum()
-            + ": expected a String.",
-            token.getLineNum()
-        );
+    public static StringNode parseStringNode(ArrayList<Token>tokenList) throws ParserSyntaxError{
+       if(tokenList.get(0).getTokenType() != TokenType.STRING){
+           throw new ParserSyntaxError("Expecter String, got: ", tokenList.get(0));
+       }
+       else{
+           return new StringNode(tokenList.remove(0).getToken());
+       }
     }
     @Override
     public String toString() {

@@ -8,7 +8,9 @@ import java.text.ParseException;
 import java.util.ArrayList;
 
 public class FunctionReturnNode implements JottTree {
+
     private String functionReturn;
+
     public FunctionReturnNode(String functionReturn) {
         this.functionReturn = functionReturn;
     }

@@ -2,10 +2,10 @@ package projectFiles;
 
 import provided.Token;
 import provided.TokenType;
-import java.text.ParseException;
+
 import java.util.ArrayList;
 
-public class IDNode implements OperandNode{
+public class IDNode extends ExpressionNode {
     private String keyword;
 
     public IDNode(String keyword) {
@@ -14,7 +14,7 @@ public class IDNode implements OperandNode{
 
     public static IDNode parseIDNode(ArrayList<Token> tokenList) throws ParserSyntaxError {
         if (tokenList.get(0).getTokenType() != TokenType.ID_KEYWORD) {
-            throw new ParserSyntaxError("Expected Id or keyword", tokenList.get(0));
+            throw new ParserSyntaxError("Expected ID or Keyword", tokenList.get(0));
         }
         String key = tokenList.get(0).getToken();
         tokenList.remove(0);
@@ -51,8 +51,4 @@ public class IDNode implements OperandNode{
         return false;
     }
 
-    @Override
-    public OperandNode parseOperand() {
-        return null;
-    }
 }
