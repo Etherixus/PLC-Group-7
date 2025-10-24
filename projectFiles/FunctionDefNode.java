@@ -22,7 +22,7 @@ public class FunctionDefNode implements JottTree{
         this.body = Fbody;
     }
 
-    public static FunctionDefNode parseFunctionDef(ArrayList<Token> tokens) throws ParseException, ParserSyntaxError {
+    public static FunctionDefNode parseFunctionDef(ArrayList<Token> tokens) throws ParserSyntaxError {
         if(!tokens.get(0).getToken().equals("Def")){
             throw new ParserSyntaxError("Expected Def Keyword", tokens.get(0));
         }
@@ -38,16 +38,16 @@ public class FunctionDefNode implements JottTree{
             throw new ParserSyntaxError("Expected Bracket Right Bracket", tokens.get(0));
         }
         tokens.remove(0);
-        FunctionReturnNode funcReturn = FunctionReturnNode.parseFunctionReturn(tokens);
         if(tokens.get(0).getTokenType() != TokenType.COLON){
             throw new ParserSyntaxError("Expected Colon.", tokens.get(0));
         }
         tokens.remove(0);
-        BodyNode body = BodyNode.parseBodyNode(tokens);
+        FunctionReturnNode funcReturn = FunctionReturnNode.parseFunctionReturn(tokens);
         if(tokens.get(0).getTokenType() != TokenType.L_BRACE){
             throw new ParserSyntaxError("Expected Bracket Left Bracket", tokens.get(0));
         }
         tokens.remove(0);
+        BodyNode body = BodyNode.parseBodyNode(tokens);
         if(tokens.get(0).getTokenType() != TokenType.R_BRACE || tokens.isEmpty()){
             throw new ParserSyntaxError("Expected RBrace Right Bracket", tokens.get(0));
         }
@@ -57,11 +57,11 @@ public class FunctionDefNode implements JottTree{
 
     @Override
     public String convertToJott() {
-        String output = "Def";
+        String output = "Def ";
         output += id.convertToJott();
         output += "[";
         output += params.convertToJott();
-        output += "]";
+        output += "]:";
         output += returnType.convertToJott();
         output += "{";
         output += body.convertToJott();

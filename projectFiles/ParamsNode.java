@@ -25,7 +25,7 @@ public class ParamsNode implements JottTree{
             while(tokens.get(0).getTokenType() != TokenType.R_BRACKET){
                 params.add(ParamsTNode.parseParamsTNode(tokens));
 
-                if(tokens.get(0).getTokenType() != TokenType.COMMA){
+                if(tokens.get(0).getTokenType() == TokenType.COMMA){
                     tokens.remove(0);
                 }
             }

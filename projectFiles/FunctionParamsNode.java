@@ -20,7 +20,7 @@ public class FunctionParamsNode implements JottTree {
     }
 
 
-    public static FunctionParamsNode parseFunctionParams(ArrayList<Token> tokens) throws ParserSyntaxError, ParseException {
+    public static FunctionParamsNode parseFunctionParams(ArrayList<Token> tokens) throws ParserSyntaxError {
         LinkedHashMap<IDNode, String> params = new LinkedHashMap<>();
         ArrayList<IDNode> paramID = new ArrayList<>();
         //handles  1 param

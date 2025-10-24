@@ -13,14 +13,14 @@ public class ParserSyntaxError extends Exception {
     public ParserSyntaxError(String message, Token token){
         super("Syntax Error:\n" + message);
         System.err.println("Syntax Error:\n" + message);
-        System.err.println(token.getFilename() + ": " + token.getLineNum());
+        System.err.println(token.getToken() + ": " + token.getLineNum());
     }
 
     public ParserSyntaxError(String message, Token token, boolean print) {
         super("Syntax Error:\n" + message);
         if (print) {
             System.err.println("Syntax Error:\n" + message);
-            System.err.println(token.getFilename() + ": " + token.getLineNum());
+            System.err.println(token.getToken() + " : " + token.getLineNum());
         }
     }
 }
