@@ -16,7 +16,7 @@ public class ReturnStmtNode implements JottTree {
     }
 
     public static ReturnStmtNode parseReturnStmtNode(ArrayList<Token> tokens) throws ParserSyntaxError {
-        if(tokens.get(0).getTokenType() != TokenType.ID_KEYWORD || !tokens.get(0).getToken().equals("return")){
+        if(tokens.get(0).getTokenType() != TokenType.ID_KEYWORD || !tokens.get(0).getToken().equals("Return")){
             throw new ParserSyntaxError("Expected Return, Got: ", tokens.get(0));
         }
         tokens.remove(0);

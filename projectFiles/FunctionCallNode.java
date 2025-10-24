@@ -31,7 +31,7 @@ public class FunctionCallNode extends ExpressionNode implements BodyStmtNode {
 
     @Override
     public String convertToJott() {
-        return "::" + id.convertToJott() + "[" + params.convertToJott() + "];";
+        return "::" + id.convertToJott() + "[" + params.convertToJott() + "]";
     }
 
     @Override

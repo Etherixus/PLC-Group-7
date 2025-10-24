@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class FunctionParamsNode implements JottTree {
     private ArrayList<IDNode> paramID;
-    private static LinkedHashMap<IDNode, String> params;
+    private LinkedHashMap<IDNode, String> params;
 
     public FunctionParamsNode(LinkedHashMap<IDNode, String> params, ArrayList<IDNode> paramID) {
         this.paramID = paramID;
@@ -59,7 +59,7 @@ public class FunctionParamsNode implements JottTree {
     @Override
     public String convertToJott() {
         StringBuilder result = new StringBuilder();
-        if(params.isEmpty()){
+        if(params.isEmpty()) {
             return "";
         }
         else{

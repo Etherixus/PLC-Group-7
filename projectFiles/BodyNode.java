@@ -27,7 +27,7 @@ public class BodyNode implements JottTree {
         }
 
         ReturnStmtNode returnState = null;
-        if(!tokens.isEmpty() && (tokens.get(0).getTokenType() == TokenType.ID_KEYWORD && !tokens.get(0).getToken().equals("Return"))){
+        if(!tokens.isEmpty() && (tokens.get(0).getTokenType() == TokenType.ID_KEYWORD && tokens.get(0).getToken().equals("Return"))){
             returnState = ReturnStmtNode.parseReturnStmtNode(tokens);
         }
         return new BodyNode(bodyStmtNodes, returnState);
@@ -39,6 +39,12 @@ public class BodyNode implements JottTree {
         String result = "";
         for(BodyStmtNode stmt: bodyStmtNodes){
             result += stmt.convertToJott();
+            if(stmt instanceof FunctionCallNode){
+                result += ";";
+            }
+        }
+        if(returnStmtNode != null){
+            result += returnStmtNode.convertToJott();
         }
         return result;
     }

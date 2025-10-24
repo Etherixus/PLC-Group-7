@@ -32,7 +32,7 @@ public class VarDecNode implements JottTree, BodyStmtNode {
 
     @Override
     public String convertToJott() {
-        return this.varType + " " + this.varName.convertToJott();
+        return this.varType + " " + this.varName.convertToJott() +";";
     }
 
     @Override
