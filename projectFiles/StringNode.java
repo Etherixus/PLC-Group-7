@@ -80,7 +80,7 @@ public class StringNode implements JottTree {
 
     @Override
     public String convertToJott() {
-        throw new UnsupportedOperationException("Unimplemented method 'convertToJott'");
+        return string;
     }
 }
 

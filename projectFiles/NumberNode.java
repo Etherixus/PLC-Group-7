@@ -52,7 +52,7 @@ public class NumberNode implements OperandNode {
         String tok = number.getToken();
         if (tok == null || tok.isEmpty()) return false;
 
-        // Valid formats (tokenizer allows):
+        // Valid Tokens:
         //  - digits (e.g. 123)
         //  - digits.decimal (e.g. 12.34)
         //  - .digits (e.g. .5)
