@@ -41,25 +41,37 @@ public class NumberNode extends ExpressionNode {
 
     @Override
     public String convertToJava(String className) {
-        return "";
+        return number.getToken();
     }
 
     @Override
     public String convertToC() {
-        return "";
+        return number.getToken();
     }
 
     @Override
     public String convertToPython() {
-        return "";
+        return number.getToken();
     }
 
     @Override
     public boolean validateTree() {
-        return false;
-    }
+        if (number == null) return false;
+        if (number.getTokenType() != TokenType.NUMBER) return false;
 
+        String tok = number.getToken();
+        if (tok == null || tok.isEmpty()) return false;
+
+        // Valid formats (tokenizer allows):
+        //  - digits (e.g. 123)
+        //  - digits.decimal (e.g. 12.34)
+        //  - .digits (e.g. .5)
+        // Disallow multiple decimals or standalone "." 
+        return tok.matches("(\\d+(\\.\\d+)?|\\.\\d+)");
+    }
     public boolean isNegative(){
-        return number.getToken().toCharArray()[0] == '-';
+        String t = number.getToken();
+        if (t == null || t.isEmpty()) return false;
+        return t.charAt(0) == '-';
     }
 }
