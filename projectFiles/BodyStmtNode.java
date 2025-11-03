@@ -1,43 +1,34 @@
 package projectFiles;
 
+import provided.JottTree;
 import provided.Token;
 import provided.TokenType;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 
-public interface BodyStmtNode {
+public interface BodyStmtNode extends JottTree {
 
-    public static BodyStmtNode parseBodyStmt(ArrayList<Token> tokens) throws ParserSyntaxError, ParseException {
-        if(tokens.get(0).getTokenType() == TokenType.ID_KEYWORD) {
-            Token curToken = tokens.get(0);
-            if(curToken.getToken().equals("If")){
-                tokens.remove(0);
-                return IfStmtNode.parseIfStmtNode(tokens);
-            } else if(curToken.getToken().equals("While")){
-                tokens.remove(0);
-                return WhileLoopNode.parseWhileLoopNode(tokens);
-            } else {
-                try {
-                    return AsmtNode.parseAsmtNode(tokens);
-                } catch(Exception e){
-                    bodyStmtError(tokens.get(0));
-                    return null;
-                }
-            }
-        } else if(tokens.get(0).getTokenType() == TokenType.FC_HEADER) {
-            return FunctionCallNode.parseFunctionCallNode(tokens);
-        } else {
-            bodyStmtError(tokens.get(0));
-            return null;
+    static BodyStmtNode parseBodyStmt(ArrayList<Token> tokens) throws ParserSyntaxError{
+        if(tokens.get(0).getTokenType() == TokenType.ID_KEYWORD && tokens.get(1).getTokenType() == TokenType.ASSIGN) {
+            return AsmtNode.parseAsmtNode(tokens);
         }
-    }
-
-    public static void bodyStmtError(Token token) throws ParserSyntaxError{
-        throw new ParserSyntaxError(ParserSyntaxError.createParserSyntaxError(
-                "Expected an If, While, Assignment, or Function Call statement but none were found.",
-                token.getFilename(),
-                token.getLineNum()));
+        if(tokens.get(0).getTokenType() == TokenType.FC_HEADER) {
+            FunctionCallNode functionCallNode = FunctionCallNode.parseFunctionCallNode(tokens);
+            if(tokens.get(0).getTokenType() != TokenType.SEMICOLON) {
+                throw new ParserSyntaxError("Expecting semicolon got: ", tokens.get(0));
+            }
+            tokens.remove(0);
+            return functionCallNode;
+        }
+        if(tokens.get(0).getToken().equals("While")) {
+            return WhileLoopNode.parseWhileLoopNode(tokens);
+        }
+        if(tokens.get(0).getToken().equals("If")) {
+            return IfStmtNode.parseIfStmtNode(tokens);
+        }
+        //must be vardec then, if not chuck an error
+        return VarDecNode.parseVarDecNode(tokens);
     }
 
     public String convertToJott();

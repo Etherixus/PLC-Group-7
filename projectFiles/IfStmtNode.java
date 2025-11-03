@@ -7,27 +7,10 @@ import java.text.ParseException;
 import java.util.ArrayList;
 
 public class IfStmtNode implements BodyStmtNode{
-    ExpressionNode expressionNode;
-    BodyNode body;
-    ArrayList<ElseIfNode> elseIfNodes;
-    ElseNode elseNode;
-
-    public IfStmtNode(ExpressionNode expressionNode, BodyNode body) {
-        this.expressionNode = expressionNode;
-        this.body = body;
-    }
-
-    public IfStmtNode(ExpressionNode expressionNode, BodyNode body, ElseNode elseNode) {
-        this.expressionNode = expressionNode;
-        this.body = body;
-        this.elseNode = elseNode;
-    }
-
-    public IfStmtNode(ExpressionNode expressionNode, BodyNode body, ArrayList<ElseIfNode> elseIfNodes) {
-        this.expressionNode = expressionNode;
-        this.body = body;
-        this.elseIfNodes = elseIfNodes;
-    }
+    private ExpressionNode expressionNode;
+    private BodyNode body;
+    private ArrayList<ElseIfNode> elseIfNodes;
+    private ElseNode elseNode;
 
     public IfStmtNode(ExpressionNode expressionNode, BodyNode body, ArrayList<ElseIfNode> elseIfNodes, ElseNode elseNode) {
         this.expressionNode = expressionNode;
@@ -36,69 +19,38 @@ public class IfStmtNode implements BodyStmtNode{
         this.elseNode = elseNode;
     }
 
-
-
-    public static IfStmtNode parseIfStmtNode(ArrayList<Token> tokens) throws ParserSyntaxError, ParseException {
-        if(tokens.get(0).getTokenType() == TokenType.L_BRACKET){
-            tokens.remove(0);
-        } else {
-            throw new ParserSyntaxError(ParserSyntaxError.createParserSyntaxError(
-                    "Expected a [ after an If but one was not found.",
-                    tokens.get(0).getFilename(),
-                    tokens.get(0).getLineNum()));
+    public static IfStmtNode parseIfStmtNode(ArrayList<Token> tokens) throws ParserSyntaxError{
+        if(tokens.get(0).getTokenType() != TokenType.ID_KEYWORD || !tokens.get(0).getToken().equals("If")){
+            throw new ParserSyntaxError("Expected If got:", tokens.get(0));
         }
-        ExpressionNode expressionNode = ExpressionNode.parseExpressionNode(tokens);
-        if(tokens.get(0).getTokenType() == TokenType.R_BRACKET){
-            tokens.remove(0);
-        } else {
-            throw new ParserSyntaxError(ParserSyntaxError.createParserSyntaxError(
-                    "Expected a ] after expression but one was not found.",
-                    tokens.get(0).getFilename(),
-                    tokens.get(0).getLineNum()
-            ));
+        tokens.remove(0);
+        if(tokens.get(0).getTokenType() != TokenType.L_BRACKET){
+            throw new ParserSyntaxError("Expected [ got:", tokens.get(0));
         }
-        BodyNode body = BodyNode.parseBodyNode(tokens);
-        boolean ifStmtBodyContainsReturnStmt = body.hasReturnStmt();
-        //Logic for ElseIf and Else
-        if(tokens.get(0).getTokenType() == TokenType.ID_KEYWORD){
-            if(tokens.get(0).getToken().equals("Elseif")){
-                ArrayList<ElseIfNode> elseIfNodes = new ArrayList<>();
-                do{
-                    tokens.remove(0);
-                    ElseIfNode elseIfNode = ElseIfNode.parseElseNode(tokens);
-                    elseIfNodes.add(elseIfNode);
-                }
-                while(tokens.get(0).getToken().equals("Elseif"));
-                if(tokens.get(0).getTokenType() == TokenType.ID_KEYWORD && tokens.get(0).getToken().equals("Else")){
-                    tokens.remove(0);
-                    ElseNode elseNode = ElseNode.parseElseNode(tokens);
-                    return new IfStmtNode(expressionNode, body, elseIfNodes, elseNode);
-                } else {
-                    return new IfStmtNode(expressionNode, body, elseIfNodes);
-                }
-            } else if(tokens.get(0).getToken().equals("Else")){
-                Token token = tokens.remove(0);
-                ElseNode elseNode = ElseNode.parseElseNode(tokens);
-                if(elseNode.body.hasReturnStmt() || ifStmtBodyContainsReturnStmt){
-                    if(!(elseNode.body.hasReturnStmt() && body.hasReturnStmt())){
-                        throw new ParserSyntaxError(ParserSyntaxError.createParserSyntaxError(
-                                "if one branch of an if statement contains a return statement then " +
-                                        "all other branches of the if statement must contain a return statement as well",
-                                token.getFilename(),
-                                token.getLineNum()));
-                    }
-                }
-                return new IfStmtNode(expressionNode, body, elseNode);
-            } else {
-                return new IfStmtNode(expressionNode, body);
-            }
-
-        } else {
-            return new IfStmtNode(expressionNode, body);
+        tokens.remove(0);
+        ExpressionNode expressionNode1 = ExpressionNode.parseExpressionNode(tokens);
+        if(tokens.get(0).getTokenType() != TokenType.R_BRACKET){
+            throw new ParserSyntaxError("Expected ] got:", tokens.get(0));
         }
-
+        tokens.remove(0);
+        if(tokens.get(0).getTokenType() != TokenType.L_BRACE){
+            throw new ParserSyntaxError("Expected { got:", tokens.get(0));
+        }
+        tokens.remove(0);
+        BodyNode body1 = BodyNode.parseBodyNode(tokens);
+        if(tokens.get(0).getTokenType() != TokenType.R_BRACE){
+            throw new ParserSyntaxError("Expected } got:", tokens.get(0));
+        }
+        tokens.remove(0);
+        ArrayList<ElseIfNode> elseIfNodes1 = new ArrayList<>();
+        while(tokens.get(0).getTokenType() == TokenType.ID_KEYWORD && tokens.get(0).getToken().equals("Elseif")){
+            elseIfNodes1.add(ElseIfNode.parseElseNode(tokens));
+        }
+        ElseNode elseNode1 = ElseNode.parseElseNode(tokens);
+        return new IfStmtNode(expressionNode1, body1, elseIfNodes1, elseNode1);
     }
-
+    /**
+     * For later use
     public static boolean ElseIfListContainsAReturn(ArrayList<ElseIfNode> elseIfNodes){
         for(ElseIfNode elseIfNode : elseIfNodes){
             if(elseIfNode.body.hasReturnStmt()){
@@ -107,18 +59,41 @@ public class IfStmtNode implements BodyStmtNode{
         }
         return false;
     }
+     */
 
     public String convertToJott() {
-        StringBuilder jott = new StringBuilder("If[" + expressionNode.convertToJott() + "]" + body.convertToJott());
-        if(elseIfNodes != null && !elseIfNodes.isEmpty()) {
-            for(ElseIfNode elseIfNode : elseIfNodes) {
-                jott.append("\n").append(elseIfNode.convertToJott());
-            }
+        String result = "If[";
+        result += expressionNode.convertToJott();
+        result += "]{";
+        result += body.convertToJott();
+        result += "}";
+        for(ElseIfNode elseIfNode : elseIfNodes){
+            result += elseIfNode.convertToJott();
         }
-        if(elseNode != null) {
-            jott.append("\n").append(elseNode.convertToJott());
+        if(elseNode != null){
+            result += elseNode.convertToJott();
         }
-        return jott.toString();
+        return result;
+    }
+
+    @Override
+    public String convertToJava(String className) {
+        return "";
+    }
+
+    @Override
+    public String convertToC() {
+        return "";
+    }
+
+    @Override
+    public String convertToPython() {
+        return "";
+    }
+
+    @Override
+    public boolean validateTree() {
+        return false;
     }
 
 }

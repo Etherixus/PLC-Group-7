@@ -6,82 +6,73 @@ import provided.TokenType;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Set;
 
 
 public class FunctionParamsNode implements JottTree {
-    private String paramID;
-    private String paramType;
-    private static ArrayList<FunctionParamsNode> params;
-    public FunctionParamsNode(String paramID, String paramType){
+    private ArrayList<IDNode> paramID;
+    private LinkedHashMap<IDNode, String> params;
+
+    public FunctionParamsNode(LinkedHashMap<IDNode, String> params, ArrayList<IDNode> paramID) {
         this.paramID = paramID;
-        this.paramType = paramType;
-        this.params = new ArrayList<FunctionParamsNode>();
+        this.params = params;
     }
 
-    public String getParamID() {
-        return paramID;
-    }
-    public String getParamType() {
-        return paramType;
-    }
 
-    public static ArrayList<FunctionParamsNode> parseFunctionParams(ArrayList<Token> tokens) throws ParseException {
-        if(tokens.get(0).getTokenType() == TokenType.R_BRACKET) {
-            tokens.remove(0);
-            return params;
-        }
-        else if (tokens.isEmpty() || tokens.get(0).getTokenType() != TokenType.ID_KEYWORD){
-            throw new ParseException("Invalid function parameters", -1);
-        }
-        else{
-            String paramID = tokens.get(0).getToken();
-            tokens.remove(0);
-            if(tokens.isEmpty() || tokens.get(0).getTokenType() != TokenType.COLON){
-                throw new ParseException("Type and ID must be seperated by a Colon", -1);
+    public static FunctionParamsNode parseFunctionParams(ArrayList<Token> tokens) throws ParserSyntaxError {
+        LinkedHashMap<IDNode, String> params = new LinkedHashMap<>();
+        ArrayList<IDNode> paramID = new ArrayList<>();
+        //handles  1 param
+        if(tokens.get(0).getTokenType() != TokenType.R_BRACKET){
+            IDNode paramName = IDNode.parseIDNode(tokens);
+            if(tokens.get(0).getTokenType() != TokenType.COLON){
+                throw new ParserSyntaxError("Expected a Colon", tokens.get(0));
             }
-            else{
+            tokens.remove(0);
+            String type = tokens.get(0).getToken();
+            tokens.remove(0);
+            paramID.add(paramName);
+            params.put(paramName, type);
+
+            //more than one param
+            while(tokens.get(0).getTokenType() != TokenType.R_BRACKET){
+                if(tokens.get(0).getTokenType() != TokenType.COMMA){
+                    throw new ParserSyntaxError("Expected a Comma", tokens.get(0));
+                }
                 tokens.remove(0);
-                if(tokens.isEmpty() || tokens.get(0).getTokenType() != TokenType.ID_KEYWORD){
-                    throw new ParseException("Invalid Function Parameter", -1);
+                paramName =IDNode.parseIDNode(tokens);
+
+                if(tokens.get(0).getTokenType() != TokenType.COLON){
+                    throw new ParserSyntaxError("Expected a Colon", tokens.get(0));
                 }
-                else{
-                    String paramType = tokens.get(0).getToken();
-                    tokens.remove(0);
-                    FunctionParamsNode node = new FunctionParamsNode(paramID, paramType);
-                    params.add(node);
-                    if (tokens.get(0).getTokenType() == TokenType.COMMA){
-                        tokens.remove(0);
-                        parseFunctionParams(tokens);
-                    }
-                    else if (tokens.get(0).getTokenType() == TokenType.R_BRACKET){
-                        tokens.remove(0);
-                        return params;
-                    }
-                    else {
-                        throw new ParseException("Expected ] but got" + tokens.get(0).getToken(), -1);
-                    }
-                }
+                tokens.remove(0);
+                type = tokens.get(0).getToken();
+                tokens.remove(0);
+                paramID.add(paramName);
+                params.put(paramName, type);
             }
         }
-        return params;
+        return new FunctionParamsNode(params, paramID);
     }
 
     @Override
     public String convertToJott() {
-        if(params.isEmpty()){
+        StringBuilder result = new StringBuilder();
+        if(params.isEmpty()) {
             return "";
         }
         else{
-            StringBuilder str = new StringBuilder();
-            for(FunctionParamsNode param : params){
-                str.append(param.getParamID());
-                str.append(":");
-                str.append(param.getParamType());
-                str.append(",");
+            Set<IDNode> keySet = params.keySet();
+            for(IDNode key : keySet){
+                result.append(key.convertToJott());
+                result.append(":");
+                result.append(params.get(key));
+                result.append(",");
             }
-            str.setLength(str.length() - 1);
-            return str.toString();
+            result.setLength(result.length()-1);
         }
+        return result.toString();
     }
 
     @Override

@@ -5,22 +5,32 @@ import provided.TokenType;
 
 import java.util.ArrayList;
 
-public class NumberNode implements OperandNode {
+public class NumberNode extends ExpressionNode {
     Token number;
+    String type;
 
-    public NumberNode(Token number) {
+    public NumberNode(Token number, String type) {
         this.number = number;
+        this.type = type;
     }
 
     public static NumberNode parseNumberNode(ArrayList<Token> tokens) throws ParserSyntaxError{
-        if(tokens.get(0).getTokenType() == TokenType.NUMBER) {
-            Token number = tokens.remove(0);
-            return new NumberNode(number);
-        } else {
-            Token token = tokens.get(0);
-            throw new ParserSyntaxError(
-                    ParserSyntaxError.createParserSyntaxError("Expected number but got " + tokens.get(0).getTokenType().toString(),
-                            token.getFilename(), token.getLineNum()));
+        Token currentToken = tokens.get(0);
+        String type = null;
+        if(currentToken.getTokenType() != TokenType.NUMBER){
+            throw new ParserSyntaxError("Expected a Number, got: ", tokens.get(0));
+        }
+        else{
+            if(currentToken.getToken().contains(".")){
+                type = "Double";
+                tokens.remove(0);
+                return new NumberNode(currentToken, type);
+            }
+            else{
+                type = "Integer";
+                tokens.remove(0);
+                return new NumberNode(currentToken, type);
+            }
         }
     }
 
@@ -63,10 +73,5 @@ public class NumberNode implements OperandNode {
         String t = number.getToken();
         if (t == null || t.isEmpty()) return false;
         return t.charAt(0) == '-';
-    }
-
-    @Override
-    public OperandNode parseOperand() {
-        return null;
     }
 }

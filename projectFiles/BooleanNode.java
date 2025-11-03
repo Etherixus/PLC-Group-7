@@ -7,32 +7,32 @@ import provided.TokenType;
 import java.text.ParseException;
 import java.util.ArrayList;
 
-public class BooleanNode implements JottTree {
+public class BooleanNode extends ExpressionNode implements JottTree {
     private boolean value;
 
     public BooleanNode(boolean value) {
         this.value = value;
     }
 
-    public static BooleanNode parseBooleanNode(ArrayList<Token> tokenList) throws ParseException {
-        if (tokenList == null || tokenList.isEmpty()) {
-            throw new ParseException("Unexpected end of input: expected boolean value.", -1);
+    public static BooleanNode parseBooleanNode(ArrayList<Token> tokenList) throws ParserSyntaxError {
+        if(tokenList.get(0).getTokenType() == TokenType.ID_KEYWORD){
+            if(tokenList.get(0).getToken().equals("True") || tokenList.get(0).getToken().equals("False")){
+                if(tokenList.get(0).getToken().equals("True")){
+                    tokenList.remove(0);
+                    return new BooleanNode(true);
+                }
+                else{
+                    tokenList.remove(0);
+                    return new BooleanNode(false);
+                }
+            }
+            else{
+                throw new ParserSyntaxError("Expected True or False, got: ", tokenList.get(0));
+            }
         }
-
-        Token token = tokenList.get(0);
-
-        // Expecting a BOOLEAN token type
-        if (token.getTokenType() == TokenType.ID_KEYWORD && (token.getToken().equals("true") || token.getToken().equals("false"))){
-            boolean val = Boolean.parseBoolean(token.getToken());
-            tokenList.remove(0); // consume token
-            return new BooleanNode(val);
+        else{
+            throw new ParserSyntaxError("Expected ID_KEYWORD, got: ", tokenList.get(0));
         }
-
-        // If it’s not a boolean token, throw an error
-        throw new ParseException(
-            "Invalid token '" + token.getToken() + "' at line " + token.getLineNum()
-            + ": expected 'true' or 'false'.", -1
-        );
     }
 
     @Override

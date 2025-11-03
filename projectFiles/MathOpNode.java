@@ -6,27 +6,25 @@ import provided.TokenType;
 
 import java.util.ArrayList;
 
-public class MathOpNode implements JottTree {
-    Token operation;
+public class MathOpNode extends ExpressionNode implements JottTree {
+    private String operation;
 
-    public MathOpNode(Token operation){
+    public MathOpNode(String operation){
         this.operation = operation;
     }
 
     public static MathOpNode parseMathOpNode(ArrayList<Token> tokens) throws ParserSyntaxError{
-        if(tokens.get(0).getTokenType() == TokenType.MATH_OP) {
-            return new MathOpNode(tokens.get(0));
-        } else {
-            Token token = tokens.get(0);
-            throw new ParserSyntaxError(
-                    ParserSyntaxError.createParserSyntaxError("Expected Math Op but got " + tokens.get(0).getTokenType().toString(),
-                            token.getFilename(), token.getLineNum()));
-        }
+       if(tokens.get(0).getTokenType() != TokenType.MATH_OP){
+           throw new ParserSyntaxError("Expected +, *, /, -, but got: ", tokens.get(0));
+       }
+       else{
+           return new MathOpNode(tokens.remove(0).getToken());
+       }
     }
 
     @Override
     public String convertToJott() {
-        return operation.getToken();
+        return operation;
     }
 
     @Override
@@ -46,6 +44,7 @@ public class MathOpNode implements JottTree {
 
     @Override
     public boolean validateTree() {
-        return false;
+        if (operation == null) return false;
+        return operation.equals("+") || operation.equals("-") || operation.equals("*") || operation.equals("/");
     }
 }

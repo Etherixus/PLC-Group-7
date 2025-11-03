@@ -1,26 +1,26 @@
 package projectFiles;
 
+import provided.Token;
+
 public class ParserSyntaxError extends Exception {
-    public ParserSyntaxError(String message) {
-        super(message);
+    public ParserSyntaxError() {}
+
+    public ParserSyntaxError(String message)
+    {
+        super("Syntax Error:\n" + message);
     }
 
-    /**
-     * <pre>
-     * Creates an error message in the following format
-     *
-     * Syntax Error
-     * {message}
-     * {filename}:{line}
-     * </pre>
-     * @param message the message added to the error
-     * @param filename the name of the file where the error occurred
-     * @param line the line that the error occurred on
-     * @return the message
-     */
-    public static String createParserSyntaxError(String message, String filename, int line) {
-        return "Syntax Error\n" +
-                message + "\n" +
-                filename + ":" + line;
+    public ParserSyntaxError(String message, Token token){
+        super("Syntax Error:\n" + message);
+        System.err.println("Syntax Error:\n" + message);
+        System.err.println(token.getToken() + ": " + token.getLineNum());
+    }
+
+    public ParserSyntaxError(String message, Token token, boolean print) {
+        super("Syntax Error:\n" + message);
+        if (print) {
+            System.err.println("Syntax Error:\n" + message);
+            System.err.println(token.getToken() + " : " + token.getLineNum());
+        }
     }
 }

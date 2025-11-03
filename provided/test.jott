@@ -1,12 +1,15 @@
-#this will pass phase 2 but fail phase 3 for foo param type not matching
+# this will pass phase 2 and phase 3
+# if stmt that has an else must return in both, and any elifs for the if stmt to be returnable
 
-Def foo[y:Double]:Integer{
-    ::print[y];
-	Return 3;
+Def foo[x:Integer]:Integer{
+    If[x > 10]{
+	    Return 1;
+	}
+	Else{
+	    Return 0;
+    }
 }
 
 Def main[]:Void{
-    Integer x;
-    x = ::foo[5];
-	::print[x];
+    ::print[::foo[10]];
 }

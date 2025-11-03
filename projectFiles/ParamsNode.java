@@ -8,44 +8,50 @@ import java.text.ParseException;
 import java.util.ArrayList;
 
 public class ParamsNode implements JottTree{
-    private ArrayList<ExpressionNode> expressions = new ArrayList<>();
+    ArrayList<ParamsTNode> params;
 
-    public ParamsNode(ArrayList<ExpressionNode> expressions) {
-        this.expressions = expressions;
+    public ParamsNode(ArrayList<ParamsTNode> params) {
+        this.params = params;
     }
 
-    public static ParamsNode parseParamsNode(ArrayList<Token> tokens) throws ParserSyntaxError, ParseException {
-        ArrayList<ExpressionNode> expressions = new ArrayList<>();
+    public static ParamsNode parseParamsNode(ArrayList<Token> tokens) throws ParserSyntaxError{
+        if(tokens.get(0).getTokenType() != TokenType.L_BRACKET){
+            throw new ParserSyntaxError("Expected [, but got: ", tokens.get(0));
+        }
+        tokens.remove(0);
 
-        // Check if there are no params (ε)
-        // e.g., ::func[]   -> immediately see R_BRACKET
-        if (tokens.get(0).getTokenType() == TokenType.R_BRACKET) {
-            return new ParamsNode(expressions); // empty parameter list
+        ArrayList<ParamsTNode> params = new ArrayList<ParamsTNode>();
+        try{
+            while(tokens.get(0).getTokenType() != TokenType.R_BRACKET){
+                params.add(ParamsTNode.parseParamsTNode(tokens));
+
+                if(tokens.get(0).getTokenType() == TokenType.COMMA){
+                    tokens.remove(0);
+                }
+            }
+        }
+        catch (IndexOutOfBoundsException e){
+            throw new ParserSyntaxError("Expected ], but list of tokens ended");
         }
 
-        // Otherwise, parse the first expression
-        ExpressionNode expr = ExpressionNode.parseExpressionNode(tokens);
-        expressions.add(expr);
-        // Parse any additional ", <expr>" sequences
-        while (!tokens.isEmpty() && tokens.get(0).getTokenType() == TokenType.COMMA) {
-            tokens.remove(0); // consume comma
-            ExpressionNode nextExpr = ExpressionNode.parseExpressionNode(tokens);
-            expressions.add(nextExpr);
+        if(tokens.get(0).getTokenType() != TokenType.R_BRACKET){
+            throw new ParserSyntaxError("Expected ], but got: ", tokens.get(0));
         }
-
-        return new ParamsNode(expressions);
+        tokens.remove(0);
+        return new ParamsNode(params);
     }
 
     @Override
     public String convertToJott() {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < expressions.size(); i++) {
-            sb.append(expressions.get(i).convertToJott());
-            if (i < expressions.size() - 1) {
-                sb.append(",");
+        String result = "";
+        for(int i = 0; i < params.size(); i++){
+            result += params.get(i).convertToJott();
+
+            if(i != params.size()-1){
+                result += ",";
             }
         }
-        return sb.toString();
+        return result;
     }
 
     @Override
@@ -65,6 +71,15 @@ public class ParamsNode implements JottTree{
 
     @Override
     public boolean validateTree() {
-        return false;
+        if (params == null) return false;
+        // empty parameter list is valid
+        if (params.size() == 0) return true;
+        for (ParamsTNode p : params) {
+            if (p == null) return false;
+            // ensure the wrapped expression exists and is valid
+            if (p.getExpression() == null) return false;
+            if (!p.getExpression().validateTree()) return false;
+        }
+        return true;
     }
 }
