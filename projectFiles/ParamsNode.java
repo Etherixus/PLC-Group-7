@@ -72,11 +72,9 @@ public class ParamsNode implements JottTree{
     @Override
     public boolean validateTree() {
         if (params == null) return false;
-        // empty parameter list is valid
         if (params.size() == 0) return true;
         for (ParamsTNode p : params) {
             if (p == null) return false;
-            // ensure the wrapped expression exists and is valid
             if (p.getExpression() == null) return false;
             if (!p.getExpression().validateTree()) return false;
         }

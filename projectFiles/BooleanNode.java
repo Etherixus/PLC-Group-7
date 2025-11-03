@@ -62,7 +62,12 @@ public class BooleanNode extends ExpressionNode implements JottTree {
 
     @Override
     public boolean validateTree() {
-        return true;
+        // The parser constructs a BooleanNode only when it sees the
+        // keywords "True" or "False". At this stage the node stores
+        // the boolean value itself; a simple sanity check is sufficient.
+        // Ensure the stored value serializes to a canonical boolean string.
+        String s = Boolean.toString(value);
+        return "true".equals(s) || "false".equals(s);
     }
 }
 
