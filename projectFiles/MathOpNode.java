@@ -44,6 +44,22 @@ public class MathOpNode extends ExpressionNode implements JottTree {
 
     @Override
     public boolean validateTree() {
-        return false;
+        if (operation == null) {
+            return false;
+        }
+        return operation.equals("+") || operation.equals("-") || operation.equals("*") || operation.equals("/");
     }
+
+    public String getType()
+    {
+        return "MathOp";
+    }
+
+
+    //to be used for expression validate function
+    public String evaluate()
+    {
+        return operation;
+    }
+
 }
