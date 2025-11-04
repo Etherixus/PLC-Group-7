@@ -15,6 +15,7 @@ public class FunctionDefNode implements JottTree{
     private final FunctionReturnNode returnType;
     private final BodyNode body;
 
+
     public FunctionDefNode(IDNode id, FunctionParamsNode params, FunctionReturnNode returnType, BodyNode Fbody) {
         this.id = id;
         this.params = params;
@@ -85,8 +86,73 @@ public class FunctionDefNode implements JottTree{
         return "";
     }
 
+
+    // Declares this function in the global symbol table.
+    // Called from ProgramNode during the declaration pass.
+    public void declare(SymbolTable globalTable) throws SemanticSyntaxError {
+        String funcName = id.toString();  // reuse what you already have
+        String retType = returnType.toString(); // simple way to get type text
+
+        // Empty parameter list for now
+        ArrayList<String> paramTypes = params.getParamTypes();
+        Symbol funcSymbol = new Symbol(funcName, retType, paramTypes, -1); // empty param list
+        globalTable.addSymbol(funcName, funcSymbol);
+
+        System.out.println("Declared function: " + funcName + " returns " + retType);
+    }
+
     @Override
-    public boolean validateTree() {
+    public boolean validateTree() { // Example of semantic validation inside the node
+    try{
+        // 1. Validate structure
+        if (id == null || returnType == null || body == null) {
+            System.err.println("Semantic Error: Incomplete function definition.");
+            return false;
+        }
+
+        // 2. Build a symbol for this function
+        String funcName = id.convertToJott();
+        String retType = returnType.convertToJott();
+        ArrayList<String> paramTypes = new ArrayList<>();
+
+        // 3. Access the global symbol table from ProgramNode
+        // (ProgramNode will pass it to children via SymbolTable.current)
+        SymbolTable globalTable = SymbolTable.getCurrentTable();
+        if (globalTable == null) {
+            System.err.println("Semantic Error: No active symbol table for function validation.");
+            return false;
+        }
+
+        // 4. Check if function is already declared
+        if (globalTable.lookup(funcName) != null) {
+            System.err.println("Semantic Error: Function '" + funcName + "' redeclared.");
+            return false;
+        }
+
+        // 5. Declare this function in the global scope
+        Symbol funcSymbol = new Symbol(funcName, retType, paramTypes, -1);
+        globalTable.addSymbol(funcName, funcSymbol);
+        System.out.println("Declared function: " + funcName + " returns " + retType);
+
+        // 6. Create a function-local symbol table
+        SymbolTable funcTable = new SymbolTable(globalTable);
+        params.declareParams(funcTable);
+
+        // 7. Validate its body (recursively)
+        if (!body.validateTree(funcTable, retType)) {
+            System.err.println("Semantic Error: Invalid body in function " + funcName);
+            return false;
+        }
+
+        System.out.println("Validated function: " + funcName);
+        return true;
+
+    } catch (SemanticSyntaxError e) {
+        System.err.println("Semantic Error: " + e.getMessage());
         return false;
+    } catch (Exception e) {
+        System.err.println("Unexpected Error in FunctionDefNode: " + e.getMessage());
+        return false;
+    }
     }
 }
