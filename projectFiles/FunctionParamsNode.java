@@ -7,6 +7,7 @@ import provided.TokenType;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -90,8 +91,72 @@ public class FunctionParamsNode implements JottTree {
         return "";
     }
 
+    //Returns a list of parameter types (in order) for global function declarations.
+    //Example: ["Integer", "String"]
+    public ArrayList<String> getParamTypes() {
+        ArrayList<String> types = new ArrayList<>();
+        for (String type : params.values()) {
+            types.add(type);
+        }
+        return types;
+    }
+
+    //Declares each parameter in the given symbol table (usually the function scope).
+    //This lets function parameters behave like pre-declared variables.
+    public void declareParams(SymbolTable funcTable) throws SemanticSyntaxError {
+        for (Map.Entry<IDNode, String> entry : params.entrySet()) {
+            String paramName = entry.getKey().convertToJott();
+            String paramType = entry.getValue();
+
+            // Check for duplicate parameter names
+            if (funcTable.lookup(paramName) != null) {
+                throw new SemanticSyntaxError("Duplicate parameter name: " + paramName);
+            }
+
+            // Add parameter as a variable to the function's local scope
+            funcTable.addSymbol(paramName, new Symbol(paramName, paramType, -1));
+        }
+    }
+
     @Override
     public boolean validateTree() {
-        return false;
+        try {
+            for (Map.Entry<IDNode, String> entry : params.entrySet()) {
+                String paramName = entry.getKey().convertToJott();
+                String paramType = entry.getValue();
+
+                // Check Valid parameter type
+                if (!(paramType.equals("Integer") || paramType.equals("Double") ||
+                        paramType.equals("String")  || paramType.equals("Boolean"))) {
+                    throw new SemanticSyntaxError(
+                            "Invalid parameter type '" + paramType + "' for parameter '" + paramName + "'"
+                    );
+                }
+
+                // Check Reserved keyword used as parameter name
+                if (paramName.equals("if") || paramName.equals("while") ||
+                        paramName.equals("return") || paramName.equals("Def") ||
+                        paramName.equals("Void") || paramName.equals("Integer") ||
+                        paramName.equals("Double") || paramName.equals("String") ||
+                        paramName.equals("Boolean")) {
+                    throw new SemanticSyntaxError(
+                            "Invalid parameter name (reserved keyword): " + paramName
+                    );
+                }
+            }
+
+            // all parameters are valid and return true
+            return true;
+
+        } catch (SemanticSyntaxError e) {
+            // Catch and report semantic problems
+            System.err.println("Semantic Error: " + e.getMessage());
+            return false;
+        } catch (Exception e) {
+            // Catch any unexpected runtime exceptions
+            System.err.println("Unexpected Error in FunctionParamsNode.validateTree(): " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
     }
 }
