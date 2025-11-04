@@ -7,6 +7,9 @@ package provided;
  * @author
  */
 
+import projectFiles.ParserSyntaxError;
+import projectFiles.ProgramNode;
+
 import java.util.ArrayList;
 
 public class JottParser {
@@ -17,7 +20,12 @@ public class JottParser {
      * @return the root of the Jott Parse Tree represented by the tokens.
      *         or null upon an error in parsing.
      */
-    public static JottTree parse(ArrayList<Token> tokens){
-		return null;
+    public static JottTree parse(ArrayList<Token> tokens) throws ParserSyntaxError {
+        if (tokens == null || tokens.isEmpty()) {
+            throw new ParserSyntaxError("No tokens found — cannot parse program.");
+        }
+
+        // Delegate parsing to the root node
+        return ProgramNode.parseProgram(tokens);
     }
 }
