@@ -93,7 +93,25 @@ public class IfStmtNode implements BodyStmtNode{
 
     @Override
     public boolean validateTree() {
-        return false;
+        // expression and body must exist and validate
+        if (expressionNode == null) return false;
+        if (!expressionNode.validateTree()) return false;
+
+        if (body == null) return false;
+        if (!body.validateTree()) return false;
+
+        // validate any ElseIf nodes
+        if (elseIfNodes != null) {
+            for (ElseIfNode eif : elseIfNodes) {
+                if (eif == null) return false;
+                if (!eif.validateTree()) return false;
+            }
+        }
+
+        // validate optional else node
+        if (elseNode != null && !elseNode.validateTree()) return false;
+
+        return true;
     }
 
 }

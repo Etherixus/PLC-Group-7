@@ -70,6 +70,12 @@ public class ElseIfNode implements JottTree {
 
     @Override
     public boolean validateTree() {
-        return false;
+        if (expressionNode == null) return false;
+        if (!expressionNode.validateTree()) return false;
+
+        if (body == null) return false;
+        if (!body.validateTree()) return false;
+
+        return true;
     }
 }
