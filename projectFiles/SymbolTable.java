@@ -5,13 +5,26 @@ import java.util.HashMap;
 public class SymbolTable {
     private final HashMap<String, Symbol> symbols = new HashMap<>();
     private SymbolTable parent;
+    private static SymbolTable currentTable;
 
     // Constructor for creating a new scope.
     // SymbolTable global = new SymbolTable(null); (global scope)
     // SymbolTable funcScope = new SymbolTable(global); (inside of a function)
     public SymbolTable(SymbolTable parent){
         this.parent = parent;
+        currentTable = this;
     }
+
+    // allows access the global table from inside nodes
+    public static SymbolTable getCurrentTable() {
+        return currentTable;
+    }
+
+    // sets the current symbol table during semantic analysis
+    public static void setCurrentTable(SymbolTable table) {
+        currentTable = table;
+    }
+
 
     // Adds a new symbol (variable or function) to the current scope.
     public void addSymbol(String name, Symbol symbol) throws SemanticSyntaxError {
