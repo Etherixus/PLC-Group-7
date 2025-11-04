@@ -44,13 +44,10 @@ public class MathOpNode extends ExpressionNode implements JottTree {
 
     @Override
     public boolean validateTree() {
-<<<<<<< HEAD
-        if (operation == null) return false;
-=======
         if (operation == null) {
             return false;
         }
->>>>>>> f6d656fb4244936a37b9ba2ca77d6fa67b47d064
+
         return operation.equals("+") || operation.equals("-") || operation.equals("*") || operation.equals("/");
     }
 
