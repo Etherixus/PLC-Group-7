@@ -69,6 +69,18 @@ public class NumberNode extends ExpressionNode {
         // Disallow multiple decimals or standalone "." 
         return tok.matches("(\\d+(\\.\\d+)?|\\.\\d+)");
     }
+
+    public String getType() {
+        if (type == null || type.isEmpty()) {
+            String val = number.getToken();
+            if (val != null && val.contains(".")) {
+                return "Double";
+            }
+            return "Integer";
+        }
+        return type;
+    }
+
     public boolean isNegative(){
         String t = number.getToken();
         if (t == null || t.isEmpty()) return false;

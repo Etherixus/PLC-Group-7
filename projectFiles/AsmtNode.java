@@ -53,4 +53,44 @@ public class AsmtNode implements BodyStmtNode {
     public boolean validateTree() {
         return false;
     }
+
+    @Override
+    public boolean validateTree(SymbolTable table) {
+        try {
+            String varName = idNode.convertToJott();
+            Symbol sym = table.lookup(varName);
+
+            // Check variable exists
+            if (sym == null) {
+                System.err.println("Semantic Error: Undeclared variable: " + varName);
+                return false;
+            }
+
+            // Get type of right-hand expression
+            String exprType = expressionNode.getType(table);
+
+            // check type mismatch
+            if (!sym.returnType.equals(exprType)) {
+                System.err.println("Semantic Error: Type mismatch in assignment: " +
+                        varName + " is " + sym.returnType + " but expression is " + exprType);
+                return false;
+            }
+
+            if (sym.returnType == null) {
+                System.err.println("Semantic Error: Variable " + varName + " has undefined type.");
+                return false;
+            }
+
+            return true;
+
+        } catch (SemanticSyntaxError e) {
+            System.err.println("Semantic Error: " + e.getMessage());
+            return false;
+
+        } catch (Exception e) {
+            System.err.println("Unexpected error in AsmtNode.validateTree(): " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

@@ -101,6 +101,64 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
         return "";
     }
 
+    public String getType(SymbolTable table) throws SemanticSyntaxError {
+        // Base case: no operator, just return the type of the left operand
+        if (Middle == null) {
+            if (Left instanceof NumberNode) return ((NumberNode) Left).getType();
+            if (Left instanceof StringNode) return "String";
+            if (Left instanceof BooleanNode) return "Boolean";
+            if (Left instanceof IDNode) {
+                String name = ((IDNode) Left).convertToJott();
+                Symbol sym = table.lookup(name);
+                if (sym == null)
+                    throw new SemanticSyntaxError("Undeclared identifier '" + name + "'");
+
+
+                if (sym.type != null) return sym.type;
+                if (sym.returnType != null) return sym.returnType;
+
+                return "Unknown";
+            }
+            if (Left instanceof FunctionCallNode) {
+                return ((FunctionCallNode) Left).getReturnType(table);
+            }
+            return "Unknown";
+        }
+
+        String leftType;
+        if (Left instanceof NumberNode) {
+            leftType = ((NumberNode) Left).getType();
+        } else if (Left instanceof ExpressionNode) {
+            leftType = ((ExpressionNode) Left).getType(table);
+        } else {
+            leftType = Left.getType(table);
+        }
+
+
+        String rightType;
+        if (Right == null) {
+            throw new SemanticSyntaxError("Invalid expression: missing right operand in ExpressionNode");
+        } else {
+            rightType = Right.getType(table);
+        }
+
+
+        // Handle math operators (+, -, *, /)
+        if (Middle instanceof MathOpNode) {
+            if (leftType.equals("Double") || rightType.equals("Double")) return "Double";
+            if (leftType.equals("Integer") && rightType.equals("Integer")) return "Integer";
+            throw new SemanticSyntaxError("Invalid operands for math operator: "
+                    + leftType + " and " + rightType);
+        }
+
+        // Handle relational operators (<, >, ==, etc.)
+        if (Middle instanceof RelOpNode) {
+            return "Boolean";
+        }
+
+        return "Unknown";
+    }
+
     @Override
     public boolean validateTree() {
         // Left must exist and be valid

@@ -3,9 +3,7 @@ package projectFiles;
 import provided.JottTree;
 import provided.Token;
 
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.function.Function;
 
 public class ProgramNode implements JottTree {
     ArrayList<FunctionDefNode> functionsDefs;
@@ -54,7 +52,7 @@ public class ProgramNode implements JottTree {
             // and it will be the parent of all other child symbol tables
             SymbolTable globalTable = new SymbolTable(null);
 
-            // Step 2: Set this table as the current scope (for all child nodes)
+            // 2: Set this table as the current scope (for all child nodes)
             // FunctionDefNode and others can now access it using SymbolTable.getCurrentTable()
             SymbolTable.setCurrentTable(globalTable);
 
@@ -67,12 +65,17 @@ public class ProgramNode implements JottTree {
             globalTable.addSymbol("length", new Symbol("length", "Integer",
                     new ArrayList<>(java.util.List.of("String")), -1));
 
-            // Step 4: Validate each function (which declares itself)
+            // 4: Validate each function (which declares itself)
             boolean allValid = true;
-            for (FunctionDefNode functionDef : functionsDefs) {
-                if (!functionDef.validateTree()) {
-                    allValid = false;
-                }
+
+            // pass 1: declare all functions in global (no locals created here)
+            for (FunctionDefNode f : functionsDefs) {
+                f.declare(globalTable);
+            }
+
+            // pass 2: validate each function (creates its own local func scope)
+            for (FunctionDefNode f : functionsDefs) {
+                if (!f.validateTree()) allValid = false;
             }
 
             // Step 5: Check that main exists
@@ -89,8 +92,6 @@ public class ProgramNode implements JottTree {
                 System.out.println("Semantic analysis completed successfully.");
             }
             return allValid;
-
-
 
         } catch (SemanticSyntaxError e) {
             System.err.println("Semantic Error: " + e.getMessage());

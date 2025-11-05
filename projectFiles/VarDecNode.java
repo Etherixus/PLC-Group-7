@@ -30,6 +30,20 @@ public class VarDecNode implements JottTree, BodyStmtNode {
         }
     }
 
+    public void declare(SymbolTable table) throws SemanticSyntaxError {
+        String variableName = varName.convertToJott();
+
+        if (table.lookup(variableName) != null) {
+            throw new SemanticSyntaxError("Redeclaration of variable: " + variableName);
+        }
+
+        Symbol symbol = new Symbol(variableName, this.varType, -1);
+        symbol.returnType = this.varType;
+        symbol.isFunction = false;
+        table.addSymbol(variableName, symbol);
+    }
+
+
     @Override
     public String convertToJott() {
         return this.varType + " " + this.varName.convertToJott() +";";
@@ -52,6 +66,6 @@ public class VarDecNode implements JottTree, BodyStmtNode {
 
     @Override
     public boolean validateTree() {
-        return false;
+        return true;
     }
 }

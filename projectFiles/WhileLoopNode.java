@@ -3,7 +3,6 @@ package projectFiles;
 import provided.Token;
 import provided.TokenType;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 
 public class WhileLoopNode implements BodyStmtNode{
@@ -66,6 +65,36 @@ public class WhileLoopNode implements BodyStmtNode{
     @Override
     public String convertToPython() {
         return "";
+    }
+
+    public boolean validateTree(SymbolTable table) {
+        try {
+            // 1 Check the while condition type
+            String condType = expressionNode.getType(table);
+            if (!condType.equals("Boolean")) {
+                System.err.println("Semantic Error: While condition must be Boolean but got " + condType);
+                return false;
+            }
+
+            // 2 Create a new local scope for the loop body
+            SymbolTable loopScope = new SymbolTable(table);
+
+            // 3 Validate all statements in the loop body
+            if (!bodyNode.validateTree(loopScope, "Void")) {
+                System.err.println("Semantic Error: Invalid statements inside While loop body.");
+                return false;
+            }
+
+            // 4 Everything passed
+            return true;
+        } catch (SemanticSyntaxError e) {
+            System.err.println("Semantic Error in WhileLoopNode: " + e.getMessage());
+            return false;
+        } catch (Exception e) {
+            System.err.println("Unexpected error in WhileLoopNode.validateTree(): " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override

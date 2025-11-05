@@ -90,19 +90,18 @@ public class FunctionDefNode implements JottTree{
     // Declares this function in the global symbol table.
     // Called from ProgramNode during the declaration pass.
     public void declare(SymbolTable globalTable) throws SemanticSyntaxError {
-        String funcName = id.toString();  // reuse what you already have
-        String retType = returnType.toString(); // simple way to get type text
+        String funcName = id.convertToJott();  // reuse what you already have
+        String retType = returnType.convertToJott(); // simple way to get type text
 
         // Empty parameter list for now
         ArrayList<String> paramTypes = params.getParamTypes();
-        Symbol funcSymbol = new Symbol(funcName, retType, paramTypes, -1); // empty param list
-        globalTable.addSymbol(funcName, funcSymbol);
 
-        System.out.println("Declared function: " + funcName + " returns " + retType);
+        // Add once to global
+        globalTable.addSymbol(funcName, new Symbol(funcName, retType, paramTypes, -1));
     }
 
     @Override
-    public boolean validateTree() { // Example of semantic validation inside the node
+    public boolean validateTree() {
     try{
         // 1. Validate structure
         if (id == null || returnType == null || body == null) {
@@ -123,19 +122,10 @@ public class FunctionDefNode implements JottTree{
             return false;
         }
 
-        // 4. Check if function is already declared
-        if (globalTable.lookup(funcName) != null) {
-            System.err.println("Semantic Error: Function '" + funcName + "' redeclared.");
-            return false;
-        }
-
-        // 5. Declare this function in the global scope
-        Symbol funcSymbol = new Symbol(funcName, retType, paramTypes, -1);
-        globalTable.addSymbol(funcName, funcSymbol);
-        System.out.println("Declared function: " + funcName + " returns " + retType);
-
         // 6. Create a function-local symbol table
         SymbolTable funcTable = new SymbolTable(globalTable);
+
+        // declare parameters in the local function scope
         params.declareParams(funcTable);
 
         // 7. Validate its body (recursively)

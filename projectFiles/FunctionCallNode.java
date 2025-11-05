@@ -17,7 +17,6 @@ public class FunctionCallNode extends ExpressionNode implements BodyStmtNode {
     }
 
 
-    //Example given the tokens from the code of ::add[5, 2, 6];
     public static FunctionCallNode parseFunctionCallNode(ArrayList<Token> tokens) throws ParserSyntaxError{
         if(tokens.get(0).getTokenType() != TokenType.FC_HEADER){
             throw new ParserSyntaxError("Expecting fc header, got: " + tokens.get(0));
@@ -27,6 +26,40 @@ public class FunctionCallNode extends ExpressionNode implements BodyStmtNode {
         ParamsNode params = ParamsNode.parseParamsNode(tokens);
 
         return new FunctionCallNode(name, params);
+    }
+    public String getReturnType(SymbolTable table) throws SemanticSyntaxError {
+        String funcName = id.convertToJott();
+        Symbol sym = table.lookup(funcName);
+        if (sym == null) {
+            throw new SemanticSyntaxError("Undeclared function: " + funcName);
+        }
+
+        return sym.returnType;
+    }
+
+    public boolean validateTree(SymbolTable table) {
+        try {
+            String funcName = id.convertToJott();
+
+            // Lookup function in the symbol table chain
+            Symbol funcSymbol = table.lookup(funcName);
+            if (funcSymbol == null) {
+                System.err.println("Semantic Error: Undeclared function '" + funcName + "'");
+                return false;
+            }
+
+            // Must be a function, not a variable
+            if (!funcSymbol.isFunction) {
+                System.err.println("Semantic Error: '" + funcName + "' is not a function.");
+                return false;
+            }
+
+            return true;
+        } catch (Exception e) {
+            System.err.println("Unexpected error in FunctionCallNode.validateTree(): " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
@@ -51,10 +84,7 @@ public class FunctionCallNode extends ExpressionNode implements BodyStmtNode {
 
     @Override
     public boolean validateTree() {
-        if (id == null || params == null) return false;
-        if (!id.validateTree()) return false;
-        if (!params.validateTree()) return false;
-        return true;
+        return id != null && params != null && id.validateTree() && params.validateTree();
     }
 
 }

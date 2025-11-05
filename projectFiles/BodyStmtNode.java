@@ -32,4 +32,9 @@ public interface BodyStmtNode extends JottTree {
     }
 
     public String convertToJott();
+
+    default boolean validateTree(SymbolTable symbolTable) {
+        return true;
+    }
+
 }

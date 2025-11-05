@@ -21,6 +21,20 @@ public class IDNode extends ExpressionNode {
         return new IDNode(key);
     }
 
+    public String getType(SymbolTable table) throws SemanticSyntaxError {
+        Symbol sym = table.lookup(keyword);
+        if (sym == null) {
+            throw new SemanticSyntaxError("Undeclared identifier: " + keyword);
+        }
+
+        // Prefer the variable's declared type; fall back to returnType for functions
+        if (sym.type != null) return sym.type;
+        if (sym.returnType != null) return sym.returnType;
+
+        // Defensive fallback (should rarely trigger)
+        throw new SemanticSyntaxError("Unknown type for identifier: " + keyword);
+    }
+
     @Override
     public String toString() {
         return keyword;
