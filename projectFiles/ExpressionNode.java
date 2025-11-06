@@ -113,6 +113,7 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
                 if (sym == null)
                     throw new SemanticSyntaxError("Undeclared identifier '" + name + "'");
 
+                table.checkInitialized(name, sym.lineNum);
 
                 if (sym.type != null) return sym.type;
                 if (sym.returnType != null) return sym.returnType;
@@ -125,6 +126,23 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
             return "Unknown";
         }
 
+        // ✅ NEW — check both sides before recursion
+        if (Left instanceof IDNode) {
+            String name = ((IDNode) Left).convertToJott();
+            Symbol sym = table.lookup(name);
+            if (sym == null)
+                throw new SemanticSyntaxError("Undeclared identifier '" + name + "'");
+            table.checkInitialized(name, sym.lineNum);
+        }
+        if (Right instanceof IDNode) {
+            String name = ((IDNode) Right).convertToJott();
+            Symbol sym = table.lookup(name);
+            if (sym == null)
+                throw new SemanticSyntaxError("Undeclared identifier '" + name + "'");
+            table.checkInitialized(name, sym.lineNum);
+        }
+
+
         String leftType;
         if (Left instanceof NumberNode) {
             leftType = ((NumberNode) Left).getType();
@@ -132,6 +150,7 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
             leftType = ((ExpressionNode) Left).getType(table);
         } else {
             leftType = Left.getType(table);
+
         }
 
 

@@ -28,13 +28,12 @@ public class FunctionCallNode extends ExpressionNode implements BodyStmtNode {
         return new FunctionCallNode(name, params);
     }
     public String getReturnType(SymbolTable table) throws SemanticSyntaxError {
-        String funcName = id.convertToJott();
-        Symbol sym = table.lookup(funcName);
-        if (sym == null) {
-            throw new SemanticSyntaxError("Undeclared function: " + funcName);
+        if (!validateTree(table)) {
+            throw new SemanticSyntaxError("Invalid function call: " + id.convertToJott());
         }
 
-        return sym.returnType;
+        Symbol sym = table.lookup(id.convertToJott());
+        return sym != null ? sym.returnType : "Unknown";
     }
 
     public boolean validateTree(SymbolTable table) {
@@ -53,6 +52,38 @@ public class FunctionCallNode extends ExpressionNode implements BodyStmtNode {
                 System.err.println("Semantic Error: '" + funcName + "' is not a function.");
                 return false;
             }
+
+            // gets expected parameter count
+            int expectedCount = (funcSymbol.paramTypes != null) ? funcSymbol.paramTypes.size() : 0;
+
+            //Get actual parameter count from this call
+            int actualCount = 0;
+            if (params != null && params.getParamsExprList() != null) {
+                actualCount = params.getParamsExprList().size();
+
+                // Validate each parameter expression type (undeclared / uninitialized)
+                for (ExpressionNode param : params.getParamsExprList()) {
+                    param.getType(table);
+                }
+            }
+            // Compare argument count
+            if (expectedCount != actualCount) {
+                System.err.println("Semantic Error: Function '" + funcName + "' expects "
+                        + expectedCount + " argument(s) but got " + actualCount + ".");
+                return false;
+            }
+
+            // type checking for each parameter
+            for (int i = 0; i < expectedCount; i++) {
+                 String expectedType = funcSymbol.paramTypes.get(i);
+                 String actualType = params.getParamsExprList().get(i).getType(table);
+                 if (!expectedType.equals(actualType)) {
+                     System.err.println("Semantic Error: Parameter " + (i + 1)
+                             + " of function '" + funcName + "' expects " + expectedType
+                             + " but got " + actualType);
+                     return false;
+                 }
+             }
 
             return true;
         } catch (Exception e) {

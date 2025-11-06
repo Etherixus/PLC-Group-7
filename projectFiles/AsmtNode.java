@@ -69,6 +69,8 @@ public class AsmtNode implements BodyStmtNode {
             // Get type of right-hand expression
             String exprType = expressionNode.getType(table);
 
+            table.markInitialized(varName);
+
             // check type mismatch
             if (!sym.returnType.equals(exprType)) {
                 System.err.println("Semantic Error: Type mismatch in assignment: " +

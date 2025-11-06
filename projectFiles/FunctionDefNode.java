@@ -49,10 +49,17 @@ public class FunctionDefNode implements JottTree{
         }
         tokens.remove(0);
         BodyNode body = BodyNode.parseBodyNode(tokens);
-        if(tokens.get(0).getTokenType() != TokenType.R_BRACE || tokens.isEmpty()){
-            throw new ParserSyntaxError("Expected RBrace Right Bracket", tokens.get(0));
+
+        if (tokens.isEmpty()) {
+            throw new ParserSyntaxError("Expected closing '}' before end of file in function definition.");
         }
+
+        if (tokens.get(0).getTokenType() != TokenType.R_BRACE) {
+            throw new ParserSyntaxError("Expected '}', but got: " + tokens.get(0).getToken());
+        }
+
         tokens.remove(0);
+
         return new FunctionDefNode(funcName, funcParam, funcReturn, body);
     }
 

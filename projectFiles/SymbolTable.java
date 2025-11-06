@@ -47,4 +47,29 @@ public class SymbolTable {
         return null;
     }
 
+
+     // Marks a variable as initialized after assignment.
+     // Safe no-op for functions (ignored if isFunction == true).
+    public void markInitialized(String name) {
+        Symbol s = lookup(name);
+        if (s != null && !s.isFunction) {
+            s.initialized = true;
+        }
+    }
+
+    //Checks whether a variable was initialized before being used.
+    //Throws a SemanticError if used before initialization.
+    public void checkInitialized(String name, int currentLine) throws SemanticSyntaxError {
+        Symbol s = lookup(name);
+        if (s == null) {
+            throw new SemanticSyntaxError("Undeclared variable: '" + name + "'");
+        }
+
+        if (!s.isFunction && !s.initialized){
+            throw new SemanticSyntaxError(
+                    "Variable '" + name + "' used before initialization " +
+                            "(declared on line " + s.lineNum + ")"
+            );
+        }
+    }
 }

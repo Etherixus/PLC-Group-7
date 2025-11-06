@@ -41,6 +41,20 @@ public class ParamsNode implements JottTree{
         return new ParamsNode(params);
     }
 
+    // ParamsNode.java
+    public ArrayList<ExpressionNode> getParamsExprList() {
+        ArrayList<ExpressionNode> out = new ArrayList<>();
+        if (params != null) {
+            for (ParamsTNode p : params) {
+                if (p != null && p.getExpression() != null) {
+                    out.add(p.getExpression());
+                }
+            }
+        }
+        return out;
+    }
+
+
     @Override
     public String convertToJott() {
         String result = "";

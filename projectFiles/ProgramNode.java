@@ -78,7 +78,7 @@ public class ProgramNode implements JottTree {
                 if (!f.validateTree()) allValid = false;
             }
 
-            // Step 5: Check that main exists
+            // 5: Check that main exists
             Symbol mainFunc = globalTable.lookup("main");
             if (mainFunc == null) {
                 System.err.println("Semantic Error: Missing main[]:Void function.");
