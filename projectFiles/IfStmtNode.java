@@ -98,22 +98,34 @@ public class IfStmtNode implements BodyStmtNode{
             t = ((IDNode) expressionNode).getToken();
         }
 
-        if (!condType.equals("Boolean")) {
-            throw new SemanticSyntaxError("If-statement condition must be Boolean, got " + condType, t);
-        }
-
-        // Validate the main if-body
-        if (!body.validateTree(table, expectedReturnType)) return false;
-
-        // Validate all ElseIf nodes
-        if (elseIfNodes != null) {
-            for (ElseIfNode eif : elseIfNodes) {
-                if (!eif.validateTree(table, expectedReturnType)) return false;
+            if (!condType.equals("Boolean")) {
+                throw new SemanticSyntaxError("If-statement condition must be Boolean, got " + condType, t);
             }
-        }
 
-        // Validate optional Else
-        if (elseNode != null && !elseNode.validateTree(table, expectedReturnType)) return false;
+            boolean checkForReturn = false;
+
+            // Validate the main if-body
+            if (!body.validateTree(table, expectedReturnType)) return false;
+            // If the if stmt has a reutrn stmt set flag to check if all others have a return
+            if (body.hasReturn()) checkForReturn = true;
+
+            // Validate any existing ElseIf nodes
+            if (elseIfNodes != null) {
+                for (ElseIfNode eif : elseIfNodes) {
+                    if (eif == null) return false;
+                    if (!eif.validateTree()) return false;
+                    // If any conditional node has a return they all must
+                    if (eif.hasReturn() && !checkForReturn) return false;
+                    else if (!eif.hasReturn() && checkForReturn) return false;
+                }
+            }
+
+            // Validate optional Else
+            // validate optional else node
+            if (elseNode != null && !elseNode.validateTree()) return false;
+            // If all other nodes have a return the else must as well
+            if (elseNode.hasReturn() && !checkForReturn) return false;
+            else if (!elseNode.hasReturn() && checkForReturn) return false;
 
         return true;
     }

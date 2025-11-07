@@ -32,6 +32,9 @@ public class FunctionParamsNode implements JottTree {
             }
             tokens.remove(0);
             String type = tokens.get(0).getToken();
+            if(!VariableTypes.isValidVariableType(type)){
+                throw new ParserSyntaxError("Expected a valid variable type but got: " + type, tokens.get(0));
+            }
             tokens.remove(0);
             paramID.add(paramName);
             params.put(paramName, type);
@@ -49,6 +52,9 @@ public class FunctionParamsNode implements JottTree {
                 }
                 tokens.remove(0);
                 type = tokens.get(0).getToken();
+                if(!VariableTypes.isValidVariableType(type)){
+                    throw new ParserSyntaxError("Expected a valid variable type but got: " + type, tokens.get(0));
+                }
                 tokens.remove(0);
                 paramID.add(paramName);
                 params.put(paramName, type);
