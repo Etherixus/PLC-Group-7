@@ -77,15 +77,17 @@ public class FunctionCallNode extends ExpressionNode implements BodyStmtNode {
 
             // type checking for each parameter
             for (int i = 0; i < expectedCount; i++) {
-                 String expectedType = funcSymbol.paramTypes.get(i);
-                 String actualType = params.getParamsExprList().get(i).getType(table);
-                 if (!expectedType.equals(actualType)) {
-                     System.err.println("Semantic Error: Parameter " + (i + 1)
-                             + " of function '" + funcName + "' expects " + expectedType
-                             + " but got " + actualType);
-                     return false;
-                 }
-             }
+                String expectedType = funcSymbol.paramTypes.get(i);
+                String actualType = params.getParamsExprList().get(i).getType(table);
+
+                // Allow "Any" for the print function
+                if (!expectedType.equals("Any") && !expectedType.equals(actualType)) {
+                    System.err.println("Semantic Error: Parameter " + (i + 1)
+                            + " of function '" + funcName + "' expects " + expectedType
+                            + " but got " + actualType);
+                    return false;
+                }
+            }
 
             return true;
         } catch (Exception e) {

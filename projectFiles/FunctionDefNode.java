@@ -109,47 +109,53 @@ public class FunctionDefNode implements JottTree{
 
     @Override
     public boolean validateTree() {
-    try{
-        // Validate structure
-        if (id == null || returnType == null || body == null) {
-            System.err.println("Semantic Error: Incomplete function definition.");
+        try{
+            // Validate structure
+            if (id == null || returnType == null || body == null) {
+                System.err.println("Semantic Error: Incomplete function definition.");
+                return false;
+            }
+
+            // Build a symbol for this function
+            String funcName = id.convertToJott();
+            String retType = returnType.convertToJott();
+
+            // Access the global symbol table from ProgramNode
+            // (ProgramNode will pass it to children via SymbolTable.current)
+            SymbolTable globalTable = SymbolTable.getCurrentTable();
+            if (globalTable == null) {
+                System.err.println("Semantic Error: No active symbol table for function validation.");
+                return false;
+            }
+
+            // Create a function-local symbol table
+            SymbolTable funcTable = new SymbolTable(globalTable);
+
+            // declare parameters in the local function scope
+            params.declareParams(funcTable);
+
+            // Special semantic rule: Void functions cannot return a value
+            if (retType.equals("Void") && body.hasReturnValue()) {
+                System.err.println("Semantic Error: Cannot return a value from a Void function.");
+                return false;
+            }
+
+            // Validate its body node and everything in it (recursively)
+            if (!body.validateTree(funcTable, retType)) {
+                System.err.println("Semantic Error: Invalid body in function " + funcName);
+                return false;
+            }
+
+            // if this function definition node is valid, then return true
+            System.out.println("Validated function: " + funcName);
+            return true;
+
+        } catch (SemanticSyntaxError e) {
+            System.err.println("Semantic Error: " + e.getMessage());
+            return false;
+        } catch (Exception e) {
+            System.err.println("Unexpected Error in FunctionDefNode: " + e.getMessage());
             return false;
         }
-
-        // Build a symbol for this function
-        String funcName = id.convertToJott();
-        String retType = returnType.convertToJott();
-
-        // Access the global symbol table from ProgramNode
-        // (ProgramNode will pass it to children via SymbolTable.current)
-        SymbolTable globalTable = SymbolTable.getCurrentTable();
-        if (globalTable == null) {
-            System.err.println("Semantic Error: No active symbol table for function validation.");
-            return false;
-        }
-
-        // Create a function-local symbol table
-        SymbolTable funcTable = new SymbolTable(globalTable);
-
-        // declare parameters in the local function scope
-        params.declareParams(funcTable);
-
-        // Validate its body node and everything in it (recursively)
-        if (!body.validateTree(funcTable, retType)) {
-            System.err.println("Semantic Error: Invalid body in function " + funcName);
-            return false;
-        }
-
-        // if this function definition node is valid, then return true
-        System.out.println("Validated function: " + funcName);
-        return true;
-
-    } catch (SemanticSyntaxError e) {
-        System.err.println("Semantic Error: " + e.getMessage());
-        return false;
-    } catch (Exception e) {
-        System.err.println("Unexpected Error in FunctionDefNode: " + e.getMessage());
-        return false;
-    }
     }
 }

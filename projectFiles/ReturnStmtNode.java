@@ -80,6 +80,11 @@ public class ReturnStmtNode implements JottTree {
         }
     }
 
+    public boolean hasReturnValue() {
+        return expr != null; // true if "Return <expr>"
+    }
+
+
     @Override
     public boolean validateTree() {
         return false;

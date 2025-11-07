@@ -133,11 +133,20 @@ public class BodyNode implements JottTree {
 
             // Validate Return Statement
             if (returnStmtNode != null) {
+
+                // Special rule for the main function: Void functions CANNOT return a value
+                if (expectedReturnType.equals("Void") && returnStmtNode.hasReturnValue()) {
+                    System.err.println("Semantic Error: Cannot return a value from a Void function.");
+                    return false;
+                }
+
+                // Otherwise, validate the return statement normally
                 if (!returnStmtNode.validateTree(localTable, expectedReturnType)) {
                     System.err.println("Semantic Error: Return type mismatch in function (expected "
                             + expectedReturnType + ")");
                     return false;
                 }
+
             } else {
                 // Missing return for non-void functions
                 if (!expectedReturnType.equals("Void")) {
@@ -156,9 +165,19 @@ public class BodyNode implements JottTree {
         }
     }
 
-
     @Override
     public boolean validateTree() {
         return false;
     }
+
+    // Checks if this body contains a 'Return' statement that returns a value
+    public boolean hasReturnValue() {
+        // If no return statement exists, definitely false
+        if (returnStmtNode == null) {
+            return false;
+        }
+        // Delegate check to ReturnStmtNode (whether it has an expression)
+        return returnStmtNode.hasReturnValue();
+    }
+
 }

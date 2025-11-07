@@ -83,8 +83,15 @@ public class ProgramNode implements JottTree {
             if (mainFunc == null) {
                 System.err.println("Semantic Error: Missing main[]:Void function.");
                 allValid = false;
-            } else if (!mainFunc.returnType.equals("Void")) {
+            }
+            // check main should only be returning void
+            else if (!mainFunc.returnType.equals("Void")) {
                 System.err.println("Semantic Error: main[] must return Void.");
+                allValid = false;
+            }
+            // main must not have any parameters
+            if (mainFunc.paramTypes != null && !mainFunc.paramTypes.isEmpty()) {
+                System.err.println("Semantic Error: main[] must not have parameters.");
                 allValid = false;
             }
 
