@@ -33,6 +33,14 @@ public interface BodyStmtNode extends JottTree {
 
     public String convertToJott();
 
+    /* The default implementation simply returns {@code true} to avoid
+     * breaking semantic analysis for unimplemented node types.
+     * This should be overridden in all concrete {@code BodyStmtNode} subclasses.
+     * </p>
+            *
+            * @param symbolTable the current scope’s symbol table
+     * @return {@code true} if this statement is semantically valid; {@code false} otherwise
+     */
     default boolean validateTree(SymbolTable symbolTable) {
         return true;
     }

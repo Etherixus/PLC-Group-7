@@ -51,8 +51,9 @@ public class ReturnStmtNode implements JottTree {
     //Validates this return statement against the expected return type.
     public boolean validateTree(SymbolTable symbolTable, String expectedType) {
         try {
+            // if its null then we should expect its type to be void
             if (expr == null) {
-                // no expression after Return
+                // Valid only if the function expects "Void"
                 if (!expectedType.equals("Void")) {
                     System.err.println("Semantic Error: Return statement missing a value for non-void function.");
                     return false;
@@ -60,14 +61,16 @@ public class ReturnStmtNode implements JottTree {
                 return true;
             }
 
+            // if expression exists, get its type from the symbol table
             String actualType = expr.getType(symbolTable);
 
+            // Compare actual return type with expected
             if (!actualType.equals(expectedType)) {
                 System.err.println("Semantic Error: Return type mismatch. Expected " +
                         expectedType + " but got " + actualType + ".");
                 return false;
             }
-
+            // if everything matches — this return statement is valid
             return true;
 
         } catch (Exception e) {

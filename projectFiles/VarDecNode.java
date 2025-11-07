@@ -33,10 +33,12 @@ public class VarDecNode implements JottTree, BodyStmtNode {
     public void declare(SymbolTable table) throws SemanticSyntaxError {
         String variableName = varName.convertToJott();
 
+        // Check if this variable name already exists in the same scope
         if (table.lookup(variableName) != null) {
             throw new SemanticSyntaxError("Redeclaration of variable: " + variableName);
         }
 
+        // Create a new symbol and register it in the symbol table
         Symbol symbol = new Symbol(variableName, this.varType, -1);
         symbol.returnType = this.varType;
         symbol.isFunction = false;
@@ -64,6 +66,15 @@ public class VarDecNode implements JottTree, BodyStmtNode {
         return "";
     }
 
+    /**
+     * Performs semantic validation on this variable declaration.
+     *
+     * In the current implementation, this returns true because
+     * the actual semantic work (declaring the symbol) happens
+     * inside BodyNode.validateTree(), which calls declare().
+     *
+     * @return true (no internal semantic check is done here)
+     */
     @Override
     public boolean validateTree() {
         return true;

@@ -110,18 +110,17 @@ public class FunctionDefNode implements JottTree{
     @Override
     public boolean validateTree() {
     try{
-        // 1. Validate structure
+        // Validate structure
         if (id == null || returnType == null || body == null) {
             System.err.println("Semantic Error: Incomplete function definition.");
             return false;
         }
 
-        // 2. Build a symbol for this function
+        // Build a symbol for this function
         String funcName = id.convertToJott();
         String retType = returnType.convertToJott();
-        ArrayList<String> paramTypes = new ArrayList<>();
 
-        // 3. Access the global symbol table from ProgramNode
+        // Access the global symbol table from ProgramNode
         // (ProgramNode will pass it to children via SymbolTable.current)
         SymbolTable globalTable = SymbolTable.getCurrentTable();
         if (globalTable == null) {
@@ -129,18 +128,19 @@ public class FunctionDefNode implements JottTree{
             return false;
         }
 
-        // 6. Create a function-local symbol table
+        // Create a function-local symbol table
         SymbolTable funcTable = new SymbolTable(globalTable);
 
         // declare parameters in the local function scope
         params.declareParams(funcTable);
 
-        // 7. Validate its body (recursively)
+        // Validate its body node and everything in it (recursively)
         if (!body.validateTree(funcTable, retType)) {
             System.err.println("Semantic Error: Invalid body in function " + funcName);
             return false;
         }
 
+        // if this function definition node is valid, then return true
         System.out.println("Validated function: " + funcName);
         return true;
 

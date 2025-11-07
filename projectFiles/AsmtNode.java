@@ -51,13 +51,17 @@ public class AsmtNode implements BodyStmtNode {
 
     @Override
     public boolean validateTree() {
+        // This version isn't used for actual validation.
+        // The real logic is in validateTree(SymbolTable) below.
         return false;
     }
 
     @Override
     public boolean validateTree(SymbolTable table) {
         try {
+            // Get variable name
             String varName = idNode.convertToJott();
+            // Lookup variable in current scope
             Symbol sym = table.lookup(varName);
 
             // Check variable exists
@@ -69,6 +73,7 @@ public class AsmtNode implements BodyStmtNode {
             // Get type of right-hand expression
             String exprType = expressionNode.getType(table);
 
+            // Mark variable as initialized
             table.markInitialized(varName);
 
             // check type mismatch
@@ -77,12 +82,11 @@ public class AsmtNode implements BodyStmtNode {
                         varName + " is " + sym.returnType + " but expression is " + exprType);
                 return false;
             }
-
             if (sym.returnType == null) {
                 System.err.println("Semantic Error: Variable " + varName + " has undefined type.");
                 return false;
             }
-
+            // If all checks pass, the assignment is valid
             return true;
 
         } catch (SemanticSyntaxError e) {

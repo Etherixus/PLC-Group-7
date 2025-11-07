@@ -22,12 +22,14 @@ public class IDNode extends ExpressionNode {
     }
 
     public String getType(SymbolTable table) throws SemanticSyntaxError {
+        // gets the symbol from the table by the node's keyword
         Symbol sym = table.lookup(keyword);
         if (sym == null) {
             throw new SemanticSyntaxError("Undeclared identifier: " + keyword);
         }
 
-        // Prefer the variable's declared type; fall back to returnType for functions
+        // If both sym.type and sym.returnType are available, use sym.type first
+        // because it’s the more appropriate one for this situation.
         if (sym.type != null) return sym.type;
         if (sym.returnType != null) return sym.returnType;
 

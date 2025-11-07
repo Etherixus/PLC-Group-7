@@ -48,15 +48,15 @@ public class ProgramNode implements JottTree {
     public boolean validateTree(){
         try{
 
-            // 1. Create a Global symbol table because this is the start of semantic analysis
+            // Create a Global symbol table because this is the start of semantic analysis
             // and it will be the parent of all other child symbol tables
             SymbolTable globalTable = new SymbolTable(null);
 
-            // 2: Set this table as the current scope (for all child nodes)
+            // Set this table as the current scope (for all child nodes)
             // FunctionDefNode and others can now access it using SymbolTable.getCurrentTable()
             SymbolTable.setCurrentTable(globalTable);
 
-            // 3. Add built in functions such as print, concat, and length to the global symbol table
+            // Add built in functions such as print, concat, and length to the global symbol table
             ArrayList<String> any = new ArrayList<>();
             any.add("Any");
             globalTable.addSymbol("print", new Symbol("print", "Void", any, -1));
@@ -65,7 +65,7 @@ public class ProgramNode implements JottTree {
             globalTable.addSymbol("length", new Symbol("length", "Integer",
                     new ArrayList<>(java.util.List.of("String")), -1));
 
-            // 4: Validate each function (which declares itself)
+            // Validate each function (which declares itself)
             boolean allValid = true;
 
             // pass 1: declare all functions in global (no locals created here)
@@ -78,7 +78,7 @@ public class ProgramNode implements JottTree {
                 if (!f.validateTree()) allValid = false;
             }
 
-            // 5: Check that main exists
+            // Check that main exists
             Symbol mainFunc = globalTable.lookup("main");
             if (mainFunc == null) {
                 System.err.println("Semantic Error: Missing main[]:Void function.");
@@ -91,6 +91,7 @@ public class ProgramNode implements JottTree {
             if (allValid) {
                 System.out.println("Semantic analysis completed successfully.");
             }
+            // if everything is valid then return true
             return allValid;
 
         } catch (SemanticSyntaxError e) {

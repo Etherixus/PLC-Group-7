@@ -49,17 +49,6 @@ public class IfStmtNode implements BodyStmtNode{
         ElseNode elseNode1 = ElseNode.parseElseNode(tokens);
         return new IfStmtNode(expressionNode1, body1, elseIfNodes1, elseNode1);
     }
-    /**
-     * For later use
-    public static boolean ElseIfListContainsAReturn(ArrayList<ElseIfNode> elseIfNodes){
-        for(ElseIfNode elseIfNode : elseIfNodes){
-            if(elseIfNode.body.hasReturnStmt()){
-                return true;
-            }
-        }
-        return false;
-    }
-     */
 
     public String convertToJott() {
         String result = "If[";

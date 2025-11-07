@@ -101,6 +101,8 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
         return "";
     }
 
+    // The reason why this function is called getType and not validateTree is because this function returns the actual
+    // types not true or false
     public String getType(SymbolTable table) throws SemanticSyntaxError {
         // Base case: no operator, just return the type of the left operand
         if (Middle == null) {
@@ -115,6 +117,7 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
 
                 table.checkInitialized(name, sym.lineNum);
 
+                // Return declared type
                 if (sym.type != null) return sym.type;
                 if (sym.returnType != null) return sym.returnType;
 
@@ -126,7 +129,7 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
             return "Unknown";
         }
 
-        // ✅ NEW — check both sides before recursion
+        // operator exists — analyze both sides
         if (Left instanceof IDNode) {
             String name = ((IDNode) Left).convertToJott();
             Symbol sym = table.lookup(name);
@@ -142,7 +145,7 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
             table.checkInitialized(name, sym.lineNum);
         }
 
-
+        // Recursively determine type of left operand
         String leftType;
         if (Left instanceof NumberNode) {
             leftType = ((NumberNode) Left).getType();
@@ -153,7 +156,7 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
 
         }
 
-
+        // Recursively determine type of right operand
         String rightType;
         if (Right == null) {
             throw new SemanticSyntaxError("Invalid expression: missing right operand in ExpressionNode");
@@ -175,23 +178,26 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
             return "Boolean";
         }
 
+        // if the type cant be identified then it returns unknown
         return "Unknown";
     }
 
+    /**
+     * Default structural validation method required by the JottTree interface.
+     *
+     * This method is part of the syntactic validation layer of the compiler.
+     * However, in ExpressionNode, all syntactic validation is already handled
+     * during parsing (inside parseExpressionNode()).
+     *
+     * Therefore, this function is not used in semantic analysis
+     * and simply returns false by default.
+     *
+     * thats why its blank
+     */
     @Override
     public boolean validateTree() {
-        // Left must exist and be valid
-        if (Left == null) return false;
-        if (!Left.validateTree()) return false;
 
-        // If there's no operator, it's a single operand expression and is valid
-        if (Middle == null) return true;
-
-        // There is an operator: operator node must be valid and right operand must exist and be valid
-        if (!Middle.validateTree()) return false;
-        if (Right == null) return false;
-        if (!Right.validateTree()) return false;
-        return true;
+        return false;
     }
 }
 

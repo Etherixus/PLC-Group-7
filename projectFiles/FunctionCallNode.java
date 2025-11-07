@@ -27,6 +27,8 @@ public class FunctionCallNode extends ExpressionNode implements BodyStmtNode {
 
         return new FunctionCallNode(name, params);
     }
+
+    // returns the return type of the function call
     public String getReturnType(SymbolTable table) throws SemanticSyntaxError {
         if (!validateTree(table)) {
             throw new SemanticSyntaxError("Invalid function call: " + id.convertToJott());

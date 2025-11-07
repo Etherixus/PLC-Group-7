@@ -121,6 +121,7 @@ public class FunctionParamsNode implements JottTree {
     @Override
     public boolean validateTree() {
         try {
+            // separates the hash into two vars, param name and type
             for (Map.Entry<IDNode, String> entry : params.entrySet()) {
                 String paramName = entry.getKey().convertToJott();
                 String paramType = entry.getValue();

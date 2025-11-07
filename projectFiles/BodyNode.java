@@ -66,6 +66,7 @@ public class BodyNode implements JottTree {
         return "";
     }
 
+    // validates every aspect of things inside of a body bode like variable, assignments, return statements, loops, etc
     public boolean validateTree(SymbolTable parentTable, String expectedReturnType) {
         try {
             // Create a local scope for this body
@@ -74,7 +75,7 @@ public class BodyNode implements JottTree {
             // Validate each body statement in order
             for (BodyStmtNode stmt : bodyStmtNodes) {
 
-                // Variable Declaration
+                // Variable Declaration to symbol table
                 if (stmt instanceof VarDecNode) {
                     VarDecNode varDec = (VarDecNode) stmt;
                     try {
@@ -134,7 +135,7 @@ public class BodyNode implements JottTree {
                 }
             }
 
-            // ✅ All statements validated successfully
+            // All statements validated successfully
             return true;
 
         } catch (Exception e) {
