@@ -2,7 +2,7 @@ package projectFiles;
 
 import provided.Token;
 
-public class SemanticSyntaxError extends Exception {
+public class SemanticSyntaxError extends RuntimeException {
 
     private final String message;
     private final String filename;

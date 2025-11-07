@@ -127,45 +127,33 @@ public class FunctionParamsNode implements JottTree {
     }
 
     @Override
-    public boolean validateTree() {
-        try {
-            // separates the hash into two vars, param name and type
-            for (Map.Entry<IDNode, String> entry : params.entrySet()) {
-                String paramName = entry.getKey().convertToJott();
-                String paramType = entry.getValue();
+    public boolean validateTree() throws SemanticSyntaxError {
+        // separates the hash into two vars, param name and type
+        for (Map.Entry<IDNode, String> entry : params.entrySet()) {
+            String paramName = entry.getKey().convertToJott();
+            String paramType = entry.getValue();
 
-                // Check Valid parameter type
-                if (!(paramType.equals("Integer") || paramType.equals("Double") ||
-                        paramType.equals("String")  || paramType.equals("Boolean"))) {
-                    throw new SemanticSyntaxError(
-                            "Invalid parameter type '" + paramType + "' for parameter '" + paramName + "'"
-                    );
-                }
-
-                // Check Reserved keyword used as parameter name
-                if (paramName.equals("if") || paramName.equals("while") ||
-                        paramName.equals("return") || paramName.equals("Def") ||
-                        paramName.equals("Void") || paramName.equals("Integer") ||
-                        paramName.equals("Double") || paramName.equals("String") ||
-                        paramName.equals("Boolean")) {
-                    throw new SemanticSyntaxError(
-                            "Invalid parameter name (reserved keyword): " + paramName
-                    );
-                }
+            // Check Valid parameter type
+            if (!(paramType.equals("Integer") || paramType.equals("Double") ||
+                    paramType.equals("String")  || paramType.equals("Boolean"))) {
+                throw new SemanticSyntaxError(
+                        "Invalid parameter type '" + paramType + "' for parameter '" + paramName + "'"
+                );
             }
 
-            // all parameters are valid and return true
-            return true;
-
-        } catch (SemanticSyntaxError e) {
-            // Catch and report semantic problems
-            System.err.println("Semantic Error: " + e.getMessage());
-            return false;
-        } catch (Exception e) {
-            // Catch any unexpected runtime exceptions
-            System.err.println("Unexpected Error in FunctionParamsNode.validateTree(): " + e.getMessage());
-            e.printStackTrace();
-            return false;
+            // Check Reserved keyword used as parameter name
+            if (paramName.equals("if") || paramName.equals("while") ||
+                    paramName.equals("return") || paramName.equals("Def") ||
+                    paramName.equals("Void") || paramName.equals("Integer") ||
+                    paramName.equals("Double") || paramName.equals("String") ||
+                    paramName.equals("Boolean")) {
+                throw new SemanticSyntaxError(
+                        "Invalid parameter name (reserved keyword): " + paramName
+                );
+            }
         }
+
+        // all parameters are valid
+        return true;
     }
 }

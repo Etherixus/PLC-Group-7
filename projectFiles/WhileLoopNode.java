@@ -67,36 +67,28 @@ public class WhileLoopNode implements BodyStmtNode{
         return "";
     }
 
-    public boolean validateTree(SymbolTable table) {
-        try {
-            // Check the while condition type
-            String condType = expressionNode.getType(table);
+    public boolean validateTree(SymbolTable table) throws SemanticSyntaxError {
+        // Check the while condition type
+        String condType = expressionNode.getType(table);
 
-            // get the token so we can get the line number
-            Token t = null;
-            if (expressionNode instanceof IDNode) {
-                t = ((IDNode) expressionNode).getToken();
-            }
-
-            if (!condType.equals("Boolean")) {
-                throw new SemanticSyntaxError("While condition must be Boolean but got " + condType, t);
-            }
-
-            SymbolTable loopScope = new SymbolTable(table);
-
-            if (!bodyNode.validateTree(loopScope, "Void")) {
-                throw new SemanticSyntaxError("Invalid statements inside While loop body.", t);
-            }
-
-            // Everything passed
-            return true;
-        } catch (SemanticSyntaxError e) {
-            System.out.println(e.getMessage());
-            return false;
-        } catch (Exception e) {
-            System.out.println("Semantic Error\nUnexpected error: " + e.getMessage());
-            return false;
+        // get the token so we can get the line number
+        Token t = null;
+        if (expressionNode instanceof IDNode) {
+            t = ((IDNode) expressionNode).getToken();
         }
+
+        if (!condType.equals("Boolean")) {
+            throw new SemanticSyntaxError("While condition must be Boolean but got " + condType, t);
+        }
+
+        SymbolTable loopScope = new SymbolTable(table);
+
+        if (!bodyNode.validateTree(loopScope, "Void")) {
+            throw new SemanticSyntaxError("Invalid statements inside While loop body.", t);
+        }
+
+        // Everything passed
+        return true;
     }
 
     @Override

@@ -49,40 +49,30 @@ public class ReturnStmtNode implements JottTree {
 
 
     //Validates this return statement against the expected return type.
-    public boolean validateTree(SymbolTable symbolTable, String expectedType) {
-        try {
-            Token t = null;
-            if (expr != null && expr instanceof IDNode) {
-                t = ((IDNode) expr).getToken();
-            }
-            // if its null then we should expect its type to be void
-            if (expr == null) {
-                // Valid only if the function expects "Void"
-                if (!expectedType.equals("Void")) {
-                    throw new SemanticSyntaxError("Return statement missing a value for non-Void function.", t);
-                }
-                return true;
-            }
-
-            // if expression exists, get its type from the symbol table
-            String actualType = expr.getType(symbolTable);
-
-            // Compare actual return type with expected
-            if (!actualType.equals(expectedType)) {
-                throw new SemanticSyntaxError(
-                        "Return type mismatch. Expected " + expectedType + " but got " + actualType, t);
-            }
-            // if everything matches — this return statement is valid
-            return true;
-
-
-        } catch (SemanticSyntaxError e) {
-            System.out.println(e.getMessage());
-            return false;
-        } catch (Exception e) {
-            System.out.println("Semantic Error\nUnexpected error: " + e.getMessage());
-            return false;
+    public boolean validateTree(SymbolTable symbolTable, String expectedType) throws SemanticSyntaxError {
+        Token t = null;
+        if (expr != null && expr instanceof IDNode) {
+            t = ((IDNode) expr).getToken();
         }
+        // if its null then we should expect its type to be void
+        if (expr == null) {
+            // Valid only if the function expects "Void"
+            if (!expectedType.equals("Void")) {
+                throw new SemanticSyntaxError("Return statement missing a value for non-Void function.", t);
+            }
+            return true;
+        }
+
+        // if expression exists, get its type from the symbol table
+        String actualType = expr.getType(symbolTable);
+
+        // Compare actual return type with expected
+        if (!actualType.equals(expectedType)) {
+            throw new SemanticSyntaxError(
+                    "Return type mismatch. Expected " + expectedType + " but got " + actualType, t);
+        }
+        // if everything matches — this return statement is valid
+        return true;
     }
 
     public boolean hasReturnValue() {

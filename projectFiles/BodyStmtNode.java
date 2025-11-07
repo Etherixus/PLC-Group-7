@@ -41,7 +41,7 @@ public interface BodyStmtNode extends JottTree {
             * @param symbolTable the current scope’s symbol table
      * @return {@code true} if this statement is semantically valid; {@code false} otherwise
      */
-    default boolean validateTree(SymbolTable symbolTable) {
+    default boolean validateTree(SymbolTable symbolTable) throws SemanticSyntaxError {
         return true;
     }
 

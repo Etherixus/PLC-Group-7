@@ -72,24 +72,18 @@ public class ElseIfNode implements JottTree {
         return "";
     }
 
-    public boolean validateTree(SymbolTable table, String expectedReturnType) {
-        try {
-            // Ensure condition is Boolean
-            String conditionType = expressionNode.getType(table);
-            if (!conditionType.equals("Boolean")) {
-                throw new SemanticSyntaxError(
-                        "Elseif condition must be Boolean, got " + conditionType,
-                        (expressionNode instanceof IDNode) ? ((IDNode) expressionNode).getToken() : null
-                );
-            }
-
-            body.validateTree(table, expectedReturnType);
-            return true;
-        } catch (Exception e) {
-            System.err.println("Unexpected error in ElseIfNode.validateTree(): " + e.getMessage());
-            e.printStackTrace();
-            return false;
+    public boolean validateTree(SymbolTable table, String expectedReturnType) throws SemanticSyntaxError {
+        // Ensure condition is Boolean
+        String conditionType = expressionNode.getType(table);
+        if (!conditionType.equals("Boolean")) {
+            throw new SemanticSyntaxError(
+                    "Elseif condition must be Boolean, got " + conditionType,
+                    (expressionNode instanceof IDNode) ? ((IDNode) expressionNode).getToken() : null
+            );
         }
+
+        body.validateTree(table, expectedReturnType);
+        return true;
     }
 
     @Override

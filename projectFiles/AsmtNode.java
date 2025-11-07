@@ -58,45 +58,38 @@ public class AsmtNode implements BodyStmtNode {
     }
 
     @Override
-    public boolean validateTree(SymbolTable table) {
-        try {
-            // Get variable name
-            String varName = idNode.convertToJott();
-            // Lookup variable in current scope
-            Symbol sym = table.lookup(varName);
-            // get token for error processing
-            Token t = idNode.getToken();
+    public boolean validateTree(SymbolTable table) throws SemanticSyntaxError {
+        // Get variable name
+        String varName = idNode.convertToJott();
+        // Lookup variable in current scope
+        Symbol sym = table.lookup(varName);
+        // get token for error processing
+        Token t = idNode.getToken();
 
-            // Check variable exists
-            if (sym == null) {
-                throw new SemanticSyntaxError("Undeclared variable " + varName, t);
-            }
-
-            // Get type of right-hand expression
-            String exprType = expressionNode.getType(table);
-
-            // Mark variable as initialized
-            table.markInitialized(varName);
-
-            // check type mismatch
-            if (!sym.returnType.equals(exprType)) {
-                throw new SemanticSyntaxError("Variable " + varName + " has undefined type.", t);
-            }
-            if (sym.returnType == null) {
-                throw new SemanticSyntaxError(
-                        "Type mismatch in assignment: " + varName +
-                                " is " + sym.returnType + " but expression is " + exprType, t);
-            }
-            // If all checks pass, the assignment is valid
-            return true;
-
-        } catch (SemanticSyntaxError e) {
-            System.err.println("Semantic Error: " + e.getMessage());
-            return false;
-
-        } catch (Exception e) {
-            System.out.println("Semantic Error\nUnexpected error: " + e.getMessage());
-            return false;
+        // Check variable exists
+        if (sym == null) {
+            throw new SemanticSyntaxError("Undeclared variable " + varName, t);
         }
+
+        // Get type of right-hand expression
+        String exprType = expressionNode.getType(table);
+
+        // Mark variable as initialized
+        table.markInitialized(varName);
+
+        // check type mismatch
+        if (sym.returnType == null) {
+            throw new SemanticSyntaxError(
+                    "Variable " + varName + " has undefined type.", t);
+        }
+
+        if (!sym.returnType.equals(exprType)) {
+            throw new SemanticSyntaxError(
+                    "Type mismatch in assignment: " + varName +
+                            " is " + sym.returnType + " but expression is " + exprType, t);
+        }
+
+        // If all checks pass, the assignment is valid
+        return true;
     }
 }

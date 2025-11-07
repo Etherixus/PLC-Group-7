@@ -90,41 +90,32 @@ public class IfStmtNode implements BodyStmtNode{
         return "";
     }
 
-    public boolean validateTree(SymbolTable table, String expectedReturnType) throws SemanticSyntaxError {
-        try {
-            // Check the condition expression
-            String condType = expressionNode.getType(table);
-            Token t = null;
-            if (expressionNode instanceof IDNode) {
-                t = ((IDNode) expressionNode).getToken();
-            }
-
-            if (!condType.equals("Boolean")) {
-                throw new SemanticSyntaxError("If-statement condition must be Boolean, got " + condType, t);
-            }
-
-            // Validate the main if-body
-            if (!body.validateTree(table, expectedReturnType)) return false;
-
-            // Validate all ElseIf nodes
-            if (elseIfNodes != null) {
-                for (ElseIfNode eif : elseIfNodes) {
-                    if (!eif.validateTree(table, expectedReturnType)) return false;
-                }
-            }
-
-            // Validate optional Else
-            if (elseNode != null && !elseNode.validateTree(table, expectedReturnType)) return false;
-
-            return true;
-
-        } catch (SemanticSyntaxError e) {
-            System.out.println(e.getMessage());
-            return false;
-        } catch (Exception e) {
-            System.out.println("Semantic Error\nUnexpected error: " + e.getMessage());
-            return false;
+    public boolean validateTree(SymbolTable table, String expectedReturnType) {
+        // Check the condition expression
+        String condType = expressionNode.getType(table);
+        Token t = null;
+        if (expressionNode instanceof IDNode) {
+            t = ((IDNode) expressionNode).getToken();
         }
+
+        if (!condType.equals("Boolean")) {
+            throw new SemanticSyntaxError("If-statement condition must be Boolean, got " + condType, t);
+        }
+
+        // Validate the main if-body
+        if (!body.validateTree(table, expectedReturnType)) return false;
+
+        // Validate all ElseIf nodes
+        if (elseIfNodes != null) {
+            for (ElseIfNode eif : elseIfNodes) {
+                if (!eif.validateTree(table, expectedReturnType)) return false;
+            }
+        }
+
+        // Validate optional Else
+        if (elseNode != null && !elseNode.validateTree(table, expectedReturnType)) return false;
+
+        return true;
     }
 
 
