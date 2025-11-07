@@ -17,7 +17,7 @@ public class ElseIfNode implements JottTree {
         this.body = body;
     }
 
-    public static ElseIfNode parseElseNode(ArrayList<Token> tokens) throws ParserSyntaxError {
+    public static ElseIfNode parseElseIfNode(ArrayList<Token> tokens) throws ParserSyntaxError {
         if(tokens.get(0).getTokenType() != TokenType.ID_KEYWORD || !tokens.get(0).getToken().equals("Elseif")){
             throw new ParserSyntaxError("Expected Elseif got: ", tokens.get(0));
         }
@@ -70,6 +70,24 @@ public class ElseIfNode implements JottTree {
     @Override
     public String convertToPython() {
         return "";
+    }
+
+    public boolean validateTree(SymbolTable table, String expectedReturnType) {
+        try {
+            // Ensure condition is Boolean
+            String condtionType = expressionNode.getType(table);
+            if (!condtionType.equals("Boolean")) {
+                System.err.println("Semantic Error: Elseif condition must be Boolean, got " + condtionType);
+                return false;
+            }
+
+            // Validate body with same return expectations
+            return body.validateTree(table, expectedReturnType);
+        } catch (Exception e) {
+            System.err.println("Unexpected error in ElseIfNode.validateTree(): " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override

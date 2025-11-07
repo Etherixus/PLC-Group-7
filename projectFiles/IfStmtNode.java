@@ -46,7 +46,8 @@ public class IfStmtNode implements BodyStmtNode{
         while (!tokens.isEmpty()
                 && tokens.get(0).getTokenType() == TokenType.ID_KEYWORD
                 && tokens.get(0).getToken().equals("Elseif")) {
-            elseIfNodes1.add(ElseIfNode.parseElseNode(tokens));
+            elseIfNodes1.add(ElseIfNode.parseElseIfNode(tokens));
+
         }
         ElseNode elseNode1 = null;
         if (!tokens.isEmpty()
@@ -104,7 +105,7 @@ public class IfStmtNode implements BodyStmtNode{
             // Validate all ElseIf nodes
             if (elseIfNodes != null) {
                 for (ElseIfNode eif : elseIfNodes) {
-                    if (!eif.validateTree()) return false;
+                    if (!eif.validateTree(table, expectedReturnType)) return false;
                 }
             }
 
