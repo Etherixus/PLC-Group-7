@@ -94,9 +94,13 @@ public class IfStmtNode implements BodyStmtNode{
         try {
             // Check the condition expression
             String condType = expressionNode.getType(table);
+            Token t = null;
+            if (expressionNode instanceof IDNode) {
+                t = ((IDNode) expressionNode).getToken();
+            }
+
             if (!condType.equals("Boolean")) {
-                System.err.println("Semantic Error: If-statement condition must be Boolean, got " + condType);
-                return false;
+                throw new SemanticSyntaxError("If-statement condition must be Boolean, got " + condType, t);
             }
 
             // Validate the main if-body
@@ -114,9 +118,11 @@ public class IfStmtNode implements BodyStmtNode{
 
             return true;
 
+        } catch (SemanticSyntaxError e) {
+            System.out.println(e.getMessage());
+            return false;
         } catch (Exception e) {
-            System.err.println("Unexpected error in IfStmtNode.validateTree(): " + e.getMessage());
-            e.printStackTrace();
+            System.out.println("Semantic Error\nUnexpected error: " + e.getMessage());
             return false;
         }
     }

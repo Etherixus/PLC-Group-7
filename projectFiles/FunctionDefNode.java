@@ -112,8 +112,7 @@ public class FunctionDefNode implements JottTree{
         try{
             // Validate structure
             if (id == null || returnType == null || body == null) {
-                System.err.println("Semantic Error: Incomplete function definition.");
-                return false;
+                throw new SemanticSyntaxError("Incomplete function definition.", id.getToken());
             }
 
             // Build a symbol for this function
@@ -124,8 +123,7 @@ public class FunctionDefNode implements JottTree{
             // (ProgramNode will pass it to children via SymbolTable.current)
             SymbolTable globalTable = SymbolTable.getCurrentTable();
             if (globalTable == null) {
-                System.err.println("Semantic Error: No active symbol table for function validation.");
-                return false;
+                throw new SemanticSyntaxError("No active symbol table for function validation.", id.getToken());
             }
 
             // Create a function-local symbol table
@@ -136,25 +134,22 @@ public class FunctionDefNode implements JottTree{
 
             // Special semantic rule: Void functions cannot return a value
             if (retType.equals("Void") && body.hasReturnValue()) {
-                System.err.println("Semantic Error: Cannot return a value from a Void function.");
-                return false;
+                throw new SemanticSyntaxError("Cannot return a value from a Void function.", id.getToken());
             }
 
             // Validate its body node and everything in it (recursively)
             if (!body.validateTree(funcTable, retType)) {
-                System.err.println("Semantic Error: Invalid body in function " + funcName);
-                return false;
+                throw new SemanticSyntaxError("Invalid body in function " + funcName, id.getToken());
             }
 
-            // if this function definition node is valid, then return true
-            System.out.println("Validated function: " + funcName);
+
             return true;
 
         } catch (SemanticSyntaxError e) {
-            System.err.println("Semantic Error: " + e.getMessage());
+            System.out.println(e.getMessage());
             return false;
         } catch (Exception e) {
-            System.err.println("Unexpected Error in FunctionDefNode: " + e.getMessage());
+            System.out.println("Semantic Error\nUnexpected error: " + e.getMessage());
             return false;
         }
     }

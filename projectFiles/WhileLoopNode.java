@@ -71,28 +71,30 @@ public class WhileLoopNode implements BodyStmtNode{
         try {
             // Check the while condition type
             String condType = expressionNode.getType(table);
-            if (!condType.equals("Boolean")) {
-                System.err.println("Semantic Error: While condition must be Boolean but got " + condType);
-                return false;
+
+            // get the token so we can get the line number
+            Token t = null;
+            if (expressionNode instanceof IDNode) {
+                t = ((IDNode) expressionNode).getToken();
             }
 
-            // Create a new local scope for the loop body
+            if (!condType.equals("Boolean")) {
+                throw new SemanticSyntaxError("While condition must be Boolean but got " + condType, t);
+            }
+
             SymbolTable loopScope = new SymbolTable(table);
 
-            // Validate all statements in the loop body
             if (!bodyNode.validateTree(loopScope, "Void")) {
-                System.err.println("Semantic Error: Invalid statements inside While loop body.");
-                return false;
+                throw new SemanticSyntaxError("Invalid statements inside While loop body.", t);
             }
 
             // Everything passed
             return true;
         } catch (SemanticSyntaxError e) {
-            System.err.println("Semantic Error in WhileLoopNode: " + e.getMessage());
+            System.out.println(e.getMessage());
             return false;
         } catch (Exception e) {
-            System.err.println("Unexpected error in WhileLoopNode.validateTree(): " + e.getMessage());
-            e.printStackTrace();
+            System.out.println("Semantic Error\nUnexpected error: " + e.getMessage());
             return false;
         }
     }

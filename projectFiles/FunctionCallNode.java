@@ -30,36 +30,41 @@ public class FunctionCallNode extends ExpressionNode implements BodyStmtNode {
 
     // returns the return type of the function call
     public String getReturnType(SymbolTable table) throws SemanticSyntaxError {
-        if (!validateTree(table)) {
-            throw new SemanticSyntaxError("Invalid function call: " + id.convertToJott());
+        final String funcName = id.convertToJott();
+
+        // Look up the function symbol
+        Symbol sym = table.lookup(funcName);
+        // if the lookup returns null then throw an error
+        if (sym == null) {
+            Token t = id.getToken();
+            throw new SemanticSyntaxError("Call to unknown function " + funcName, t);
         }
 
-        Symbol sym = table.lookup(id.convertToJott());
-        return sym != null ? sym.returnType : "Unknown";
+        validateTree(table);
+
+        return sym.returnType;
     }
 
     public boolean validateTree(SymbolTable table) {
         try {
             String funcName = id.convertToJott();
+            Token t = id.getToken();
 
             // Lookup function in the symbol table chain
             Symbol funcSymbol = table.lookup(funcName);
             if (funcSymbol == null) {
                 System.err.println("Semantic Error: Undeclared function '" + funcName + "'");
-                return false;
             }
 
             // Must be a function, not a variable
             if (!funcSymbol.isFunction) {
-                System.err.println("Semantic Error: '" + funcName + "' is not a function.");
-                return false;
+                throw new SemanticSyntaxError("'" + funcName + "' is not a function", t);
             }
 
             // gets expected parameter count
             int expectedCount = (funcSymbol.paramTypes != null) ? funcSymbol.paramTypes.size() : 0;
-
-            //Get actual parameter count from this call
             int actualCount = 0;
+
             if (params != null && params.getParamsExprList() != null) {
                 actualCount = params.getParamsExprList().size();
 
@@ -70,9 +75,10 @@ public class FunctionCallNode extends ExpressionNode implements BodyStmtNode {
             }
             // Compare argument count
             if (expectedCount != actualCount) {
-                System.err.println("Semantic Error: Function '" + funcName + "' expects "
-                        + expectedCount + " argument(s) but got " + actualCount + ".");
-                return false;
+                throw new SemanticSyntaxError(
+                        "Function '" + funcName + "' expects " + expectedCount +
+                                " argument(s) but got " + actualCount, t
+                );
             }
 
             // type checking for each parameter
@@ -82,17 +88,16 @@ public class FunctionCallNode extends ExpressionNode implements BodyStmtNode {
 
                 // Allow "Any" for the print function
                 if (!expectedType.equals("Any") && !expectedType.equals(actualType)) {
-                    System.err.println("Semantic Error: Parameter " + (i + 1)
-                            + " of function '" + funcName + "' expects " + expectedType
-                            + " but got " + actualType);
-                    return false;
+                    throw new SemanticSyntaxError(
+                            "Parameter " + (i + 1) + " of function '" + funcName +
+                                    "' expects " + expectedType + " but got " + actualType, t
+                    );
                 }
             }
 
             return true;
         } catch (Exception e) {
-            System.err.println("Unexpected error in FunctionCallNode.validateTree(): " + e.getMessage());
-            e.printStackTrace();
+            System.out.println("Semantic Error\nUnexpected error: " + e.getMessage());
             return false;
         }
     }

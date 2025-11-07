@@ -133,26 +133,16 @@ public class BodyNode implements JottTree {
 
             // Validate Return Statement
             if (returnStmtNode != null) {
-
-                // Special rule for the main function: Void functions CANNOT return a value
                 if (expectedReturnType.equals("Void") && returnStmtNode.hasReturnValue()) {
-                    System.err.println("Semantic Error: Cannot return a value from a Void function.");
-                    return false;
+                    throw new SemanticSyntaxError("Cannot return a value from a Void function.",
+                            (returnStmtNode.expr != null && returnStmtNode.expr instanceof IDNode)
+                                    ? ((IDNode) returnStmtNode.expr).getToken() : null);
                 }
 
-                // Otherwise, validate the return statement normally
-                if (!returnStmtNode.validateTree(localTable, expectedReturnType)) {
-                    System.err.println("Semantic Error: Return type mismatch in function (expected "
-                            + expectedReturnType + ")");
-                    return false;
-                }
+                returnStmtNode.validateTree(localTable, expectedReturnType);
 
-            } else {
-                // Missing return for non-void functions
-                if (!expectedReturnType.equals("Void")) {
-                    System.err.println("Semantic Error: Missing return statement for non-void function.");
-                    return false;
-                }
+            } else if (!expectedReturnType.equals("Void")) {
+                throw new SemanticSyntaxError("Missing return statement for non-Void function.", null);
             }
 
             // All statements validated successfully

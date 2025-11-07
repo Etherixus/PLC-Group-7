@@ -48,6 +48,7 @@ public class SymbolTable {
     }
 
 
+
      // Marks a variable as initialized after assignment.
      // Safe no-op for functions (ignored if isFunction == true).
     public void markInitialized(String name) {

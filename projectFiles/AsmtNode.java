@@ -10,6 +10,7 @@ public class AsmtNode implements BodyStmtNode {
     IDNode idNode;
     ExpressionNode expressionNode;
 
+
     public AsmtNode(IDNode idNode, ExpressionNode expressionNode) {
         this.idNode = idNode;
         this.expressionNode = expressionNode;
@@ -63,11 +64,12 @@ public class AsmtNode implements BodyStmtNode {
             String varName = idNode.convertToJott();
             // Lookup variable in current scope
             Symbol sym = table.lookup(varName);
+            // get token for error processing
+            Token t = idNode.getToken();
 
             // Check variable exists
             if (sym == null) {
-                System.err.println("Semantic Error: Undeclared variable: " + varName);
-                return false;
+                throw new SemanticSyntaxError("Undeclared variable " + varName, t);
             }
 
             // Get type of right-hand expression
@@ -78,13 +80,12 @@ public class AsmtNode implements BodyStmtNode {
 
             // check type mismatch
             if (!sym.returnType.equals(exprType)) {
-                System.err.println("Semantic Error: Type mismatch in assignment: " +
-                        varName + " is " + sym.returnType + " but expression is " + exprType);
-                return false;
+                throw new SemanticSyntaxError("Variable " + varName + " has undefined type.", t);
             }
             if (sym.returnType == null) {
-                System.err.println("Semantic Error: Variable " + varName + " has undefined type.");
-                return false;
+                throw new SemanticSyntaxError(
+                        "Type mismatch in assignment: " + varName +
+                                " is " + sym.returnType + " but expression is " + exprType, t);
             }
             // If all checks pass, the assignment is valid
             return true;
@@ -94,8 +95,7 @@ public class AsmtNode implements BodyStmtNode {
             return false;
 
         } catch (Exception e) {
-            System.err.println("Unexpected error in AsmtNode.validateTree(): " + e.getMessage());
-            e.printStackTrace();
+            System.out.println("Semantic Error\nUnexpected error: " + e.getMessage());
             return false;
         }
     }

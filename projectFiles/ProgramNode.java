@@ -2,6 +2,7 @@ package projectFiles;
 
 import provided.JottTree;
 import provided.Token;
+import provided.TokenType;
 
 import java.util.ArrayList;
 
@@ -78,21 +79,26 @@ public class ProgramNode implements JottTree {
                 if (!f.validateTree()) allValid = false;
             }
 
-            // Check that main exists
+
             Symbol mainFunc = globalTable.lookup("main");
+            // Check that main exists
             if (mainFunc == null) {
-                System.err.println("Semantic Error: Missing main[]:Void function.");
-                allValid = false;
-            }
-            // check main should only be returning void
-            else if (!mainFunc.returnType.equals("Void")) {
-                System.err.println("Semantic Error: main[] must return Void.");
-                allValid = false;
-            }
-            // main must not have any parameters
-            if (mainFunc.paramTypes != null && !mainFunc.paramTypes.isEmpty()) {
-                System.err.println("Semantic Error: main[] must not have parameters.");
-                allValid = false;
+                throw new SemanticSyntaxError(
+                        "Missing main[]:Void function.",
+                        new Token("main", "main.jott", -1, TokenType.ID_KEYWORD)
+                );
+                // check main should only be returning void
+            } else if (!mainFunc.returnType.equals("Void")) {
+                throw new SemanticSyntaxError(
+                        "main[] must return Void.",
+                        new Token("main", "main.jott", -1, TokenType.ID_KEYWORD)
+                );
+                // main must not have any parameters
+            } else if (mainFunc.paramTypes != null && !mainFunc.paramTypes.isEmpty()) {
+                throw new SemanticSyntaxError(
+                        "main[] must not have parameters.",
+                        new Token("main", "main.jott", -1, TokenType.ID_KEYWORD)
+                );
             }
 
             if (allValid) {
@@ -102,12 +108,14 @@ public class ProgramNode implements JottTree {
             return allValid;
 
         } catch (SemanticSyntaxError e) {
-            System.err.println("Semantic Error: " + e.getMessage());
-            return false;
-        } catch (Exception e) {
-            System.err.println("Unexpected Error in ProgramNode: " + e.getMessage());
+            // report all errors to System.err
+            System.err.println(e.getMessage());
             return false;
 
+        } catch (Exception e) {
+            // Catch-all for unexpected internal issues
+            System.err.println("Semantic Error\nUnexpected error: " + e.getMessage());
+            return false;
         }
 
     }
