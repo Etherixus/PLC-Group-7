@@ -47,7 +47,6 @@ public class ProgramNode implements JottTree {
 
     @Override
     public boolean validateTree(){
-        try{
 
             // Create a Global symbol table because this is the start of semantic analysis
             // and it will be the parent of all other child symbol tables
@@ -106,17 +105,6 @@ public class ProgramNode implements JottTree {
             }
             // if everything is valid then return true
             return allValid;
-
-        } catch (SemanticSyntaxError e) {
-            // Print formatted semantic error and halt immediately
-            System.err.println(e.getMessage());
-            System.exit(1);
-            return false; // unreachable, but keeps compiler happy
-        } catch (Exception e) {
-            System.err.println("Semantic Error\nUnexpected error: " + e.getMessage());
-            System.exit(1);
-            return false;
-        }
 
     }
 }

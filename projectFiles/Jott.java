@@ -1,8 +1,7 @@
-package provided;
+package projectFiles;
 
-import projectFiles.ParserSyntaxError;
-import projectFiles.ProgramNode;
-import projectFiles.SemanticSyntaxError;
+import provided.JottParser;
+import provided.JottTokenizer;
 import provided.Token;
 import java.io.File;
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ public class Jott {
             //    return;
             //}
 
-            String filename = "/Users/andrew/IdeaProjects/PLC-Group-7/provided/testtest.jott";
+            String filename = "C:/Users/logan/IdeaProjects/PLC-Group-7/provided/testtest.jott";
             File file = new File(filename);
 
             if (!file.exists()) {
