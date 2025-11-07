@@ -43,6 +43,10 @@ public class ElseIfNode implements JottTree {
         return new ElseIfNode(expression, body);
     }
 
+    public boolean hasReturn(){
+        return body.hasReturn();
+    }
+
     @Override
     public String convertToJott() {
         String result = "Elseif[";

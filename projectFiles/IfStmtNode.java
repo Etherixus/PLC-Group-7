@@ -82,23 +82,32 @@ public class IfStmtNode implements BodyStmtNode{
 
     @Override
     public boolean validateTree() {
+        boolean checkForReturn = false;
         // expression and body must exist and validate
         if (expressionNode == null) return false;
         if (!expressionNode.validateTree()) return false;
 
         if (body == null) return false;
         if (!body.validateTree()) return false;
+        // If the if stmt has a reutrn stmt set flag to check if all others have a return
+        if (body.hasReturn()) checkForReturn = true;
 
         // validate any ElseIf nodes
         if (elseIfNodes != null) {
             for (ElseIfNode eif : elseIfNodes) {
                 if (eif == null) return false;
                 if (!eif.validateTree()) return false;
+                // If any conditional node has a return they all must
+                if (eif.hasReturn() && !checkForReturn) return false;
+                else if (!eif.hasReturn() && checkForReturn) return false;
             }
         }
 
         // validate optional else node
         if (elseNode != null && !elseNode.validateTree()) return false;
+        // If all other nodes have a return the else must as well
+        if (elseNode.hasReturn() && !checkForReturn) return false;
+        else if (!elseNode.hasReturn() && checkForReturn) return false;
 
         return true;
     }

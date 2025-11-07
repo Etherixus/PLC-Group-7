@@ -33,6 +33,10 @@ public class ElseNode implements JottTree {
         return new ElseNode(body);
     }
 
+    public boolean hasReturn(){
+        return body.hasReturn();
+    }
+
     @Override
     public String convertToJott() {
         String result = "Else{";

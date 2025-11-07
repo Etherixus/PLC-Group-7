@@ -35,6 +35,10 @@ public class BodyNode implements JottTree {
         return new BodyNode(bodyStmtNodes, returnState);
     }
 
+    public boolean hasReturn(){
+        return returnStmtNode != null;
+    }
+
 
     @Override
     public String convertToJott(){
