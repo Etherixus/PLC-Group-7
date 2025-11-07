@@ -20,6 +20,9 @@ public class VarDecNode implements JottTree, BodyStmtNode {
         }
         else {
             String type = tokens.get(0).getToken();
+            if(!VariableTypes.isValidVariableType(type)){
+                throw new ParserSyntaxError("Expected a valid variable type but got: " + type, tokens.get(0));
+            }
             tokens.remove(0);
             IDNode name = IDNode.parseIDNode(tokens);
             if(tokens.get(0).getTokenType() != TokenType.SEMICOLON){
