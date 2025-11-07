@@ -90,7 +90,7 @@ public class IfStmtNode implements BodyStmtNode{
         return "";
     }
 
-    public boolean validateTree(SymbolTable table, String expectedReturnType) {
+    public boolean validateTree(SymbolTable table, String expectedReturnType) throws SemanticSyntaxError {
         try {
             // Check the condition expression
             String condType = expressionNode.getType(table);

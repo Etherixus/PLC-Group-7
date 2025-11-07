@@ -108,13 +108,13 @@ public class ProgramNode implements JottTree {
             return allValid;
 
         } catch (SemanticSyntaxError e) {
-            // report all errors to System.err
+            // Print formatted semantic error and halt immediately
             System.err.println(e.getMessage());
-            return false;
-
+            System.exit(1);
+            return false; // unreachable, but keeps compiler happy
         } catch (Exception e) {
-            // Catch-all for unexpected internal issues
             System.err.println("Semantic Error\nUnexpected error: " + e.getMessage());
+            System.exit(1);
             return false;
         }
 

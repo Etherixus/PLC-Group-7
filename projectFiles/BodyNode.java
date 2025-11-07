@@ -71,8 +71,8 @@ public class BodyNode implements JottTree {
     }
 
     // validates every aspect of things inside of a body bode like variable, assignments, return statements, loops, etc
-    public boolean validateTree(SymbolTable parentTable, String expectedReturnType) {
-        try {
+    public boolean validateTree(SymbolTable parentTable, String expectedReturnType) throws SemanticSyntaxError {
+
             // Create a local scope for this body
             SymbolTable localTable = new SymbolTable(parentTable);
 
@@ -82,77 +82,51 @@ public class BodyNode implements JottTree {
                 // Variable Declaration to symbol table
                 if (stmt instanceof VarDecNode) {
                     VarDecNode varDec = (VarDecNode) stmt;
-                    try {
-                        varDec.declare(localTable);
-                    } catch (SemanticSyntaxError e) {
-                        System.err.println("Semantic Error in variable declaration: " + e.getMessage());
-                        return false;
-                    }
+                    varDec.declare(localTable);
                 }
 
                 // Assignment
                 else if (stmt instanceof AsmtNode) {
-                    if (!((AsmtNode) stmt).validateTree(localTable)) {
-                        System.err.println("Semantic Error in assignment statement.");
-                        return false;
-                    }
+                    ((AsmtNode) stmt).validateTree(localTable);
                 }
 
                 // While Loop
                 else if (stmt instanceof WhileLoopNode) {
-                    if (!((WhileLoopNode) stmt).validateTree(localTable)) {
-                        System.err.println("Semantic Error in while loop statement.");
-                        return false;
-                    }
+                    ((WhileLoopNode) stmt).validateTree(localTable);
                 }
 
                 // Function Call
                 else if (stmt instanceof FunctionCallNode) {
-                    if (!((FunctionCallNode) stmt).validateTree(localTable)) {
-                        System.err.println("Semantic Error in function call statement.");
-                        return false;
-                    }
+                    ((FunctionCallNode) stmt).validateTree(localTable);
                 }
-
                 else if (stmt instanceof IfStmtNode) {
-                    if (!((IfStmtNode) stmt).validateTree(localTable, expectedReturnType)) {
-                        System.err.println("Semantic Error in if-statement.");
-                        return false;
-                    }
+                    ((IfStmtNode) stmt).validateTree(localTable, expectedReturnType);
                 }
 
                 // Any Other Node Type
                 else {
-                    if (!stmt.validateTree()) {
-                        System.err.println("Semantic Error in body statement: "
-                                + stmt.getClass().getSimpleName());
-                        return false;
-                    }
+                    stmt.validateTree();
                 }
             }
 
             // Validate Return Statement
             if (returnStmtNode != null) {
                 if (expectedReturnType.equals("Void") && returnStmtNode.hasReturnValue()) {
-                    throw new SemanticSyntaxError("Cannot return a value from a Void function.",
+                    throw new SemanticSyntaxError(
+                            "Cannot return a value from a Void function.",
                             (returnStmtNode.expr != null && returnStmtNode.expr instanceof IDNode)
-                                    ? ((IDNode) returnStmtNode.expr).getToken() : null);
+                                    ? ((IDNode) returnStmtNode.expr).getToken() : null
+                    );
                 }
 
                 returnStmtNode.validateTree(localTable, expectedReturnType);
-
             } else if (!expectedReturnType.equals("Void")) {
                 throw new SemanticSyntaxError("Missing return statement for non-Void function.", null);
             }
 
-            // All statements validated successfully
+            // if all nodes within the body are validated then return true
             return true;
 
-        } catch (Exception e) {
-            System.err.println("Unexpected error in BodyNode.validateTree(): " + e.getMessage());
-            e.printStackTrace();
-            return false;
-        }
     }
 
     @Override

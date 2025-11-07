@@ -61,10 +61,12 @@ public class ElseNode implements JottTree {
     }
 
 
-    public boolean validateTree(SymbolTable symbolTable, String expectedType) {
+    public boolean validateTree(SymbolTable symbolTable, String expectedType)
+            throws SemanticSyntaxError {
         if (body == null) return false;
         return body.validateTree(symbolTable, expectedType);
     }
+
     @Override
     public boolean validateTree() {
         if (body == null) return false;
