@@ -60,6 +60,11 @@ public class ElseNode implements JottTree {
         return "";
     }
 
+
+    public boolean validateTree(SymbolTable symbolTable, String expectedType) {
+        if (body == null) return false;
+        return body.validateTree(symbolTable, expectedType);
+    }
     @Override
     public boolean validateTree() {
         if (body == null) return false;

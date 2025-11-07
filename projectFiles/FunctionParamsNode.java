@@ -112,9 +112,17 @@ public class FunctionParamsNode implements JottTree {
             if (funcTable.lookup(paramName) != null) {
                 throw new SemanticSyntaxError("Duplicate parameter name: " + paramName);
             }
+            // Create the parameter symbol
+            Symbol paramSymbol = new Symbol(paramName, paramType, -1);
 
-            // Add parameter as a variable to the function's local scope
-            funcTable.addSymbol(paramName, new Symbol(paramName, paramType, -1));
+            // Mark parameters as initialized — they come from the function call
+            paramSymbol.initialized = true;
+
+            paramSymbol.lineNum = 0;
+
+            // Add parameter to the function's local symbol table
+            funcTable.addSymbol(paramName, paramSymbol);
+
         }
     }
 

@@ -114,6 +114,13 @@ public class BodyNode implements JottTree {
                     }
                 }
 
+                else if (stmt instanceof IfStmtNode) {
+                    if (!((IfStmtNode) stmt).validateTree(localTable, expectedReturnType)) {
+                        System.err.println("Semantic Error in if-statement.");
+                        return false;
+                    }
+                }
+
                 // Any Other Node Type
                 else {
                     if (!stmt.validateTree()) {

@@ -43,11 +43,20 @@ public class IfStmtNode implements BodyStmtNode{
         }
         tokens.remove(0);
         ArrayList<ElseIfNode> elseIfNodes1 = new ArrayList<>();
-        while(tokens.get(0).getTokenType() == TokenType.ID_KEYWORD && tokens.get(0).getToken().equals("Elseif")){
+        while (!tokens.isEmpty()
+                && tokens.get(0).getTokenType() == TokenType.ID_KEYWORD
+                && tokens.get(0).getToken().equals("Elseif")) {
             elseIfNodes1.add(ElseIfNode.parseElseNode(tokens));
         }
-        ElseNode elseNode1 = ElseNode.parseElseNode(tokens);
+        ElseNode elseNode1 = null;
+        if (!tokens.isEmpty()
+                && tokens.get(0).getTokenType() == TokenType.ID_KEYWORD
+                && tokens.get(0).getToken().equals("Else")) {
+            elseNode1 = ElseNode.parseElseNode(tokens);
+        }
+
         return new IfStmtNode(expressionNode1, body1, elseIfNodes1, elseNode1);
+
     }
 
     public String convertToJott() {
@@ -79,6 +88,38 @@ public class IfStmtNode implements BodyStmtNode{
     public String convertToPython() {
         return "";
     }
+
+    public boolean validateTree(SymbolTable table, String expectedReturnType) {
+        try {
+            // Check the condition expression
+            String condType = expressionNode.getType(table);
+            if (!condType.equals("Boolean")) {
+                System.err.println("Semantic Error: If-statement condition must be Boolean, got " + condType);
+                return false;
+            }
+
+            // Validate the main if-body
+            if (!body.validateTree(table, expectedReturnType)) return false;
+
+            // Validate all ElseIf nodes
+            if (elseIfNodes != null) {
+                for (ElseIfNode eif : elseIfNodes) {
+                    if (!eif.validateTree()) return false;
+                }
+            }
+
+            // Validate optional Else
+            if (elseNode != null && !elseNode.validateTree(table, expectedReturnType)) return false;
+
+            return true;
+
+        } catch (Exception e) {
+            System.err.println("Unexpected error in IfStmtNode.validateTree(): " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
     @Override
     public boolean validateTree() {
