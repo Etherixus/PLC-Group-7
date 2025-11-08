@@ -124,8 +124,8 @@ public class IfStmtNode implements BodyStmtNode{
             // validate optional else node
             if (elseNode != null && !elseNode.validateTree()) return false;
             // If all other nodes have a return the else must as well
-            if (elseNode.hasReturn() && !checkForReturn) return false;
-            else if (!elseNode.hasReturn() && checkForReturn) return false;
+            if (elseNode != null && elseNode.hasReturn() && !checkForReturn) return false;
+            else if (elseNode != null && !elseNode.hasReturn() && checkForReturn) return false;
 
         return true;
     }
