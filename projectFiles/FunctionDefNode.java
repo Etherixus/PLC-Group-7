@@ -140,7 +140,7 @@ public class FunctionDefNode implements JottTree{
         if (!body.validateTree(funcTable, retType)) {
             throw new SemanticSyntaxError("Invalid body in function " + funcName, id.getToken());
         }
-        if(!retType.equals("Void") && !body.hasReturnValue()){
+        if(!retType.equals("Void") && !body.hasReturnValue() && !body.hasValidIfReturnPaths()){
             throw new SemanticSyntaxError("Missing return statement for non-Void function: " + funcName, id.getToken());
         }
 

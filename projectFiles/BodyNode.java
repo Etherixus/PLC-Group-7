@@ -11,11 +11,13 @@ import java.util.ArrayList;
 public class BodyNode implements JottTree {
     ArrayList<BodyStmtNode> bodyStmtNodes;
     ReturnStmtNode returnStmtNode;
+    boolean validIfReturns;
 
 
     public BodyNode(ArrayList<BodyStmtNode> bodyStmtNodes, ReturnStmtNode returnStmtNode) {
         this.bodyStmtNodes = bodyStmtNodes;
         this.returnStmtNode = returnStmtNode;
+        validIfReturns = false;
     }
 
     public static BodyNode parseBodyNode(ArrayList<Token> tokens) throws ParserSyntaxError{
@@ -76,6 +78,7 @@ public class BodyNode implements JottTree {
             // Create a local scope for this body
             SymbolTable localTable = new SymbolTable(parentTable);
 
+            ArrayList<IfStmtNode> ifNodes = new ArrayList<>();
             // Validate each body statement in order
             for (BodyStmtNode stmt : bodyStmtNodes) {
 
@@ -102,11 +105,21 @@ public class BodyNode implements JottTree {
                 }
                 else if (stmt instanceof IfStmtNode) {
                     ((IfStmtNode) stmt).validateTree(localTable, expectedReturnType);
+                    ifNodes.add((IfStmtNode) stmt);
                 }
 
                 // Any Other Node Type
                 else {
                     stmt.validateTree();
+                }
+            }
+
+            for (IfStmtNode stmt : ifNodes) {
+                if(stmt.hasValidReturn()){
+                    validIfReturns = true;
+                } else{
+                    validIfReturns = false;
+                    break;
                 }
             }
 
@@ -139,6 +152,10 @@ public class BodyNode implements JottTree {
         }
         // Delegate check to ReturnStmtNode (whether it has an expression)
         return returnStmtNode.hasReturnValue();
+    }
+
+    public boolean hasValidIfReturnPaths(){
+        return validIfReturns;
     }
 
 }

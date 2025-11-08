@@ -11,12 +11,14 @@ public class IfStmtNode implements BodyStmtNode{
     private BodyNode body;
     private ArrayList<ElseIfNode> elseIfNodes;
     private ElseNode elseNode;
+    private boolean hasValidReturn;
 
     public IfStmtNode(ExpressionNode expressionNode, BodyNode body, ArrayList<ElseIfNode> elseIfNodes, ElseNode elseNode) {
         this.expressionNode = expressionNode;
         this.body = body;
         this.elseIfNodes = elseIfNodes;
         this.elseNode = elseNode;
+        hasValidReturn = false;
     }
 
     public static IfStmtNode parseIfStmtNode(ArrayList<Token> tokens) throws ParserSyntaxError{
@@ -58,6 +60,10 @@ public class IfStmtNode implements BodyStmtNode{
 
         return new IfStmtNode(expressionNode1, body1, elseIfNodes1, elseNode1);
 
+    }
+
+    public boolean hasValidReturn() {
+        return hasValidReturn;
     }
 
     public String convertToJott() {
@@ -123,6 +129,9 @@ public class IfStmtNode implements BodyStmtNode{
             if (elseNode != null && elseNode.hasReturn() && !checkForReturn) throw new SemanticSyntaxError("Not all if statement paths have a return", t);
             else if (elseNode != null && !elseNode.hasReturn() && checkForReturn) throw new SemanticSyntaxError("Not all if statement paths have a return", t);
 
+            if(checkForReturn){
+                hasValidReturn = true;
+            }
         return true;
     }
 
@@ -155,6 +164,10 @@ public class IfStmtNode implements BodyStmtNode{
         // If all other nodes have a return the else must as well
         if (elseNode.hasReturn() && !checkForReturn) throw new SemanticSyntaxError("Not all if statement paths have a return", t);
         else if (!elseNode.hasReturn() && checkForReturn) throw new SemanticSyntaxError("Not all if statement paths have a return", t);
+
+        if(checkForReturn){
+            hasValidReturn = true;
+        }
 
         return true;
     }
