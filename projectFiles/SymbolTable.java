@@ -1,5 +1,7 @@
 package projectFiles;
 
+import provided.Token;
+
 import java.util.HashMap;
 
 public class SymbolTable {
@@ -26,13 +28,17 @@ public class SymbolTable {
 
 
     // Adds a new symbol (variable or function) to the current scope.
-    public void addSymbol(String name, Symbol symbol) throws SemanticSyntaxError {
+    public void addSymbol(String name, Symbol symbol, Token token) throws SemanticSyntaxError {
         if (symbols.containsKey(name)) {
             Symbol existing = symbols.get(name);
             throw new SemanticSyntaxError("Redeclaration of symbol" + name +
-                    "' (previously declare on line " + existing.lineNum + ")");
+                    "' (previously declare on line " + existing.lineNum + ")", token);
         }
         symbols.put(name, symbol);
+    }
+
+    public void addSymbol(String name, Symbol symbol) throws SemanticSyntaxError {
+        addSymbol(name, symbol, null);  // just forwards with null token
     }
 
     // Looks up a symbol by name in this scope or its parent scopes.
@@ -60,17 +66,18 @@ public class SymbolTable {
 
     //Checks whether a variable was initialized before being used.
     //Throws a SemanticError if used before initialization.
-    public void checkInitialized(String name, int currentLine) throws SemanticSyntaxError {
+    public void checkInitialized(String name, Token token) throws SemanticSyntaxError {
         Symbol s = lookup(name);
         if (s == null) {
-            throw new SemanticSyntaxError("Undeclared variable: '" + name + "'");
+            throw new SemanticSyntaxError("Undeclared variable: '" + name + "'", token);
         }
 
-        if (!s.isFunction && !s.initialized){
+        if (!s.isFunction && !s.initialized) {
             throw new SemanticSyntaxError(
-                    "Variable '" + name + "' used before initialization " +
-                            "(declared on line " + s.lineNum + ")"
+                    "Variable '" + name + "' used before initialization",
+                    token
             );
         }
     }
+
 }

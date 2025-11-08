@@ -125,9 +125,9 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
                 String name = ((IDNode) Left).convertToJott();
                 Symbol sym = table.lookup(name);
                 if (sym == null)
-                    throw new SemanticSyntaxError("Undeclared identifier '" + name + "'");
+                    throw new SemanticSyntaxError("Undeclared identifier '" + name + "'", getToken());
 
-                table.checkInitialized(name, sym.lineNum);
+                table.checkInitialized(name, getToken());
 
                 // Return declared type
                 if (sym.type != null) return sym.type;
@@ -146,15 +146,16 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
             String name = ((IDNode) Left).convertToJott();
             Symbol sym = table.lookup(name);
             if (sym == null)
-                throw new SemanticSyntaxError("Undeclared identifier '" + name + "'");
-            table.checkInitialized(name, sym.lineNum);
+                throw new SemanticSyntaxError("Undeclared identifier '" + name + "'", getToken());
+            table.checkInitialized(name, getToken());
         }
         if (Right instanceof IDNode) {
             String name = ((IDNode) Right).convertToJott();
             Symbol sym = table.lookup(name);
             if (sym == null)
-                throw new SemanticSyntaxError("Undeclared identifier '" + name + "'");
-            table.checkInitialized(name, sym.lineNum);
+                throw new SemanticSyntaxError("Undeclared identifier '" + name + "'", getToken());
+            table.checkInitialized(name, getToken());
+
         }
 
         // Recursively determine type of left operand
@@ -171,7 +172,7 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
         // Recursively determine type of right operand
         String rightType;
         if (Right == null) {
-            throw new SemanticSyntaxError("Invalid expression: missing right operand in ExpressionNode");
+            throw new SemanticSyntaxError("Invalid expression: missing right operand in ExpressionNode", getToken());
         } else {
             rightType = Right.getType(table);
         }
@@ -182,7 +183,7 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
             if (leftType.equals("Double") || rightType.equals("Double")) return "Double";
             if (leftType.equals("Integer") && rightType.equals("Integer")) return "Integer";
             throw new SemanticSyntaxError("Invalid operands for math operator: "
-                    + leftType + " and " + rightType);
+                    + leftType + " and " + rightType, getToken());
         }
 
         // Handle relational operators (<, >, ==, etc.)

@@ -58,7 +58,7 @@ public class ReturnStmtNode implements JottTree {
         if (expr == null) {
             // Valid only if the function expects "Void"
             if (!expectedType.equals("Void")) {
-                throw new SemanticSyntaxError("Return statement missing a value for non-Void function.");
+                throw new SemanticSyntaxError("Return statement missing a value for non-Void function.", t);
             }
             return true;
         }

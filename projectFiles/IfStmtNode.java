@@ -101,11 +101,12 @@ public class IfStmtNode implements BodyStmtNode{
         String condType = expressionNode.getType(table);
         Token t = expressionNode.getToken();
 
-            if (!condType.equals("Boolean")) {
-                throw new SemanticSyntaxError("If-statement condition must be Boolean, got " + condType, t);
-            }
+        if (!condType.equals("Bool")) {
+            throw new SemanticSyntaxError("If-statement condition must be Bool, got " + condType, t);
+        }
 
-            boolean checkForReturn = false;
+
+        boolean checkForReturn = false;
 
             // Validate the main if-body
             if (!body.validateTree(table, expectedReturnType)) return false;

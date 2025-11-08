@@ -104,7 +104,7 @@ public class FunctionDefNode implements JottTree{
         ArrayList<String> paramTypes = params.getParamTypes();
 
         // Add once to global
-        globalTable.addSymbol(funcName, new Symbol(funcName, retType, paramTypes, -1));
+        globalTable.addSymbol(funcName, new Symbol(funcName, retType, paramTypes, id.getToken().getLineNum()),  id.getToken());
     }
 
     @Override

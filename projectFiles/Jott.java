@@ -22,7 +22,7 @@ public class Jott {
             //    return;
             //}
 
-            String filename = "C:/Users/logan/IdeaProjects/PLC-Group-7/phase3testcases/whileKeyword.jott";
+            String filename = "/Users/andrew/IdeaProjects/PLC-Group-7/projectFiles/testtest.jott";
             File file = new File(filename);
 
             if (!file.exists()) {
@@ -51,8 +51,9 @@ public class Jott {
                 System.err.println("Semantic validation failed.");
             }
 
-        } catch (Exception e) {
+        } catch (ParserSyntaxError | SemanticSyntaxError e) {
             System.err.println(e.getMessage());
         }
+
     }
 }

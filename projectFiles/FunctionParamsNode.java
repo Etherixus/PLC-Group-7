@@ -111,12 +111,13 @@ public class FunctionParamsNode implements JottTree {
     //This lets function parameters behave like pre-declared variables.
     public void declareParams(SymbolTable funcTable) throws SemanticSyntaxError {
         for (Map.Entry<IDNode, String> entry : params.entrySet()) {
+            IDNode idNode = entry.getKey();
             String paramName = entry.getKey().convertToJott();
             String paramType = entry.getValue();
 
             // Check for duplicate parameter names
             if (funcTable.lookup(paramName) != null) {
-                throw new SemanticSyntaxError("Duplicate parameter name: " + paramName);
+                throw new SemanticSyntaxError("Duplicate parameter name: " + paramName, idNode.getToken());
             }
             // Create the parameter symbol
             Symbol paramSymbol = new Symbol(paramName, paramType, -1);
@@ -127,7 +128,7 @@ public class FunctionParamsNode implements JottTree {
             paramSymbol.lineNum = 0;
 
             // Add parameter to the function's local symbol table
-            funcTable.addSymbol(paramName, paramSymbol);
+            funcTable.addSymbol(paramName, paramSymbol, idNode.getToken());
 
         }
     }
@@ -136,6 +137,7 @@ public class FunctionParamsNode implements JottTree {
     public boolean validateTree() throws SemanticSyntaxError {
         // separates the hash into two vars, param name and type
         for (Map.Entry<IDNode, String> entry : params.entrySet()) {
+            IDNode idNode = entry.getKey();
             String paramName = entry.getKey().convertToJott();
             String paramType = entry.getValue();
 
@@ -143,7 +145,7 @@ public class FunctionParamsNode implements JottTree {
             if (!(paramType.equals("Integer") || paramType.equals("Double") ||
                     paramType.equals("String")  || paramType.equals("Boolean"))) {
                 throw new SemanticSyntaxError(
-                        "Invalid parameter type '" + paramType + "' for parameter '" + paramName + "'"
+                        "Invalid parameter type '" + paramType + "' for parameter '" + paramName + "'", idNode.getToken()
                 );
             }
 
@@ -154,7 +156,7 @@ public class FunctionParamsNode implements JottTree {
                     paramName.equals("Double") || paramName.equals("String") ||
                     paramName.equals("Boolean")) {
                 throw new SemanticSyntaxError(
-                        "Invalid parameter name (reserved keyword): " + paramName
+                        "Invalid parameter name (reserved keyword): " + paramName, idNode.getToken()
                 );
             }
         }
