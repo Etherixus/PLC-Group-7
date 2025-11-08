@@ -61,18 +61,25 @@ public class NumberNode extends ExpressionNode {
 
     @Override
     public boolean validateTree() {
-        if (number == null) return false;
-        if (number.getTokenType() != TokenType.NUMBER) return false;
+        //if (number == null) return false;     //NOTE: Redundant, Token 'number' must always have value
+        //if (number.getTokenType() != TokenType.NUMBER) return false;  //NOTE: Redundant, check parseNumberNode
 
-        String tok = number.getToken();
-        if (tok == null || tok.isEmpty()) return false;
+        String token = number.getToken();
+        if (token == null || token.isEmpty()){
+            throw new SemanticSyntaxError("Undeclared number", number);
+        }
 
         // Valid Tokens:
         //  - digits (e.g. 123)
         //  - digits.decimal (e.g. 12.34)
         //  - .digits (e.g. .5)
         // Disallow multiple decimals or standalone "." 
-        return tok.matches("(\\d+(\\.\\d+)?|\\.\\d+)");
+        boolean result = token.matches("(\\d+(\\.\\d+)?|\\.\\d+)");
+        if (result) {
+            return true;
+        } else {
+            throw new SemanticSyntaxError("Invalid decimal", number);
+        }
     }
 
     public String getType() {
