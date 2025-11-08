@@ -51,14 +51,14 @@ public class ReturnStmtNode implements JottTree {
     //Validates this return statement against the expected return type.
     public boolean validateTree(SymbolTable symbolTable, String expectedType) throws SemanticSyntaxError {
         Token t = null;
-        if (expr != null && expr instanceof IDNode) {
-            t = ((IDNode) expr).getToken();
+        if (expr != null) {
+            t = expr.getToken();
         }
         // if its null then we should expect its type to be void
         if (expr == null) {
             // Valid only if the function expects "Void"
             if (!expectedType.equals("Void")) {
-                throw new SemanticSyntaxError("Return statement missing a value for non-Void function.", t);
+                throw new SemanticSyntaxError("Return statement missing a value for non-Void function.");
             }
             return true;
         }
