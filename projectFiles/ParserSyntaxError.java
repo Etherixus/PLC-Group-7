@@ -11,9 +11,8 @@ public class ParserSyntaxError extends Exception {
     }
 
     public ParserSyntaxError(String message, Token token){
-        super("Syntax Error:\n" + message);
-        System.err.println("Syntax Error:\n" + message);
-        System.err.println(token.getToken() + ": " + token.getLineNum());
+       super("Syntax Error:\n" + message + "\n" + token.getFilename() + ":" + token.getLineNum());
+
     }
 
     public ParserSyntaxError(String message, Token token, boolean print) {
