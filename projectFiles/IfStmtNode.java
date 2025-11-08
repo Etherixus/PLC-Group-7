@@ -93,10 +93,7 @@ public class IfStmtNode implements BodyStmtNode{
     public boolean validateTree(SymbolTable table, String expectedReturnType) {
         // Check the condition expression
         String condType = expressionNode.getType(table);
-        Token t = null;
-        if (expressionNode instanceof IDNode) {
-            t = ((IDNode) expressionNode).getToken();
-        }
+        Token t = expressionNode.getToken();
 
             if (!condType.equals("Boolean")) {
                 throw new SemanticSyntaxError("If-statement condition must be Boolean, got " + condType, t);
@@ -115,17 +112,16 @@ public class IfStmtNode implements BodyStmtNode{
                     if (eif == null) return false;
                     if (!eif.validateTree()) return false;
                     // If any conditional node has a return they all must
-                    if (eif.hasReturn() && !checkForReturn) return false;
-                    else if (!eif.hasReturn() && checkForReturn) return false;
+                    if ((eif.hasReturn() && !checkForReturn) || (!eif.hasReturn() && checkForReturn)) throw new SemanticSyntaxError("Not all if statement paths have a return", t);
                 }
             }
 
             // Validate optional Else
             // validate optional else node
-            if (elseNode != null && !elseNode.validateTree()) return false;
+            if (elseNode != null && !elseNode.validateTree(table, expectedReturnType)) return false;
             // If all other nodes have a return the else must as well
-            if (elseNode != null && elseNode.hasReturn() && !checkForReturn) return false;
-            else if (elseNode != null && !elseNode.hasReturn() && checkForReturn) return false;
+            if (elseNode != null && elseNode.hasReturn() && !checkForReturn) throw new SemanticSyntaxError("Not all if statement paths have a return", t);
+            else if (elseNode != null && !elseNode.hasReturn() && checkForReturn) throw new SemanticSyntaxError("Not all if statement paths have a return", t);
 
         return true;
     }
@@ -133,6 +129,7 @@ public class IfStmtNode implements BodyStmtNode{
 
     @Override
     public boolean validateTree() {
+        Token t = expressionNode.getToken();
         boolean checkForReturn = false;
         // expression and body must exist and validate
         if (expressionNode == null) return false;
@@ -149,16 +146,15 @@ public class IfStmtNode implements BodyStmtNode{
                 if (eif == null) return false;
                 if (!eif.validateTree()) return false;
                 // If any conditional node has a return they all must
-                if (eif.hasReturn() && !checkForReturn) return false;
-                else if (!eif.hasReturn() && checkForReturn) return false;
+                if ((eif.hasReturn() && !checkForReturn) || (!eif.hasReturn() && checkForReturn)) throw new SemanticSyntaxError("Not all if statement paths have a return", t);
             }
         }
 
         // validate optional else node
         if (elseNode != null && !elseNode.validateTree()) return false;
         // If all other nodes have a return the else must as well
-        if (elseNode.hasReturn() && !checkForReturn) return false;
-        else if (!elseNode.hasReturn() && checkForReturn) return false;
+        if (elseNode.hasReturn() && !checkForReturn) throw new SemanticSyntaxError("Not all if statement paths have a return", t);
+        else if (!elseNode.hasReturn() && checkForReturn) throw new SemanticSyntaxError("Not all if statement paths have a return", t);
 
         return true;
     }

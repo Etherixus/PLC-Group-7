@@ -22,7 +22,7 @@ public class Jott {
             //    return;
             //}
 
-            String filename = "C:/Users/logan/IdeaProjects/PLC-Group-7/provided/testtest.jott";
+            String filename = "C:/Users/logan/IdeaProjects/PLC-Group-7/phase3testcases/whileKeyword.jott";
             File file = new File(filename);
 
             if (!file.exists()) {
@@ -52,8 +52,7 @@ public class Jott {
             }
 
         } catch (Exception e) {
-            System.err.println("Unexpected Error: " + e.getMessage());
-            e.printStackTrace();
+            System.err.println(e.getMessage());
         }
     }
 }

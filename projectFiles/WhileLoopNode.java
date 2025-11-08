@@ -67,7 +67,7 @@ public class WhileLoopNode implements BodyStmtNode{
         return "";
     }
 
-    public boolean validateTree(SymbolTable table) throws SemanticSyntaxError {
+    public boolean validateTree(SymbolTable table, String expectedReturnType) throws SemanticSyntaxError {
         // Check the while condition type
         String condType = expressionNode.getType(table);
 
@@ -83,7 +83,7 @@ public class WhileLoopNode implements BodyStmtNode{
 
         SymbolTable loopScope = new SymbolTable(table);
 
-        if (!bodyNode.validateTree(loopScope, "Void")) {
+        if (!bodyNode.validateTree(loopScope, expectedReturnType)) {
             throw new SemanticSyntaxError("Invalid statements inside While loop body.", t);
         }
 

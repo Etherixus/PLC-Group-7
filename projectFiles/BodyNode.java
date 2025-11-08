@@ -82,6 +82,7 @@ public class BodyNode implements JottTree {
                 // Variable Declaration to symbol table
                 if (stmt instanceof VarDecNode) {
                     VarDecNode varDec = (VarDecNode) stmt;
+                    varDec.validateTree();
                     varDec.declare(localTable);
                 }
 
@@ -92,7 +93,7 @@ public class BodyNode implements JottTree {
 
                 // While Loop
                 else if (stmt instanceof WhileLoopNode) {
-                    ((WhileLoopNode) stmt).validateTree(localTable);
+                    ((WhileLoopNode) stmt).validateTree(localTable, expectedReturnType);
                 }
 
                 // Function Call
@@ -113,15 +114,11 @@ public class BodyNode implements JottTree {
             if (returnStmtNode != null) {
                 if (expectedReturnType.equals("Void") && returnStmtNode.hasReturnValue()) {
                     throw new SemanticSyntaxError(
-                            "Cannot return a value from a Void function.",
-                            (returnStmtNode.expr != null && returnStmtNode.expr instanceof IDNode)
-                                    ? ((IDNode) returnStmtNode.expr).getToken() : null
+                            "Cannot return a value from a Void function.", returnStmtNode.expr.getToken()
                     );
                 }
 
                 returnStmtNode.validateTree(localTable, expectedReturnType);
-            } else if (!expectedReturnType.equals("Void")) {
-                throw new SemanticSyntaxError("Missing return statement for non-Void function.", null);
             }
 
             // if all nodes within the body are validated then return true

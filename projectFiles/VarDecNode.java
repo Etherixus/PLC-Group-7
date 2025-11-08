@@ -80,6 +80,9 @@ public class VarDecNode implements JottTree, BodyStmtNode {
      */
     @Override
     public boolean validateTree() {
+        if(!varName.toString().equals(varName.toString().toLowerCase())){
+            throw new SemanticSyntaxError("Variable name must start with a lowercase", varName.getToken());
+        }
         return true;
     }
 }
