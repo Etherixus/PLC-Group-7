@@ -2,6 +2,7 @@ package testers;
 
 import projectFiles.JottParser;
 import projectFiles.JottTokenizer;
+import projectFiles.SemanticSyntaxError;
 import provided.JottTree;
 import provided.Token;
 
@@ -34,6 +35,24 @@ public class JottSemanticTester {
     private void createTestCases(){
         this.testCases = new ArrayList<>();
         testCases.add(new JottSemanticTester.TestCase("funcCallParamInvalid", "funcCallParamInvalid.jott", true ));
+        testCases.add(new JottSemanticTester.TestCase("function Not Defined", "funcNotDefined.jott", true ));
+        testCases.add(new JottSemanticTester.TestCase("function return in expression", "funcReturnInExpr.jott", false ));
+        testCases.add(new JottSemanticTester.TestCase("function wrong param type", "funcWrongParamType.jott", true ));
+        testCases.add(new JottSemanticTester.TestCase("Hello World In Jott", "helloWorld.jott", false ));
+        testCases.add(new JottSemanticTester.TestCase("If stmt returns", "ifStmtReturns.jott", false ));
+        testCases.add(new JottSemanticTester.TestCase("Larger Valid program", "largerValid.jott", false ));
+        testCases.add(new JottSemanticTester.TestCase("Main Return Not an Int", "mainReturnNotInt.jott", true ));
+        testCases.add(new JottSemanticTester.TestCase("mismatched return", "mismatchedReturn.jott", true ));
+        testCases.add(new JottSemanticTester.TestCase("Missing function params", "missingFuncParams.jott", true ));
+        testCases.add(new JottSemanticTester.TestCase("Missing main function", "missingMain.jott", true ));
+        testCases.add(new JottSemanticTester.TestCase("Missing return", "missingReturn.jott", true ));
+        testCases.add(new JottSemanticTester.TestCase("No return in all if paths", "noReturnIf.jott", true ));
+        testCases.add(new JottSemanticTester.TestCase("No return statement with while", "noReturnWhile.jott", true ));
+        testCases.add(new JottSemanticTester.TestCase("providedExample1", "providedExample1.jott", false ));
+        testCases.add(new JottSemanticTester.TestCase("return id from void function", "returnId.jott", true ));
+        testCases.add(new JottSemanticTester.TestCase("valid while loop", "validLoop.jott", false ));
+        testCases.add(new JottSemanticTester.TestCase("return statement in a void function", "voidReturn.jott", true ));
+        testCases.add(new JottSemanticTester.TestCase("While as a variable", "whileKeyword.jott", true ));
     }
 
     private boolean semanticTest(JottSemanticTester.TestCase test, String orginalJottCode){
@@ -46,7 +65,7 @@ public class JottSemanticTester {
                 System.err.println("\t\tPlease verify your tokenizer is working properly");
                 return false;
             }
-            System.out.println(tokenListString(tokens));
+            //System.out.println(tokenListString(tokens));
             ArrayList<Token> cpyTokens = new ArrayList<>(tokens);
             JottTree root = JottParser.parse(tokens);
 
@@ -55,16 +74,18 @@ public class JottSemanticTester {
                 System.err.println("\t\tParsing Failed");
             } else {
 
-                root.validateTree();
+                boolean value = root.validateTree();
+                if(test.error && value){
+                    return false;
+                } else if(test.error && !value){
+                    return true;
+                }
 
             }
-            System.out.println("Orginal Jott Code:\n");
-            System.out.println(orginalJottCode);
-            System.out.println();
+
 
             String jottCode = root.convertToJott();
-            System.out.println("Resulting Jott Code:\n");
-            System.out.println(jottCode);
+
 
             try {
                 FileWriter writer = new FileWriter("phase3testcases/semanticTestTemp.jott");
@@ -101,7 +122,12 @@ public class JottSemanticTester {
 
 
             return true;
-        }catch (Exception e){
+        } catch (SemanticSyntaxError semanticSyntaxError){
+            System.err.println(semanticSyntaxError.getMessage());
+            if(test.error){return true;}
+            else {return false;}
+        }
+        catch (Exception e){
             System.err.println("\tFailed Test: " + test.testName);
             System.err.println("Unknown Exception occured.");
             e.printStackTrace();
