@@ -9,18 +9,26 @@ import java.util.ArrayList;
 
 public class StringNode extends ExpressionNode implements JottTree {
     private String string;
+    private Token token;
     
     
-    public StringNode(String string) {
+    public StringNode(String string, Token token) {
         this.string = string;
+        this.token = token;
+    }
+
+    @Override
+    public Token getToken() {
+        return token;
     }
 
     public static StringNode parseStringNode(ArrayList<Token>tokenList) throws ParserSyntaxError{
        if(tokenList.get(0).getTokenType() != TokenType.STRING){
-           throw new ParserSyntaxError("Expecter String, got: ", tokenList.get(0));
+           throw new ParserSyntaxError("Expected String, got: ", tokenList.get(0));
        }
        else{
-           return new StringNode(tokenList.remove(0).getToken());
+           Token token = tokenList.remove(0);
+           return new StringNode(token.getToken(), token);
        }
     }
     @Override

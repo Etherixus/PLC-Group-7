@@ -40,6 +40,7 @@ public class  IDNode extends ExpressionNode {
         throw new SemanticSyntaxError("Unknown type for identifier: " + keyword, token);
     }
     // Getter so other nodes can access it
+    @Override
     public Token getToken() {
         return token;
     }

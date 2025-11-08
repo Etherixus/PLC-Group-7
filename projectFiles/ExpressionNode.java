@@ -22,6 +22,18 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
 
     }
 
+    public Token getToken(){
+        if(Left != null){
+            return Left.getToken();
+        } else if(Middle != null){
+            return Middle.getToken();
+        } else if(Right != null){
+            return Right.getToken();
+        } else {
+            return null;
+        }
+    }
+
     public ExpressionNode(ExpressionNode Left, ExpressionNode Middle, ExpressionNode Right) {
         this.Left = Left;
         this.Middle = Middle;

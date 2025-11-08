@@ -9,21 +9,29 @@ import java.util.ArrayList;
 
 public class BooleanNode extends ExpressionNode implements JottTree {
     private boolean value;
+    private Token token;
 
-    public BooleanNode(boolean value) {
+    public BooleanNode(boolean value, Token token) {
         this.value = value;
+        this.token = token;
+    }
+
+    @Override
+    public Token getToken(){
+        return token;
     }
 
     public static BooleanNode parseBooleanNode(ArrayList<Token> tokenList) throws ParserSyntaxError {
+        Token token;
         if(tokenList.get(0).getTokenType() == TokenType.ID_KEYWORD){
             if(tokenList.get(0).getToken().equals("True") || tokenList.get(0).getToken().equals("False")){
                 if(tokenList.get(0).getToken().equals("True")){
-                    tokenList.remove(0);
-                    return new BooleanNode(true);
+                    token = tokenList.remove(0);
+                    return new BooleanNode(true,token );
                 }
                 else{
-                    tokenList.remove(0);
-                    return new BooleanNode(false);
+                    token = tokenList.remove(0);
+                    return new BooleanNode(false, token);
                 }
             }
             else{

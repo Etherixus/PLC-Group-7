@@ -14,6 +14,11 @@ public class NumberNode extends ExpressionNode {
         this.type = type;
     }
 
+    @Override
+    public Token getToken() {
+        return number;
+    }
+
     public static NumberNode parseNumberNode(ArrayList<Token> tokens) throws ParserSyntaxError{
         Token currentToken = tokens.get(0);
         String type = null;
