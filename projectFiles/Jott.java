@@ -1,7 +1,8 @@
 package projectFiles;
 
-import provided.JottParser;
-import provided.JottTokenizer;
+import projectFiles.JottParser;
+import projectFiles.JottTokenizer;
+import provided.JottTree;
 import provided.Token;
 import java.io.File;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class Jott {
             //    return;
             //}
 
-            String filename = "/Users/andrew/IdeaProjects/PLC-Group-7/projectFiles/testtest.jott";
+            String filename = "C:/Users/logan/IdeaProjects/PLC-Group-7/parserTestCases/codeAfterReturn.jott";
             File file = new File(filename);
 
             if (!file.exists()) {
@@ -30,28 +31,20 @@ public class Jott {
                 return;
             }
 
-            System.out.println("Reading file: " + filename);
 
-            // 2 Tokenize input
+            // Step 1 Tokenize input
             ArrayList<Token> tokens = JottTokenizer.tokenize(filename);
-            System.out.println("Tokenization complete. Total tokens: " + tokens.size());
+            if (tokens == null) {return;}
 
-            // 3 Parse tokens into an AST
-            ProgramNode program = (ProgramNode) JottParser.parse(tokens);
-            System.out.println("Parsing complete.");
+            // Step 2 Parse tokens
+            JottTree tree = JottParser.parse(tokens);
+            if (tree == null) {return;}
 
-            // 4 Run semantic validation
-            System.out.println("Starting semantic analysis...");
-            boolean valid = program.validateTree();
+            // Step 3 Semantic Analysis
+            boolean valid = tree.validateTree();
 
-            // 5 Output result
-            if (valid) {
-                System.out.println("Program is semantically valid!");
-            } else {
-                System.err.println("Semantic validation failed.");
-            }
 
-        } catch (ParserSyntaxError | SemanticSyntaxError e) {
+        } catch (Exception e) {
             System.err.println(e.getMessage());
         }
 

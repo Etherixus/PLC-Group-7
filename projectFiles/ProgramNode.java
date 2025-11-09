@@ -100,9 +100,6 @@ public class ProgramNode implements JottTree {
                 );
             }
 
-            if (allValid) {
-                System.out.println("Semantic analysis completed successfully.");
-            }
             // if everything is valid then return true
             return allValid;
 

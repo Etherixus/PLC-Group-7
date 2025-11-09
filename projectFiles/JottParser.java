@@ -1,6 +1,6 @@
 package projectFiles;
 
-/**
+/*
  * This class is responsible for paring Jott Tokens
  * into a Jott parse tree.
  *
@@ -9,11 +9,8 @@ package projectFiles;
 
 import provided.JottTree;
 import provided.Token;
-
-
 import java.util.ArrayList;
 
-import static projectFiles.JottTokenizer.tokenize;
 
 public class JottParser {
 
@@ -29,6 +26,7 @@ public class JottParser {
         try {
             tree = ProgramNode.parseProgram(tokens);
         } catch (ParserSyntaxError syntaxError) {
+            System.err.println(syntaxError.getMessage());
             return null;
         }
         return tree;
