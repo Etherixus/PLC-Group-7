@@ -9,21 +9,23 @@ import java.util.ArrayList;
 
 /**
  * Jott.java — Main driver for the Jott interpreter/compiler.
- * Reads a .jott file, tokenizes it, parses it into an AST,
+ * Reads a .jott file, tokenizes it, parses it,
  * and runs semantic analysis (validateTree).
+ *
+ * The program expects a filename as a command line argument
  */
 public class Jott {
 
     public static void main(String[] args) {
         try {
 
-            // 1 Check for input file
-            //if (args.length < 1) {
-            //    System.err.println("Usage: java Jott <filename.jott>");
-            //    return;
-            //}
+            if (args.length < 1) {
+                System.err.println("Usage: java Jott <filename.jott>");
+                return;
+            }
 
-            String filename = "C:/Users/logan/IdeaProjects/PLC-Group-7/parserTestCases/codeAfterReturn.jott";
+            //String filename = "phase3testcases/largerValid.jott";
+            String filename = args[0];
             File file = new File(filename);
 
             if (!file.exists()) {
