@@ -101,8 +101,8 @@ public class IfStmtNode implements BodyStmtNode{
         String condType = expressionNode.getType(table);
         Token t = expressionNode.getToken();
 
-        if (!condType.equals("Bool")) {
-            throw new SemanticSyntaxError("If-statement condition must be Bool, got " + condType, t);
+        if (!condType.equals("Boolean")) {
+            throw new SemanticSyntaxError("If-statement condition must be Boolean, got " + condType, t);
         }
 
 
