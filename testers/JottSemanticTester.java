@@ -72,6 +72,7 @@ public class JottSemanticTester {
             if(root == null){
                 System.err.println("\tFailed Test: " + test.testName);
                 System.err.println("\t\tParsing Failed");
+                return false;
             } else {
 
                 boolean value = root.validateTree();
