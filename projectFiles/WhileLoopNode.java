@@ -72,10 +72,8 @@ public class WhileLoopNode implements BodyStmtNode{
         String condType = expressionNode.getType(table);
 
         // get the token so we can get the line number
-        Token t = null;
-        if (expressionNode instanceof IDNode) {
-            t = ((IDNode) expressionNode).getToken();
-        }
+        Token t = expressionNode.getToken();
+
 
         if (!condType.equals("Boolean")) {
             throw new SemanticSyntaxError("While condition must be Boolean but got " + condType, t);

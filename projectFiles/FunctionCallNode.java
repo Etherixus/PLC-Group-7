@@ -16,6 +16,11 @@ public class FunctionCallNode extends ExpressionNode implements BodyStmtNode {
         this.params = params;
     }
 
+    @Override
+    public Token getToken() {
+        return id.getToken();
+    }
+
 
     public static FunctionCallNode parseFunctionCallNode(ArrayList<Token> tokens) throws ParserSyntaxError{
         if(tokens.get(0).getTokenType() != TokenType.FC_HEADER){

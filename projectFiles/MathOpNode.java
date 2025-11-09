@@ -8,9 +8,16 @@ import java.util.ArrayList;
 
 public class MathOpNode extends ExpressionNode implements JottTree {
     private String operation;
+    private Token token;
 
-    public MathOpNode(String operation){
+    public MathOpNode(String operation, Token token) {
         this.operation = operation;
+        this.token = token;
+    }
+
+    @Override
+    public Token getToken() {
+        return token;
     }
 
     public static MathOpNode parseMathOpNode(ArrayList<Token> tokens) throws ParserSyntaxError{
@@ -18,7 +25,8 @@ public class MathOpNode extends ExpressionNode implements JottTree {
            throw new ParserSyntaxError("Expected +, *, /, -, but got: ", tokens.get(0));
        }
        else{
-           return new MathOpNode(tokens.remove(0).getToken());
+           Token t = tokens.remove(0);
+           return new MathOpNode(t.getToken(), t);
        }
     }
 

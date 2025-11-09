@@ -10,9 +10,16 @@ import java.util.ArrayList;
 public class RelOpNode extends ExpressionNode implements JottTree {
 
     String relOp;
+    Token token;
 
-    public RelOpNode(String relOp) {
+    public RelOpNode(String relOp, Token token) {
         this.relOp = relOp;
+        this.token = token;
+    }
+
+    @Override
+    public Token getToken() {
+        return token;
     }
 
     public static RelOpNode parseRelOpNode(ArrayList<Token> tokenList) throws ParserSyntaxError {
@@ -20,7 +27,8 @@ public class RelOpNode extends ExpressionNode implements JottTree {
             throw new ParserSyntaxError("Expected <=, >=, >, <, ==, !=, but got: ", tokenList.get(0));
         }
         else{
-            return new RelOpNode(tokenList.remove(0).getToken());
+            Token t = tokenList.remove(0);
+            return new RelOpNode(t.getToken(), t);
         }
     }
 

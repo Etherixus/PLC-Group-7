@@ -23,10 +23,10 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
     }
 
     public Token getToken(){
-        if(Left != null){
-            return Left.getToken();
-        } else if(Middle != null){
+        if(Middle != null){
             return Middle.getToken();
+        } else if(Left != null){
+            return Left.getToken();
         } else if(Right != null){
             return Right.getToken();
         } else {
@@ -138,6 +138,24 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
             if (Left instanceof FunctionCallNode) {
                 return ((FunctionCallNode) Left).getReturnType(table);
             }
+            if (this instanceof NumberNode) {return ((NumberNode) this).getType();}
+            if (this instanceof StringNode) {return "String";}
+            if (this instanceof BooleanNode) {return "Boolean";}
+            if (this instanceof FunctionCallNode) {return ((FunctionCallNode) this).getReturnType(table);}
+            if (this instanceof IDNode) {
+                String name = ((IDNode) this).convertToJott();
+                Symbol sym = table.lookup(name);
+                if (sym == null)
+                    throw new SemanticSyntaxError("Undeclared identifier '" + name + "'", getToken());
+
+                table.checkInitialized(name, getToken());
+
+                // Return declared type
+                if (sym.type != null) return sym.type;
+                if (sym.returnType != null) return sym.returnType;
+
+                return "Unknown";
+            }
             return "Unknown";
         }
 
@@ -180,7 +198,7 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
 
         // Handle math operators (+, -, *, /)
         if (Middle instanceof MathOpNode) {
-            if (leftType.equals("Double") || rightType.equals("Double")) return "Double";
+            if (leftType.equals("Double") && rightType.equals("Double")) return "Double";
             if (leftType.equals("Integer") && rightType.equals("Integer")) return "Integer";
             throw new SemanticSyntaxError("Invalid operands for math operator: "
                     + leftType + " and " + rightType, getToken());
@@ -188,7 +206,11 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
 
         // Handle relational operators (<, >, ==, etc.)
         if (Middle instanceof RelOpNode) {
-            return "Boolean";
+            if((leftType.equals("Double") && rightType.equals("Double")) ||
+                    (leftType.equals("Integer") && rightType.equals("Integer"))){return "Boolean";}
+            else{
+                throw new SemanticSyntaxError("Expected operands to be the same type but got " + leftType + " and " + rightType, getToken());
+            }
         }
 
         // if the type cant be identified then it returns unknown

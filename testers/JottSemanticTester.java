@@ -36,7 +36,7 @@ public class JottSemanticTester {
         this.testCases = new ArrayList<>();
         testCases.add(new JottSemanticTester.TestCase("funcCallParamInvalid", "funcCallParamInvalid.jott", true ));
         testCases.add(new JottSemanticTester.TestCase("function Not Defined", "funcNotDefined.jott", true ));
-        testCases.add(new JottSemanticTester.TestCase("function return in expression", "funcReturnInExpr.jott", false ));
+        testCases.add(new JottSemanticTester.TestCase("function return in expression", "funcReturnInExpr.jott", true ));
         testCases.add(new JottSemanticTester.TestCase("function wrong param type", "funcWrongParamType.jott", true ));
         testCases.add(new JottSemanticTester.TestCase("Hello World In Jott", "helloWorld.jott", false ));
         testCases.add(new JottSemanticTester.TestCase("If stmt returns", "ifStmtReturns.jott", false ));
