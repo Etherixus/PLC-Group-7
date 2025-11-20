@@ -51,4 +51,31 @@ public class Jott {
         }
 
     }
+
+    /*
+     * Prints the message to the console
+     * @param msg the message to be printed
+     */
+    public static void print(String msg) {
+        System.out.println(msg);
+    }
+
+    /*
+     * Used for the built-in concatenate method for jott. Simply concatenates string 2 to the end of string 1
+     * @param string1 the base string
+     * @param string2 the string that will be added to the end
+     * @return the two strings concatenated together
+     */
+    public static String concat(String string1, String string2) {
+        return string1 + string2;
+    }
+
+    /*
+     * Used for the built-in length method for jott.
+     * @param string the string to get the length of
+     * @return the length of the string
+     */
+    public static int length(String string) {
+        return string.length();
+    }
 }
