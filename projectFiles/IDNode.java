@@ -39,6 +39,24 @@ public class  IDNode extends ExpressionNode {
         // Defensive fallback (should rarely trigger)
         throw new SemanticSyntaxError("Unknown type for identifier: " + keyword, token);
     }
+
+    public Object evaluate() {
+
+        SymbolTable table = SymbolTable.getCurrentTable();
+        Symbol sym = table.lookup(keyword);
+
+        if (sym == null) {
+            throw new RuntimeException("Runtime error: Variable not found → " + keyword);
+        }
+
+        if (!sym.isFunction && !sym.initialized) {
+            throw new RuntimeException("Runtime error: Variable used before initialization → " + keyword);
+        }
+
+        return sym.getValue();
+    }
+
+
     // Getter so other nodes can access it
     @Override
     public Token getToken() {

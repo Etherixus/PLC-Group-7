@@ -127,4 +127,45 @@ public class FunctionCallNode extends ExpressionNode implements BodyStmtNode {
         return id != null && params != null && id.validateTree() && params.validateTree();
     }
 
+    @Override
+    public void execute() {
+
+        String funcName = id.convertToJott();
+
+        // Built-in print
+        if (funcName.equals("print")) {
+
+            // Loop through argument expressions
+            for (ExpressionNode expr : params.getParamsExprList()) {
+                Object value = expr.evaluate();
+                System.out.println(value);
+            }
+
+            return;
+        }
+
+        throw new RuntimeException("Function not implemented yet: " + funcName);
+    }
+
+    @Override
+    public Object evaluate() {
+
+        String funcName = id.convertToJott();
+
+        if (funcName.equals("print")) {
+
+            for (ExpressionNode expr : params.getParamsExprList()) {
+                Object value = expr.evaluate();
+                System.out.println(value);
+            }
+
+            return null; // print returns Void
+        }
+
+        throw new RuntimeException("Function not implemented yet: " + funcName);
+    }
+
+
+
+
 }

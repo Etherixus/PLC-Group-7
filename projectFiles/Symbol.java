@@ -12,6 +12,8 @@ public class Symbol {
     public String returnType;            // if function, checksif the body actaully returns the correect type
     public boolean initialized = false;  // for tracking uninitialized variables
     public int lineNum;                  // useful for error reporting
+    public Object value;
+
 
 
     //Variable constructor
@@ -35,5 +37,14 @@ public class Symbol {
         this.type = null;          // not used for functions
         this.lineNum = lineNum;
     }
+
+    public void setValue(Object value) {
+        this.value = value;
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
 
 }

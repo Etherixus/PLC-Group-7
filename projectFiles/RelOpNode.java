@@ -32,6 +32,10 @@ public class RelOpNode extends ExpressionNode implements JottTree {
         }
     }
 
+    public String getOperator() {
+        return relOp;
+    }
+
     @Override
     public String convertToJott() {
         return relOp;

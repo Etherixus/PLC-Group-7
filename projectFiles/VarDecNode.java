@@ -86,4 +86,27 @@ public class VarDecNode implements JottTree, BodyStmtNode {
         }
         return true;
     }
+
+    @Override
+    public void execute() {
+
+        String name = varName.convertToJott();
+        String type = varType;
+
+        SymbolTable table = SymbolTable.getCurrentTable();
+
+        // Create runtime symbol
+        Symbol sym = new Symbol(name, type, varName.getToken().getLineNum());
+
+        // Add to current runtime scope
+        table.addSymbol(name, sym, varName.getToken());
+
+        // Initialize default value based on type
+        if (type.equals("Integer")) sym.setValue(0);
+        else if (type.equals("Double")) sym.setValue(0.0);
+        else if (type.equals("Boolean")) sym.setValue(false);
+        else if (type.equals("String")) sym.setValue("");
+    }
+
+
 }

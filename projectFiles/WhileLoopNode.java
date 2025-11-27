@@ -93,4 +93,9 @@ public class WhileLoopNode implements BodyStmtNode{
     public boolean validateTree() {
         return false;
     }
+
+    @Override
+    public void execute() {
+
+    }
 }

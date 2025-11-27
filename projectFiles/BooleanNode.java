@@ -77,5 +77,10 @@ public class BooleanNode extends ExpressionNode implements JottTree {
         String s = Boolean.toString(value);
         return "true".equals(s) || "false".equals(s);
     }
+
+    public Object getValue() {
+        return value;
+    }
+
 }
 

@@ -217,6 +217,130 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
         return "Unknown";
     }
 
+    public Object evaluate() {
+
+        // leaf nodes
+        if (this instanceof NumberNode) {
+            return ((NumberNode) this).getValue();
+        }
+
+        if (this instanceof StringNode) {
+            return ((StringNode) this).getValue();
+        }
+
+        if (this instanceof BooleanNode) {
+            return ((BooleanNode) this).getValue();
+        }
+
+        if (this instanceof IDNode) {
+            String name = ((IDNode) this).convertToJott();
+            Symbol sym = SymbolTable.getCurrentTable().lookup(name);
+
+            if (sym == null) {
+                throw new RuntimeException("Variable not found at runtime: " + name);
+            }
+
+            return sym.getValue();
+        }
+
+        if (this instanceof FunctionCallNode) {
+            return ((FunctionCallNode) this).evaluate();
+        }
+
+        // expression node
+        if (Left == null) {
+            throw new RuntimeException("ExpressionNode has null Left. Node: " + convertToJott());
+        }
+
+        // if there is no operator, just evaluate left
+        if (Middle == null) {
+            return Left.evaluate();
+        }
+
+        Object leftVal = Left.evaluate();
+        Object rightVal = Right.evaluate();
+
+        // math ops
+        if (Middle instanceof MathOpNode) {
+            String op = ((MathOpNode) Middle).getOperator();
+
+            // integers
+            if (leftVal instanceof Integer && rightVal instanceof Integer) {
+                int l = (Integer) leftVal;
+                int r = (Integer) rightVal;
+
+                switch (op) {
+                    case "+":
+                        return l + r;
+                    case "-":
+                        return l - r;
+                    case "*":
+                        return l * r;
+                    case "/":
+                        return l / r;
+                    default:
+                        throw new RuntimeException("Unknown math operator: " + op);
+                }
+            }
+
+            // doubles
+            if (leftVal instanceof Double && rightVal instanceof Double) {
+                double l = (Double) leftVal;
+                double r = (Double) rightVal;
+
+                switch (op) {
+                    case "+":
+                        return l + r;
+                    case "-":
+                        return l - r;
+                    case "*":
+                        return l * r;
+                    case "/":
+                        return l / r;
+                    default:
+                        throw new RuntimeException("Unknown math operator: " + op);
+                }
+            }
+        }
+
+        // rel ops
+        if (Middle instanceof RelOpNode) {
+            String op = ((RelOpNode) Middle).getOperator();
+
+            if (leftVal instanceof Integer && rightVal instanceof Integer) {
+                int l = (Integer) leftVal;
+                int r = (Integer) rightVal;
+
+                switch (op) {
+                    case ">":
+                        return l > r;
+                    case "<":
+                        return l < r;
+                    case ">=":
+                        return l >= r;
+                    case "<=":
+                        return l <= r;
+                    case "==":
+                        return l == r;
+                    case "!=":
+                        return l != r;
+                    default:
+                        throw new RuntimeException("Unknown relational operator: " + op);
+                }
+            }
+        }
+
+        throw new RuntimeException("Could not evaluate expression: " + convertToJott());
+    }
+
+
+
+
+    @Override
+    public void execute() {
+        evaluate();
+    }
+
     /**
      * Default structural validation method required by the JottTree interface.
      *

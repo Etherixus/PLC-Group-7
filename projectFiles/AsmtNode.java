@@ -92,4 +92,28 @@ public class AsmtNode implements BodyStmtNode {
         // If all checks pass, the assignment is valid
         return true;
     }
+
+    @Override
+    public void execute() {
+
+        // 1. Evaluate the right-hand side
+        Object value = expressionNode.evaluate();
+
+        // 2. Get variable name
+        String varName = idNode.convertToJott();
+
+        // 3. Update the variable in the current symbol table
+        SymbolTable current = SymbolTable.getCurrentTable();
+
+        Symbol sym = current.lookup(varName);
+
+
+        // 4. Set the new value
+        sym.setValue(value);
+
+        // Mark initialized again for safety
+        current.markInitialized(varName);
+    }
+
+
 }

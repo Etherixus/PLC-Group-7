@@ -173,4 +173,9 @@ public class IfStmtNode implements BodyStmtNode{
         return true;
     }
 
+    @Override
+    public void execute() {
+
+    }
+
 }

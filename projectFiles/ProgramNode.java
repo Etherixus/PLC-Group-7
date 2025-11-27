@@ -104,4 +104,13 @@ public class ProgramNode implements JottTree {
             return allValid;
 
     }
+
+    public void execute(){
+        for (FunctionDefNode f : functionsDefs) {
+            if (f.getName().equals("main")) {
+                f.execute();
+                return;
+            }
+        }
+    }
 }
