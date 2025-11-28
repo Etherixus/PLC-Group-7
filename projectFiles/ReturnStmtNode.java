@@ -86,7 +86,7 @@ public class ReturnStmtNode implements JottTree {
     }
 
     public void execute() {
-
+        expr.execute();
     }
 
 }

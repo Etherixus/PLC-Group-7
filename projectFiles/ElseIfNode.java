@@ -96,4 +96,8 @@ public class ElseIfNode implements JottTree {
 
         return true;
     }
+
+    public void execute(){
+        //todo
+    }
 }
