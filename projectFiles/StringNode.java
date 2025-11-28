@@ -53,6 +53,12 @@ public class StringNode extends ExpressionNode implements JottTree {
         return true;
     }
 
+    public Object getValue() {
+        // Strip surrounding quotes
+        return string.substring(1, string.length() - 1);
+    }
+
+
     @Override
     public String convertToJott() {
         return string;

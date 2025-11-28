@@ -146,4 +146,18 @@ public class FunctionDefNode implements JottTree{
 
         return true;
     }
+
+    public void execute() {
+        SymbolTable funcScope = new SymbolTable(SymbolTable.getCurrentTable());
+        SymbolTable.setCurrentTable(funcScope);
+
+        body.execute();
+
+        SymbolTable.setCurrentTable(funcScope.getParent());
+    }
+
+    public String getName() {
+        return id.convertToJott();
+    }
+
 }

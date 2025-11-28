@@ -84,4 +84,9 @@ public class ReturnStmtNode implements JottTree {
     public boolean validateTree() {
         return false;
     }
+
+    public void execute() {
+
+    }
+
 }

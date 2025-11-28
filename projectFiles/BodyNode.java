@@ -158,4 +158,17 @@ public class BodyNode implements JottTree {
         return validIfReturns;
     }
 
+    public void execute() {
+        for (BodyStmtNode stmt : bodyStmtNodes) {
+            stmt.execute();
+            if (stmt instanceof ReturnStmtNode) {
+                break;
+            }
+        }
+    }
+
+
+
+
+
 }

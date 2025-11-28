@@ -64,8 +64,11 @@ public class MathOpNode extends ExpressionNode implements JottTree {
         return "MathOp";
     }
 
+    public String getOperator() {
+        return operation;
+    }
 
-    //to be used for expression validate function
+
     public String evaluate()
     {
         return operation;

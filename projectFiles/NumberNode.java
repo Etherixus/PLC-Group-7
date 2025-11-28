@@ -98,4 +98,16 @@ public class NumberNode extends ExpressionNode {
         if (t == null || t.isEmpty()) return false;
         return t.charAt(0) == '-';
     }
+
+    public Object getValue() {
+        String val = number.getToken();
+
+        if (getType().equals("Integer")) {
+            return Integer.parseInt(val);
+        } else {
+            return Double.parseDouble(val);
+        }
+    }
+
+
 }

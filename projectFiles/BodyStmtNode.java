@@ -45,4 +45,6 @@ public interface BodyStmtNode extends JottTree {
         return true;
     }
 
+    public void execute();
+
 }

@@ -26,6 +26,11 @@ public class SymbolTable {
         currentTable = table;
     }
 
+    public SymbolTable getParent() {
+        return parent;
+    }
+
+
 
     // Adds a new symbol (variable or function) to the current scope.
     public void addSymbol(String name, Symbol symbol, Token token) throws SemanticSyntaxError {
