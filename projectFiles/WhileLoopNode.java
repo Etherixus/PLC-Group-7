@@ -96,6 +96,10 @@ public class WhileLoopNode implements BodyStmtNode{
 
     @Override
     public void execute() {
-        //todo
+        Object conditionalResult = expressionNode.evaluate();
+        while(conditionalResult instanceof Boolean && (Boolean) conditionalResult){
+            bodyNode.execute();
+            conditionalResult = expressionNode.evaluate();
+        }
     }
 }
