@@ -174,29 +174,30 @@ public class IfStmtNode implements BodyStmtNode{
     }
 
     @Override
-    public void execute() {
+    public Object execute() {
         // Evaluate the main if condition
         Object condResult = expressionNode.evaluate();
 
         // If the main condition is true, execute the if body
         if (condResult instanceof Boolean && (Boolean) condResult) {
-            body.execute();
-            return;
+            return body.execute();
         }
 
         // Check each ElseIf node in order
         if (elseIfNodes != null) {
             for (ElseIfNode elseIfNode : elseIfNodes) {
-                if (elseIfNode.execute()) {
-                    return;
+                Object result = elseIfNode.execute();
+                if (!(result instanceof Boolean)) {
+                    return result;
                 }
             }
         }
 
         // If no if or elseif condition was true, execute the else node
         if (elseNode != null) {
-            elseNode.execute();
+            return elseNode.execute();
         }
+        return null;
     }
 
 }

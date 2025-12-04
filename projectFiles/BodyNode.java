@@ -160,7 +160,10 @@ public class BodyNode implements JottTree {
 
     public Object execute() {
         for (BodyStmtNode stmt : bodyStmtNodes) {
-            stmt.execute();
+            Object value = stmt.execute();
+            if(stmt instanceof IfStmtNode && value != null){
+                return value;
+            }
             if (stmt instanceof ReturnStmtNode) {
                 return ((ReturnStmtNode) stmt).expr.evaluate();
             }

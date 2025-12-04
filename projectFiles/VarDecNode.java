@@ -88,7 +88,7 @@ public class VarDecNode implements JottTree, BodyStmtNode {
     }
 
     @Override
-    public void execute() {
+    public Object execute() {
 
         String name = varName.convertToJott();
         String type = varType;
@@ -107,6 +107,7 @@ public class VarDecNode implements JottTree, BodyStmtNode {
 //        else if (type.equals("Double")) sym.setValue(0.0);
 //        else if (type.equals("Boolean")) sym.setValue(false);
 //        else if (type.equals("String")) sym.setValue("");
+        return null;
     }
 
 

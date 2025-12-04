@@ -97,14 +97,13 @@ public class ElseIfNode implements JottTree {
         return true;
     }
 
-    public boolean execute(){
+    public Object execute(){
         // Evaluate the condition expression
         Object condResult = expressionNode.evaluate();
 
         // If condition is true, execute the body and return true
         if (condResult instanceof Boolean && (Boolean) condResult) {
-            body.execute();
-            return true;
+            return body.execute();
         }
         return false;
     }

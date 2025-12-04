@@ -128,7 +128,7 @@ public class FunctionCallNode extends ExpressionNode implements BodyStmtNode {
     }
 
     @Override
-    public void execute() {
+    public Object execute() {
 
         String funcName = id.convertToJott();
         SymbolTable globalTable = SymbolTable.getGlobalTable();
@@ -154,7 +154,7 @@ public class FunctionCallNode extends ExpressionNode implements BodyStmtNode {
             throw new RuntimeException("Function does not exist: " + funcName);
         }
 
-
+        return null;
     }
 
     @Override

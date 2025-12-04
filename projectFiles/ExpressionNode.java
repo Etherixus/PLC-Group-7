@@ -337,8 +337,9 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
 
 
     @Override
-    public void execute() {
+    public Object execute() {
         evaluate();
+        return null;
     }
 
     /**

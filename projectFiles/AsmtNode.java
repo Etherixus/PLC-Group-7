@@ -94,7 +94,7 @@ public class AsmtNode implements BodyStmtNode {
     }
 
     @Override
-    public void execute() {
+    public Object execute() {
 
         // 1. Evaluate the right-hand side
         Object value = expressionNode.evaluate();
@@ -113,6 +113,7 @@ public class AsmtNode implements BodyStmtNode {
 
         // Mark initialized again for safety
         current.markInitialized(varName);
+        return null;
     }
 
 

@@ -261,6 +261,8 @@ public class JottTokenizer {
                             finalTokenList.add(string);
                         }
                         break;
+                    default:
+                        throw new TokenizerSyntaxError(TokenizerSyntaxError.createTokenizerSyntaxErrorMessage("Unknown token ", tokenList.get(0).toString(),filename,curLineNumber ));
                 }
             }
             return finalTokenList;

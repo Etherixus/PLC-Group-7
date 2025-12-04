@@ -73,8 +73,8 @@ public class ElseNode implements JottTree {
         return body.validateTree();
     }
 
-    public void execute()
+    public Object execute()
     {
-        body.execute();
+        return body.execute();
     }
 }

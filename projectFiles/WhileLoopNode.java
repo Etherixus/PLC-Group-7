@@ -95,11 +95,12 @@ public class WhileLoopNode implements BodyStmtNode{
     }
 
     @Override
-    public void execute() {
+    public Object execute() {
         Object conditionalResult = expressionNode.evaluate();
         while(conditionalResult instanceof Boolean && (Boolean) conditionalResult){
             bodyNode.execute();
             conditionalResult = expressionNode.evaluate();
         }
+        return null;
     }
 }
