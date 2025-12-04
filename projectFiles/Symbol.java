@@ -10,7 +10,7 @@ public class Symbol {
     public boolean isFunction;           // tells us if the symbol is a function or a variable
     public ArrayList<String> paramTypes; // used for validating function calls to check if arguments match expected types
     public String returnType;            // if function, checksif the body actaully returns the correect type
-    public boolean initialized = false;  // for tracking uninitialized variables
+    public boolean initialized;  // for tracking uninitialized variables
     public int lineNum;                  // useful for error reporting
     public Object value;
 
@@ -40,6 +40,7 @@ public class Symbol {
 
     public void setValue(Object value) {
         this.value = value;
+        this.initialized = true;
     }
 
     public Object getValue() {

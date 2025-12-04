@@ -72,4 +72,9 @@ public class ElseNode implements JottTree {
         if (body == null) return false;
         return body.validateTree();
     }
+
+    public void execute()
+    {
+        body.execute();
+    }
 }

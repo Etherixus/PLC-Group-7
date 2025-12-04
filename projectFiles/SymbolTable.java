@@ -8,6 +8,7 @@ public class SymbolTable {
     private final HashMap<String, Symbol> symbols = new HashMap<>();
     private SymbolTable parent;
     private static SymbolTable currentTable;
+    private static SymbolTable GlobalTable;
 
     // Constructor for creating a new scope.
     // SymbolTable global = new SymbolTable(null); (global scope)
@@ -30,7 +31,13 @@ public class SymbolTable {
         return parent;
     }
 
+    public static SymbolTable getGlobalTable() {
+        return GlobalTable;
+    }
 
+    public static void setGlobalTable(SymbolTable globalTable) {
+        GlobalTable = globalTable;
+    }
 
     // Adds a new symbol (variable or function) to the current scope.
     public void addSymbol(String name, Symbol symbol, Token token) throws SemanticSyntaxError {
@@ -56,6 +63,10 @@ public class SymbolTable {
         if (symbol != null) return symbol;
         if (parent != null) return parent.lookup(name);
         return null;
+    }
+
+    public boolean containsSymbol(String name) {
+        return symbols.containsKey(name);
     }
 
 

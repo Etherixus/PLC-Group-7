@@ -55,6 +55,7 @@ public class ProgramNode implements JottTree {
             // Set this table as the current scope (for all child nodes)
             // FunctionDefNode and others can now access it using SymbolTable.getCurrentTable()
             SymbolTable.setCurrentTable(globalTable);
+            SymbolTable.setGlobalTable(globalTable);
 
             // Add built in functions such as print, concat, and length to the global symbol table
             ArrayList<String> any = new ArrayList<>();

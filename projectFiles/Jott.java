@@ -45,6 +45,10 @@ public class Jott {
             // Step 3 Semantic Analysis
             boolean valid = tree.validateTree();
 
+            // Step 4 Execute
+            ProgramNode root = (ProgramNode) tree;
+            root.execute();
+
 
         } catch (Exception e) {
             System.err.println(e.getMessage());

@@ -101,11 +101,12 @@ public class VarDecNode implements JottTree, BodyStmtNode {
         // Add to current runtime scope
         table.addSymbol(name, sym, varName.getToken());
 
-        // Initialize default value based on type
-        if (type.equals("Integer")) sym.setValue(0);
-        else if (type.equals("Double")) sym.setValue(0.0);
-        else if (type.equals("Boolean")) sym.setValue(false);
-        else if (type.equals("String")) sym.setValue("");
+//        //todo this might need to change not sure we should have an initial value set as initalized vars should fail
+//        // Initialize default value based on type
+//        if (type.equals("Integer")) sym.setValue(0);
+//        else if (type.equals("Double")) sym.setValue(0.0);
+//        else if (type.equals("Boolean")) sym.setValue(false);
+//        else if (type.equals("String")) sym.setValue("");
     }
 
 

@@ -131,20 +131,30 @@ public class FunctionCallNode extends ExpressionNode implements BodyStmtNode {
     public void execute() {
 
         String funcName = id.convertToJott();
+        SymbolTable globalTable = SymbolTable.getGlobalTable();
 
-        // Built-in print
-        if (funcName.equals("print")) {
-
-            // Loop through argument expressions
-            for (ExpressionNode expr : params.getParamsExprList()) {
-                Object value = expr.evaluate();
-                System.out.println(value);
-            }
-
-            return;
+        if (globalTable == null) {
+            throw new RuntimeException("Global table not set");
         }
 
-        throw new RuntimeException("Function not implemented yet: " + funcName);
+        if(globalTable.containsSymbol(funcName)){
+            switch(funcName){
+                case "print":
+                    String msg = (String) params.getParamsExprList().get(0).evaluate().toString();
+                    Jott.print(msg);
+                    break;
+                case "length":
+                case "concat":
+                    break;
+                default:
+                    FunctionDefNode functionDef = (FunctionDefNode) globalTable.lookup(funcName).getValue();
+                    functionDef.execute();
+            }
+        } else {
+            throw new RuntimeException("Function does not exist: " + funcName);
+        }
+
+
     }
 
     @Override
@@ -152,17 +162,34 @@ public class FunctionCallNode extends ExpressionNode implements BodyStmtNode {
 
         String funcName = id.convertToJott();
 
-        if (funcName.equals("print")) {
+        SymbolTable globalTable = SymbolTable.getGlobalTable();
 
-            for (ExpressionNode expr : params.getParamsExprList()) {
-                Object value = expr.evaluate();
-                System.out.println(value);
-            }
-
-            return null; // print returns Void
+        if (globalTable == null) {
+            throw new RuntimeException("Global table not set");
         }
 
-        throw new RuntimeException("Function not implemented yet: " + funcName);
+        if(globalTable.containsSymbol(funcName)){
+            switch(funcName){
+                case "print":
+                    String msg = (String) params.getParamsExprList().get(0).evaluate().toString();
+                    Jott.print(msg);
+                    return null;
+                case "length":
+                    String length = (String) params.getParamsExprList().get(0).evaluate();
+                    return Jott.length(length);
+                case "concat":
+                    ArrayList<ExpressionNode> params = this.params.getParamsExprList();
+                    String str1 = (String) params.get(0).evaluate();
+                    String str2 = (String) params.get(1).evaluate();
+                    return Jott.concat(str1, str2);
+                default:
+                    FunctionDefNode functionDef = (FunctionDefNode) globalTable.lookup(funcName).getValue();
+                    return functionDef.execute();
+            }
+        }else {
+            throw new RuntimeException("Function does not exist: " + funcName);
+        }
+
     }
 
 

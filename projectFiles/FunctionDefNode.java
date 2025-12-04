@@ -102,9 +102,11 @@ public class FunctionDefNode implements JottTree{
 
         // Empty parameter list for now
         ArrayList<String> paramTypes = params.getParamTypes();
+        Symbol symbol = new Symbol(funcName, retType, paramTypes, id.getToken().getLineNum());
+        symbol.setValue(this);
 
         // Add once to global
-        globalTable.addSymbol(funcName, new Symbol(funcName, retType, paramTypes, id.getToken().getLineNum()),  id.getToken());
+        globalTable.addSymbol(funcName, symbol,  id.getToken());
     }
 
     @Override
@@ -147,13 +149,14 @@ public class FunctionDefNode implements JottTree{
         return true;
     }
 
-    public void execute() {
+    public Object execute() {
         SymbolTable funcScope = new SymbolTable(SymbolTable.getCurrentTable());
         SymbolTable.setCurrentTable(funcScope);
 
-        body.execute();
+        Object returnValue = body.execute();
 
         SymbolTable.setCurrentTable(funcScope.getParent());
+        return returnValue;
     }
 
     public String getName() {
