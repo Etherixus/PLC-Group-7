@@ -328,6 +328,26 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
                         throw new RuntimeException("Unknown relational operator: " + op);
                 }
             }
+            if (leftVal instanceof Double && rightVal instanceof Double) {
+                double l = (Double) leftVal;
+                double r = (Double) rightVal;
+                switch (op) {
+                    case ">":
+                        return l > r;
+                    case "<":
+                        return l < r;
+                    case ">=":
+                        return l >= r;
+                    case "<=":
+                        return l <= r;
+                    case "==":
+                        return l == r;
+                    case "!=":
+                        return l != r;
+                    default:
+                        throw new RuntimeException("Unknown relational operator: " + op);
+                }
+            }
         }
 
         throw new RuntimeException("Could not evaluate expression: " + convertToJott());

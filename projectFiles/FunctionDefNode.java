@@ -149,13 +149,20 @@ public class FunctionDefNode implements JottTree{
         return true;
     }
 
-    public Object execute() {
-        SymbolTable funcScope = new SymbolTable(SymbolTable.getCurrentTable());
+    public Object execute(ParamsNode valuesPassedToFunction)  {
+        SymbolTable previousScope = SymbolTable.getCurrentTable();
+        SymbolTable funcScope = new SymbolTable(SymbolTable.getGlobalTable());
+        if(valuesPassedToFunction != null){
+            params.declareParams(funcScope, valuesPassedToFunction);
+        } else {
+            params.declareParams(funcScope);
+        }
+
         SymbolTable.setCurrentTable(funcScope);
 
         Object returnValue = body.execute();
 
-        SymbolTable.setCurrentTable(funcScope.getParent());
+        SymbolTable.setCurrentTable(previousScope);
         return returnValue;
     }
 

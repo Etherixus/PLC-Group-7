@@ -78,12 +78,12 @@ public class AsmtNode implements BodyStmtNode {
         table.markInitialized(varName);
 
         // check type mismatch
-        if (sym.returnType == null) {
+        if (sym.type == null) {
             throw new SemanticSyntaxError(
                     "Variable " + varName + " has undefined type.", t);
         }
 
-        if (!sym.returnType.equals(exprType)) {
+        if (!sym.type.equals(exprType)) {
             throw new SemanticSyntaxError(
                     "Type mismatch in assignment: " + varName +
                             " is " + sym.returnType + " but expression is " + exprType, t);

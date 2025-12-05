@@ -133,6 +133,33 @@ public class FunctionParamsNode implements JottTree {
         }
     }
 
+    public void declareParams(SymbolTable funcTable, ParamsNode paramsNode) throws SemanticSyntaxError {
+        ArrayList<ParamsTNode> paramValues = new ArrayList<>(paramsNode.params);
+        for (Map.Entry<IDNode, String> entry : params.entrySet()) {
+            Object currentValue = paramValues.get(0).getExpression().evaluate();
+            paramValues.remove(0);
+            IDNode idNode = entry.getKey();
+            String paramName = entry.getKey().convertToJott();
+            String paramType = entry.getValue();
+
+            // Check for duplicate parameter names
+            if (funcTable.lookup(paramName) != null) {
+                throw new SemanticSyntaxError("Duplicate parameter name: " + paramName, idNode.getToken());
+            }
+            // Create the parameter symbol
+            Symbol paramSymbol = new Symbol(paramName, paramType, -1);
+
+            // Mark parameters as initialized — they come from the function call
+            paramSymbol.initialized = true;
+            paramSymbol.setValue(currentValue);
+            paramSymbol.lineNum = 0;
+
+            // Add parameter to the function's local symbol table
+            funcTable.addSymbol(paramName, paramSymbol, idNode.getToken());
+
+        }
+    }
+
     @Override
     public boolean validateTree() throws SemanticSyntaxError {
         // separates the hash into two vars, param name and type

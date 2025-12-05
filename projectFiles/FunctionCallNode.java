@@ -148,7 +148,7 @@ public class FunctionCallNode extends ExpressionNode implements BodyStmtNode {
                     break;
                 default:
                     FunctionDefNode functionDef = (FunctionDefNode) globalTable.lookup(funcName).getValue();
-                    functionDef.execute();
+                    functionDef.execute(params);
             }
         } else {
             throw new RuntimeException("Function does not exist: " + funcName);
@@ -178,13 +178,13 @@ public class FunctionCallNode extends ExpressionNode implements BodyStmtNode {
                     String length = (String) params.getParamsExprList().get(0).evaluate();
                     return Jott.length(length);
                 case "concat":
-                    ArrayList<ExpressionNode> params = this.params.getParamsExprList();
-                    String str1 = (String) params.get(0).evaluate();
-                    String str2 = (String) params.get(1).evaluate();
+                    ArrayList<ExpressionNode> parameters = this.params.getParamsExprList();
+                    String str1 = (String) parameters.get(0).evaluate();
+                    String str2 = (String) parameters.get(1).evaluate();
                     return Jott.concat(str1, str2);
                 default:
                     FunctionDefNode functionDef = (FunctionDefNode) globalTable.lookup(funcName).getValue();
-                    return functionDef.execute();
+                    return functionDef.execute(params);
             }
         }else {
             throw new RuntimeException("Function does not exist: " + funcName);
