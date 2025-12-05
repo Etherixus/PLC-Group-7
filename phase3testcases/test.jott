@@ -1,0 +1,13 @@
+Def foo[x:String]:Integer{
+    x = ::concat[x, "1"];
+    Return ::length[x];
+   }
+
+Def main[]:Void{
+    String purple;
+    Integer y;
+    ::print["Hello World"];
+    purple = "next";
+    y = ::foo[purple];
+    ::print[y];
+}

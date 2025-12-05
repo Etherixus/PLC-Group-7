@@ -1,0 +1,15 @@
+Def foo[x:Integer, y:Integer]:Integer{
+    Return x + y;
+}
+
+Def main[]:Void{
+    Integer x;
+    Integer int2;
+    x = 0;
+    int2 = 10;
+	While[x<10]{
+		::print[::foo[x, int2]];
+		x = x + 1;
+		int2 = int2 - 1;
+	}
+}

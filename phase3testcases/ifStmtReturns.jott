@@ -13,5 +13,7 @@ Def foo[]:Integer{
 }
 
 Def main[]:Void{
-    ::foo[];
+    Integer x;
+    x = ::foo[];
+    ::print[x];
 }
