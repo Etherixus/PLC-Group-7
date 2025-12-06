@@ -1,0 +1,12 @@
+Def main[]:Void{
+    Integer a;
+    Integer b;
+    a = 5;
+    b = 6;
+    ::print[a < b];
+    ::print[a > b];
+    ::print[a == b];
+    a = 6;
+    ::print[a==b];
+    ::print[a==6];
+}

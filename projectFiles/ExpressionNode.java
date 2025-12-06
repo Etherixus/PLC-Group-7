@@ -277,6 +277,10 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
                     case "*":
                         return l * r;
                     case "/":
+                        if(r == 0)
+                        {
+                            throw new RuntimeException("Runtime Error:\nDivision by zero error\n"+ getToken().getFilename()+":"+getToken().getLineNum());
+                        }
                         return l / r;
                     default:
                         throw new RuntimeException("Unknown math operator: " + op);
@@ -296,6 +300,9 @@ public class ExpressionNode implements JottTree, BodyStmtNode {
                     case "*":
                         return l * r;
                     case "/":
+                        if(r == 0){
+                            throw new RuntimeException("Runtime Error:\nDivision by zero error\n"+ getToken().getFilename()+":"+getToken().getLineNum());
+                        }
                         return l / r;
                     default:
                         throw new RuntimeException("Unknown math operator: " + op);

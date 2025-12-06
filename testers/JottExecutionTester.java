@@ -16,27 +16,37 @@ public class JottExecutionTester {
 
     @ParameterizedTest
     @MethodSource("testCases")
-    public void testExecutionOutput(String inputFile, String expectedOutput) {
+    public void testExecutionOutput(String inputFile, String expectedOutput, String expectedError) {
+        // Get the output from stdout
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         PrintStream oldOut = System.out;
         System.setOut(new PrintStream(output));
 
+        // Get the output from stderr
+        ByteArrayOutputStream errOutput = new ByteArrayOutputStream();
+        PrintStream oldErr = System.err;
+        System.setErr(new PrintStream(errOutput));
+
         try {
             Jott.main(new String[]{"phase3testcases/"+inputFile});
             String actualOutput = normalizeOutput(output.toString().trim());
+            String actualError = normalizeOutput(errOutput.toString().trim());
             expectedOutput = normalizeOutput(expectedOutput.trim());
+            expectedError = normalizeOutput(expectedError.trim());
 
             assertEquals(expectedOutput, actualOutput);
+            assertEquals(expectedError, actualError);
         } finally {
             System.setOut(oldOut);
+            System.setErr(oldErr);
         }
 
     }
 
     private static Stream<Arguments> testCases() {
         return Stream.of(
-                Arguments.of("test.jott", "Hello World\n5"),
-                Arguments.of("providedExample1.jott", "5\nfoo bar"),
+                Arguments.of("test.jott", "Hello World\n5",""),
+                Arguments.of("providedExample1.jott", "5\nfoo bar",""),
                 Arguments.of("largerValid.jott", "5\n" +
                         "Hello World\n" +
                         "foo\n" +
@@ -51,7 +61,7 @@ public class JottExecutionTester {
                         "foo\n" +
                         "1\n" +
                         "bar\n" +
-                        "Hello World"),
+                        "Hello World",""),
                 Arguments.of("reallyLong.jott", "5\n" +
                         "4\n" +
                         "3\n" +
@@ -62,10 +72,13 @@ public class JottExecutionTester {
                         "4\n" +
                         "ran foo\n" +
                         "ran foo\n" +
-                        "ran foo"),
-                Arguments.of("validLoop.jott", "1\n2\n3\n4\n5\n6\n7\n8\n9\n10"),
-                Arguments.of("ifStmtReturns.jott", "5"),
-                Arguments.of("multiParam.jott", "10\n10\n10\n10\n10\n10\n10\n10\n10\n10")
+                        "ran foo",""),
+                Arguments.of("validLoop.jott", "1\n2\n3\n4\n5\n6\n7\n8\n9\n10",""),
+                Arguments.of("ifStmtReturns.jott", "5",""),
+                Arguments.of("multiParam.jott", "10\n10\n10\n10\n10\n10\n10\n10\n10\n10",""),
+                Arguments.of("divideByZeroError.jott", "This will print\nLength of string is\n15","Runtime Error:\n" +
+                        "Division by zero error\n" +
+                        "phase3testcases/divideByZeroError.jott:15")
         );
     }
 

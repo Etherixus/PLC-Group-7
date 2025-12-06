@@ -1,0 +1,16 @@
+Def foo[x:String]:Void{
+    ::print[x];
+    ::print["Length of string is"];
+    ::print[::length[x]];
+   }
+
+Def main[]:Void{
+    Double x;
+    Double y;
+    String s;
+    s = "This will print";
+    ::foo[s];
+    x = 6.7;
+    y = 0.0;
+    ::print[x / y];
+}
