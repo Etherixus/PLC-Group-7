@@ -1,6 +1,10 @@
-This file contains provided code, testers, and test cases.
+This is For Phase 4
 
-provided shouls be a top level package in your src directory
-JottParserTester and JottTokenizerTester classes should be in a package call testers.
+HOW TO RUN
+Jott.Java is the main file and will be the exeacutable.
+within this file you must give one system arg and one only.
+The one argument must be a .jott file and the absloute path works best
 
-the testCases directories should be in the working directory of your project. 
+Example path: C:\Users\conno\PLC-Group-7\phase3testcases\reallyLong.jott
+The above path is put in the CLI field of the run config.
+To run a different file, make sure the code is not running and enter a different file
